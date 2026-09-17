@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Search, User, Menu, X } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 import { cartStore } from '../store/cartStore';
 
 export const Navbar: React.FC = () => {
@@ -24,7 +24,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="w-full bg-white z-40 sticky top-0 shadow-xs">
-      {/* Top Row: Search, Logo, User/Cart on Pure White Canvas */}
+      {/* Top Row: Search, Logo, Cart on Pure White Canvas */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-4">
         {/* Mobile menu trigger */}
         <div className="flex items-center gap-2 lg:hidden">
@@ -66,16 +66,8 @@ export const Navbar: React.FC = () => {
           </a>
         </div>
 
-        {/* Right: User & Cart Icons */}
-        <div className="flex items-center justify-end gap-3 sm:gap-4 w-auto lg:w-72 lg:w-80">
-          <a
-            href="/about"
-            className="p-1 text-gray-800 hover:text-black transition-colors hidden sm:block"
-            title="Account"
-          >
-            <User size={22} strokeWidth={1.5} />
-          </a>
-
+        {/* Right: Cart Icon */}
+        <div className="flex items-center justify-end w-auto lg:w-72 lg:w-80">
           <button
             onClick={() => cartStore.openDrawer()}
             className="p-1 text-gray-900 hover:text-[#e62b32] transition-colors relative flex items-center gap-1 group cursor-pointer"
