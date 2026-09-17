@@ -15,21 +15,21 @@ export const CollectionsGrid: React.FC<Props> = ({
   const discountBadges = ["SAVE £19.60", "SAVE £18.00", "SAVE £15.00", "SAVE £22.00", "SAVE £12.00"];
 
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+    <section className="pt-4 sm:pt-6 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-transparent">
       {/* Bold Heading matching Oud Attar screenshot */}
-      <div className="text-center mb-10">
-        <h1 className="font-['Barlow',sans-serif] text-4xl sm:text-5xl font-extrabold text-black tracking-tight">
+      <div className="text-center mb-4 sm:mb-6">
+        <h1 className="font-['Barlow',sans-serif] text-3xl sm:text-4xl font-extrabold text-black tracking-tight">
           {title}
         </h1>
       </div>
 
       {/* Grid of Large Collection Cards matching screenshot */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         {collections.map((col, idx) => (
           <a
             key={col.id || col.slug}
             href={`/collections/${col.slug}`}
-            className="group relative flex flex-col overflow-hidden rounded-2xl bg-neutral-100 shadow-md hover:shadow-xl transition-all duration-300"
+            className="group relative flex flex-col overflow-hidden rounded-xl bg-neutral-100 shadow-2xs hover:shadow-md transition-all duration-300"
           >
             {/* Image Container */}
             <div className="relative aspect-[16/11] sm:aspect-[16/10] overflow-hidden bg-neutral-200">
@@ -40,8 +40,8 @@ export const CollectionsGrid: React.FC<Props> = ({
               />
 
               {/* Red Discount / Save Badge in Top Left */}
-              <div className="absolute top-4 left-4 z-10">
-                <span className="bg-[#ff2d3b] text-white font-semibold text-xs uppercase px-3 py-1 rounded shadow-sm tracking-wider">
+              <div className="absolute top-3.5 left-3.5 z-10">
+                <span className="bg-[#ff2032] text-white font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-sm shadow-xs tracking-wider">
                   {discountBadges[idx % discountBadges.length]}
                 </span>
               </div>
