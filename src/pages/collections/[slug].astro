@@ -40,17 +40,11 @@ const displayProducts = collectionProducts.length > 0 ? collectionProducts : pro
 
 <Layout title={`${currentCollection.name} | Rabbi Azanduna Ltd`}>
   <div class="pt-4 sm:pt-5 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
-    {/* Clean Centered Header matching Oud Attar reference */}
+    {/* Clean Simple Collection Title */}
     <div class="text-center pt-1 pb-5 sm:pb-6">
-      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
+      <h1 class="font-['Barlow_Condensed',sans-serif] text-[36px] sm:text-[42px] font-bold text-black tracking-normal leading-tight">
         {currentCollection.name}
       </h1>
-      <p class="font-['Barlow',sans-serif] text-xl sm:text-2xl font-bold text-[#e62b32] mb-1">
-        {currentCollection.subtitle || "Curated Artisanal Fragrances"}
-      </p>
-      <p class="text-xs text-gray-500 font-normal">
-        Discount applied at checkout
-      </p>
     </div>
 
     {/* Products 3-Column Grid matching Sale page */}
