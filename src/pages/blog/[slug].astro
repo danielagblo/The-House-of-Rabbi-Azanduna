@@ -14,25 +14,21 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 ---
 
-<Layout title="Journal Article | Rabbi Azanduna Ltd">
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white">
+<Layout title="Blog | Rabbi Azanduna Ltd">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-14 bg-white">
     <a
       href="/blog"
-      class="inline-flex items-center gap-2 text-xs uppercase font-bold text-gray-600 hover:text-black mb-8"
+      class="inline-flex items-center gap-2 text-xs uppercase font-bold text-gray-600 hover:text-[#e62b32] mb-6 transition-colors"
     >
       <ArrowLeft size={14} />
-      <span>Back to Journal</span>
+      <span>Back to Blog</span>
     </a>
 
-    <div class="mb-8">
-      <span class="text-xs font-bold uppercase tracking-widest text-[#ff2d3b] block mb-2">
-        Master Perfumer Insights
-      </span>
-      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-5xl font-extrabold text-black leading-tight mb-4">
+    <div class="mb-6">
+      <h1 class="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-[40px] font-extrabold text-black leading-tight mb-3">
         The Art of Applying Pure Perfume Oils for 24-Hour Longevity
       </h1>
-      <div class="flex items-center gap-4 text-xs text-gray-500 font-medium pb-6 border-b border-gray-200">
-        <span class="flex items-center gap-1"><User size={12} /> Master Blender</span>
+      <div class="flex items-center gap-4 text-xs text-gray-500 font-medium pb-4 border-b border-gray-200">
         <span class="flex items-center gap-1"><Calendar size={12} /> March 2026</span>
         <span class="flex items-center gap-1"><Clock size={12} /> 4 min read</span>
       </div>
