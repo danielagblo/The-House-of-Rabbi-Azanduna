@@ -25,34 +25,34 @@ export const Navbar: React.FC = () => {
   return (
     <header className="w-full bg-white z-40 sticky top-0 shadow-xs">
       {/* Top Row: Search, Logo, User/Cart on Pure White Canvas */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex items-center justify-between gap-4">
         {/* Mobile menu trigger */}
         <div className="flex items-center gap-2 lg:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-1.5 text-gray-800 hover:text-black cursor-pointer"
+            className="p-1 text-gray-800 hover:text-black cursor-pointer"
             aria-label="Toggle Menu"
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
         {/* Left: Search Box (White input with subtle gray border matching screenshot) */}
-        <div className="hidden lg:block w-60 lg:w-68">
+        <div className="hidden lg:block w-56 lg:w-64">
           <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="What are you looking for?"
-              className="w-full bg-white border border-gray-300 rounded-[6px] py-1.5 px-3.5 pr-9 text-xs text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-black transition-colors"
+              className="w-full bg-white border border-gray-300 rounded-[5px] py-1 px-3 pr-8 text-xs text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-black transition-colors"
             />
             <button
               type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-700 hover:text-black cursor-pointer"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-black cursor-pointer"
               aria-label="Search"
             >
-              <Search size={15} />
+              <Search size={14} />
             </button>
           </form>
         </div>
@@ -60,20 +60,20 @@ export const Navbar: React.FC = () => {
         {/* Center: RABBI AZANDUNA LTD Brand Wordmark (Exact Bold Geometric Montserrat Style as OUD ATTAR) */}
         <div className="flex-1 lg:flex-initial text-center">
           <a href="/" className="inline-block group whitespace-nowrap">
-            <span className="font-['Montserrat',sans-serif] text-xl sm:text-[23px] font-bold tracking-[0.25em] text-black uppercase">
+            <span className="font-['Montserrat',sans-serif] text-lg sm:text-[21px] font-bold tracking-[0.22em] text-black uppercase">
               RABBI AZANDUNA LTD
             </span>
           </a>
         </div>
 
         {/* Right: User & Cart Icons */}
-        <div className="flex items-center justify-end gap-3 sm:gap-4 w-auto lg:w-60 lg:w-68">
+        <div className="flex items-center justify-end gap-2.5 sm:gap-3.5 w-auto lg:w-56 lg:w-64">
           <a
             href="/about"
             className="p-1 text-gray-800 hover:text-black transition-colors hidden sm:block"
             title="Account"
           >
-            <User size={22} strokeWidth={1.5} />
+            <User size={20} strokeWidth={1.5} />
           </a>
 
           <button
@@ -81,8 +81,8 @@ export const Navbar: React.FC = () => {
             className="p-1 text-gray-900 hover:text-[#e62b32] transition-colors relative flex items-center gap-1 group cursor-pointer"
             aria-label="Shopping Bag"
           >
-            <ShoppingBag size={22} strokeWidth={1.5} />
-            <span className="absolute -top-1.5 -right-1.5 bg-black text-white text-[10px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center">
+            <ShoppingBag size={20} strokeWidth={1.5} />
+            <span className="absolute -top-1.5 -right-1.5 bg-black text-white text-[9px] font-bold w-[16px] h-[16px] rounded-full flex items-center justify-center">
               {itemCount}
             </span>
           </button>
@@ -91,13 +91,13 @@ export const Navbar: React.FC = () => {
 
       {/* Sub-Navigation Row: Dedicated Light Gray Strip matching screenshot */}
       <div className="bg-[#f4f4f4] border-y border-gray-200/80">
-        <div className="hidden lg:flex items-center justify-center gap-5 sm:gap-6 py-1.5 sm:py-2 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[15px] font-bold tracking-normal uppercase text-[#111111]">
+        <div className="hidden lg:flex items-center justify-center gap-3.5 sm:gap-4.5 py-1 sm:py-1.5 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[14px] font-bold tracking-normal uppercase text-[#111111]">
           <a href="/collections" className="text-[#e62b32] hover:opacity-80 transition-colors">
             SHOP
           </a>
           <a
             href="/sale"
-            className="bg-[#e62b32] text-white px-2.5 py-0.5 rounded-[3px] text-[12px] font-bold hover:bg-[#cf2229] transition-colors shadow-2xs"
+            className="bg-[#e62b32] text-white px-2 py-0.5 rounded-[3px] text-[11px] font-bold hover:bg-[#cf2229] transition-colors shadow-2xs"
           >
             SALE
           </a>
