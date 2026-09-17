@@ -57,14 +57,11 @@ export const Navbar: React.FC = () => {
           </form>
         </div>
 
-        {/* Center: RABBI AZANDUNA LTD Brand Wordmark */}
+        {/* Center: RABBI AZANDUNA LTD Brand Wordmark (Inline, Clean Non-Bold Light Weight) */}
         <div className="flex-1 lg:flex-initial text-center">
-          <a href="/" className="inline-block group">
-            <span className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-extrabold tracking-[0.16em] text-black uppercase block">
-              RABBI AZANDUNA
-            </span>
-            <span className="text-[9px] tracking-[0.3em] text-gray-500 font-bold uppercase block -mt-1">
-              L T D
+          <a href="/" className="inline-block group whitespace-nowrap">
+            <span className="font-['Barlow',sans-serif] text-xl sm:text-2xl font-light tracking-[0.2em] text-black uppercase">
+              RABBI AZANDUNA LTD
             </span>
           </a>
         </div>
