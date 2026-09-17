@@ -31,7 +31,7 @@ export const CollectionsGrid: React.FC<Props> = ({
             href={`/collections/${col.slug}`}
             className="group relative flex flex-col overflow-hidden rounded-xl bg-neutral-100 shadow-2xs hover:shadow-md transition-all duration-300"
           >
-            {/* Image Container */}
+            {/* Pure Full-Bleed Image Container with Top-Left Discount Badge */}
             <div className="relative aspect-[16/11] sm:aspect-[16/10] overflow-hidden bg-neutral-200">
               <img
                 src={col.imageUrl}
@@ -41,32 +41,8 @@ export const CollectionsGrid: React.FC<Props> = ({
 
               {/* Red Discount / Save Badge in Top Left */}
               <div className="absolute top-3 left-3 z-10">
-                <span className="bg-[#e62b32] text-white font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-[3px] shadow-xs tracking-wider">
+                <span className="bg-[#e62b32] text-white font-extrabold text-[11px] sm:text-[12px] uppercase px-2.5 py-1 rounded-[3px] shadow-xs tracking-wider">
                   {discountBadges[idx % discountBadges.length]}
-                </span>
-              </div>
-            </div>
-
-            {/* Collection Card Bottom Info */}
-            <div className="p-6 bg-white flex flex-col justify-between flex-1 border-t border-gray-100">
-              <div>
-                <span className="text-[11px] font-bold text-[#ff2d3b] uppercase tracking-wider block mb-1">
-                  {col.subtitle || "Exclusive Blend"}
-                </span>
-                <h3 className="font-['Barlow',sans-serif] text-2xl font-bold text-gray-900 group-hover:text-[#ff2d3b] transition-colors">
-                  {col.name}
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm mt-1 line-clamp-2 font-light">
-                  {col.description}
-                </p>
-              </div>
-
-              <div className="mt-4 pt-3 flex items-center justify-between">
-                <span className="text-xs font-bold text-black uppercase tracking-wider group-hover:underline">
-                  Shop Collection &rarr;
-                </span>
-                <span className="text-xs font-semibold text-gray-500">
-                  {col.badge || "Hand-Poured in UK"}
                 </span>
               </div>
             </div>
