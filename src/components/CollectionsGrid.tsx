@@ -18,7 +18,7 @@ export const CollectionsGrid: React.FC<Props> = ({
     <section className="pt-6 sm:pt-7 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-transparent">
       {/* Tall Condensed Heading matching Oud Attar reference */}
       <div className="text-center mb-5 sm:mb-6">
-        <h1 className="font-['Barlow_Condensed',sans-serif] text-[40px] sm:text-[48px] lg:text-[52px] font-semibold text-black tracking-normal leading-[0.95]">
+        <h1 className="font-['Barlow_Condensed',sans-serif] text-[38px] sm:text-[44px] lg:text-[48px] font-medium text-black tracking-tight leading-tight">
           {title}
         </h1>
       </div>
