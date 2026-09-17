@@ -37,22 +37,22 @@ export const Navbar: React.FC = () => {
           </button>
         </div>
 
-        {/* Left: Search Box (White input with subtle gray border matching screenshot) */}
-        <div className="hidden lg:block w-60 lg:w-68">
+        {/* Left: Search Box (Matching exact user screenshot) */}
+        <div className="hidden lg:block w-72 lg:w-80">
           <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="What are you looking for?"
-              className="w-full bg-white border border-gray-300 rounded-[6px] py-1.5 px-3.5 pr-9 text-xs text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-black transition-colors"
+              className="w-full bg-white border border-[#e2e2e2] rounded-[4px] py-2 px-4 pr-11 text-[13.5px] text-black placeholder:text-[#1a1a1a] focus:outline-none focus:border-black transition-colors"
             />
             <button
               type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-700 hover:text-black cursor-pointer"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-black hover:opacity-75 transition-opacity cursor-pointer flex items-center justify-center"
               aria-label="Search"
             >
-              <Search size={15} />
+              <Search size={18} strokeWidth={2} />
             </button>
           </form>
         </div>
@@ -67,7 +67,7 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Right: User & Cart Icons */}
-        <div className="flex items-center justify-end gap-3 sm:gap-4 w-auto lg:w-60 lg:w-68">
+        <div className="flex items-center justify-end gap-3 sm:gap-4 w-auto lg:w-72 lg:w-80">
           <a
             href="/about"
             className="p-1 text-gray-800 hover:text-black transition-colors hidden sm:block"
@@ -122,9 +122,9 @@ export const Navbar: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="What are you looking for?"
-              className="w-full bg-gray-50 border border-gray-300 rounded-lg py-2 px-4 pr-10 text-xs text-gray-800"
+              className="w-full bg-white border border-[#e2e2e2] rounded-[4px] py-2 px-4 pr-10 text-[13.5px] text-black placeholder:text-[#1a1a1a]"
             />
-            <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={18} strokeWidth={2} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-black" />
           </form>
 
           <nav className="flex flex-col gap-4 font-['Barlow_Condensed',sans-serif] text-lg font-bold uppercase text-black">
