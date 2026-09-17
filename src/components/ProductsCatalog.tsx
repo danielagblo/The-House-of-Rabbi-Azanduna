@@ -151,7 +151,7 @@ export const ProductsCatalog: React.FC<Props> = ({
               setSelectedFamily('all');
               setSearchQuery('');
             }}
-            className="text-xs text-[#ff2d3b] underline font-bold ml-2"
+            className="text-xs text-[#e62b32] underline font-bold ml-2"
           >
             Clear All
           </button>
@@ -174,7 +174,7 @@ export const ProductsCatalog: React.FC<Props> = ({
         {/* Red Progress Bar */}
         <div className="w-48 sm:w-64 h-1 bg-gray-200 rounded-full overflow-hidden mb-6">
           <div
-            className="bg-[#ff2d3b] h-full rounded-full transition-all duration-300"
+            className="bg-[#e62b32] h-full rounded-full transition-all duration-300"
             style={{
               width: `${filteredProducts.length > 0 ? (Math.min(visibleLimit, filteredProducts.length) / filteredProducts.length) * 100 : 100}%`
             }}
@@ -185,7 +185,7 @@ export const ProductsCatalog: React.FC<Props> = ({
           <button
             type="button"
             onClick={() => setVisibleLimit((prev) => prev + 6)}
-            className="bg-[#ff2d3b] hover:bg-[#e0202d] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
+            className="bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
           >
             Show more products
           </button>

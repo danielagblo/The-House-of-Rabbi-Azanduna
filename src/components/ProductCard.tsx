@@ -75,7 +75,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         {/* Red Save Badge in Top Left */}
         {savings && (
           <div className="absolute top-3 left-3 z-10">
-            <span className="bg-[#ff2d3b] text-white font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-sm shadow-sm tracking-wider">
+            <span className="bg-[#e62b32] text-white font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-[3px] shadow-xs tracking-wider">
               SAVE £{savings}
             </span>
           </div>
@@ -85,10 +85,10 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       {/* Full-width Red Add to Cart Button (Exact match to Oud Attar reference) */}
       <button
         onClick={handleAddToCart}
-        className={`w-full mt-3 py-3 px-4 rounded-lg font-bold text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-2 shadow-xs cursor-pointer ${
+        className={`w-full mt-3 py-2.5 sm:py-3 px-4 rounded-[6px] font-bold text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-2 shadow-xs cursor-pointer ${
           isAdded
             ? 'bg-emerald-600 hover:bg-emerald-700'
-            : 'bg-[#ff2d3b] hover:bg-[#e0202d] active:scale-[0.99]'
+            : 'bg-[#e62b32] hover:bg-[#cf2229] active:scale-[0.99]'
         }`}
       >
         {isAdded ? (
@@ -104,14 +104,14 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       {/* Product Info (Centered below button) */}
       <div className="pt-2 text-center">
         <a href={`/product/${product.slug}`} className="block">
-          <h3 className="font-['Barlow',sans-serif] text-[16px] sm:text-[17px] font-bold text-gray-900 hover:text-[#ff2d3b] transition-colors leading-snug">
+          <h3 className="font-['Barlow',sans-serif] text-[16px] sm:text-[17px] font-bold text-gray-900 hover:text-[#e62b32] transition-colors leading-snug">
             {product.name}
           </h3>
         </a>
 
-        {/* Star Ratings (Amber stars + review count) */}
+        {/* Star Ratings (Red/Amber stars + review count) */}
         <div className="flex items-center justify-center gap-1 my-1">
-          <div className="flex text-[#ff2d3b]">
+          <div className="flex text-[#e62b32]">
             {[...Array(5)].map((_, i) => (
               <Star key={i} size={12} fill="currentColor" />
             ))}
@@ -121,9 +121,14 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
           </span>
         </div>
 
-        {/* Price */}
-        <div className="font-['Barlow',sans-serif] text-[15px] sm:text-[16px] font-bold text-gray-900">
-          {priceDisplay}
+        {/* Price & Strikethrough Discount Price */}
+        <div className="font-['Barlow',sans-serif] text-[15px] sm:text-[16px] font-bold text-gray-900 flex items-center justify-center gap-2">
+          <span>{priceDisplay}</span>
+          {product.compareAtPrice && product.compareAtPrice > product.price && (
+            <span className="text-gray-400 line-through text-xs font-normal">
+              £{product.compareAtPrice.toFixed(2)}
+            </span>
+          )}
         </div>
       </div>
     </div>
