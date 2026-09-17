@@ -1,8 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { ProductsCatalog } from '../../components/ProductsCatalog';
+import { ProductCard } from '../../components/ProductCard';
 import { FALLBACK_COLLECTIONS, FALLBACK_PRODUCTS } from '../../data/fallbackData';
-import { Sparkles, ArrowLeft } from 'lucide-react';
 
 export async function getStaticPaths() {
   return FALLBACK_COLLECTIONS.map((c) => ({
@@ -32,44 +31,52 @@ try {
 }
 
 const currentCollection = collections.find((c) => c.slug === slug) || collections[0];
+
+const collectionProducts = products.filter(
+  (p) => p.collectionId === currentCollection.id || p.collection?.slug === slug
+);
+const displayProducts = collectionProducts.length > 0 ? collectionProducts : products.slice(0, 6);
 ---
 
 <Layout title={`${currentCollection.name} | Rabbi Azanduna Ltd`}>
-  <!-- Collection Header -->
-  <div class="py-10 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-100">
-    <div class="max-w-4xl mx-auto text-center">
-      <a
-        href="/collections"
-        class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-gray-500 hover:text-black font-semibold mb-4 group"
-      >
-        <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-        <span>Back to All Collections</span>
-      </a>
-
-      {currentCollection.badge && (
-        <div class="block mb-2">
-          <span class="px-3 py-0.5 bg-[#ff2d3b] text-white text-[10px] uppercase font-bold tracking-wider rounded">
-            {currentCollection.badge}
-          </span>
-        </div>
-      )}
-
-      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-4xl font-extrabold text-black uppercase tracking-tight mb-2">
+  <div class="pt-4 sm:pt-5 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+    {/* Clean Centered Header matching Oud Attar reference */}
+    <div class="text-center pt-1 pb-5 sm:pb-6">
+      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
         {currentCollection.name}
       </h1>
-      <p class="text-gray-600 text-xs sm:text-sm font-light max-w-xl mx-auto leading-relaxed">
-        {currentCollection.description}
+      <p class="font-['Barlow',sans-serif] text-xl sm:text-2xl font-bold text-[#e62b32] mb-1">
+        {currentCollection.subtitle || "Curated Artisanal Fragrances"}
+      </p>
+      <p class="text-xs text-gray-500 font-normal">
+        Discount applied at checkout
       </p>
     </div>
-  </div>
 
-  <!-- Filterable Catalog for this Collection -->
-  <div class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-    <ProductsCatalog
-      client:load
-      initialProducts={products}
-      collections={collections}
-      initialCollectionSlug={slug}
-    />
+    {/* Products 3-Column Grid matching Sale page */}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {displayProducts.map((product) => (
+        <ProductCard client:load product={product} />
+      ))}
+    </div>
+
+    {/* Product Pagination Progress Section matching reference */}
+    <div class="mt-14 mb-4 text-center flex flex-col items-center justify-center">
+      <p class="text-xs sm:text-sm text-gray-600 mb-3 font-['Poppins',sans-serif]">
+        You have seen <strong class="text-black font-bold">{displayProducts.length}</strong> out of <strong class="text-black font-bold">{displayProducts.length}</strong> products
+      </p>
+
+      {/* Red Progress Bar */}
+      <div class="w-48 sm:w-64 h-1 bg-gray-200 rounded-full overflow-hidden mb-6">
+        <div class="bg-[#e62b32] h-full rounded-full" style="width: 100%;"></div>
+      </div>
+
+      <button
+        type="button"
+        class="bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
+      >
+        Show more products
+      </button>
+    </div>
   </div>
 </Layout>
