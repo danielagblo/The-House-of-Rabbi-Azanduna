@@ -26,6 +26,12 @@ func (r *OrderRepository) GetByReference(reference string) (*models.Order, error
 	return &order, nil
 }
 
+func (r *OrderRepository) GetAll() ([]models.Order, error) {
+	var orders []models.Order
+	err := r.db.Preload("Items").Order("created_at desc").Find(&orders).Error
+	return orders, err
+}
+
 func (r *OrderRepository) UpdateStatus(reference string, status string, paystackRef string) error {
 	return r.db.Model(&models.Order{}).
 		Where("reference = ?", reference).

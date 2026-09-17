@@ -1,0 +1,25 @@
+---
+import '../styles/global.css';
+import { AdminPortal } from '../components/admin/AdminPortal';
+---
+
+<!doctype html>
+<html lang="en" class="bg-[#0d0d0d] text-white">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Rabbi Azanduna Control Portal</title>
+    <!-- Strict SEO block so no search engine or bot can index this URL -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+    <meta name="googlebot" content="noindex, nofollow" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-h-screen bg-[#0f0f0f] antialiased selection:bg-[#e62b32] selection:text-white font-['Montserrat',sans-serif]">
+    <AdminPortal client:only="react" />
+  </body>
+</html>

@@ -21,6 +21,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	collectionCtrl := controllers.NewCollectionController(collectionRepo)
 	productCtrl := controllers.NewProductController(productRepo)
 	paymentCtrl := controllers.NewPaymentController(paystackService, orderRepo)
+	adminCtrl := controllers.NewAdminController(productRepo, collectionRepo, orderRepo)
 
 	// API Group
 	api := app.Group("/api")
@@ -34,11 +35,11 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 		})
 	})
 
-	// Collections
+	// Collections (Public)
 	api.Get("/collections", collectionCtrl.GetAll)
 	api.Get("/collections/:slug", collectionCtrl.GetBySlug)
 
-	// Products
+	// Products (Public)
 	api.Get("/products", productCtrl.GetAll)
 	api.Get("/products/:slug", productCtrl.GetBySlug)
 
@@ -46,4 +47,20 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	api.Post("/payments/initialize", paymentCtrl.InitializeCheckout)
 	api.Get("/payments/verify/:reference", paymentCtrl.VerifyPayment)
 	api.Post("/payments/webhook", paymentCtrl.Webhook)
+
+	// Admin Portal Endpoints (/api/admin)
+	admin := api.Group("/admin")
+	admin.Post("/login", adminCtrl.Login)
+	admin.Get("/stats", adminCtrl.GetStats)
+	admin.Get("/orders", adminCtrl.GetOrders)
+
+	// Admin Product Management
+	admin.Post("/products", adminCtrl.CreateProduct)
+	admin.Put("/products/:id", adminCtrl.UpdateProduct)
+	admin.Delete("/products/:id", adminCtrl.DeleteProduct)
+
+	// Admin Collection Management
+	admin.Post("/collections", adminCtrl.CreateCollection)
+	admin.Put("/collections/:id", adminCtrl.UpdateCollection)
+	admin.Delete("/collections/:id", adminCtrl.DeleteCollection)
 }

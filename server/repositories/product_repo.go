@@ -95,3 +95,29 @@ func (r *ProductRepository) GetBySlug(slug string) (*models.Product, error) {
 	}
 	return &product, nil
 }
+
+func (r *ProductRepository) GetByID(id uint) (*models.Product, error) {
+	var product models.Product
+	err := r.db.Preload("Collection").
+		Preload("Notes").
+		Preload("Variants").
+		Preload("Reviews").
+		Where("id = ?", id).
+		First(&product).Error
+	if err != nil {
+		return nil, err
+	}
+	return &product, nil
+}
+
+func (r *ProductRepository) Create(product *models.Product) error {
+	return r.db.Create(product).Error
+}
+
+func (r *ProductRepository) Update(id uint, updates map[string]interface{}) error {
+	return r.db.Model(&models.Product{}).Where("id = ?", id).Updates(updates).Error
+}
+
+func (r *ProductRepository) Delete(id uint) error {
+	return r.db.Delete(&models.Product{}, id).Error
+}
