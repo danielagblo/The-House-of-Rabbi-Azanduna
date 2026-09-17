@@ -37,7 +37,7 @@ export const Navbar: React.FC = () => {
           </button>
         </div>
 
-        {/* Left: Search Box */}
+        {/* Left: Search Box (Soft Gray pill input matching screenshot) */}
         <div className="hidden lg:block w-72 xl:w-80">
           <form onSubmit={handleSearchSubmit} className="relative">
             <input
@@ -45,11 +45,11 @@ export const Navbar: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="What are you looking for?"
-              className="w-full bg-white border border-gray-300 rounded-lg py-1.5 px-4 pr-10 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+              className="w-full bg-[#f5f5f5] border-0 rounded-md py-2 px-4 pr-10 text-xs text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-black transition-all"
             />
             <button
               type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black cursor-pointer"
               aria-label="Search"
             >
               <Search size={15} />
@@ -57,10 +57,10 @@ export const Navbar: React.FC = () => {
           </form>
         </div>
 
-        {/* Center: RABBI AZANDUNA LTD Brand Wordmark (Inline, Clean Non-Bold Light Weight) */}
+        {/* Center: RABBI AZANDUNA LTD Brand Wordmark (Exact Bold Serif/Grotesk Style as OUD ATTAR) */}
         <div className="flex-1 lg:flex-initial text-center">
           <a href="/" className="inline-block group whitespace-nowrap">
-            <span className="font-['Barlow',sans-serif] text-2xl sm:text-3xl lg:text-[30px] font-light tracking-[0.2em] text-black uppercase">
+            <span className="font-['Barlow',sans-serif] text-xl sm:text-2xl font-bold tracking-[0.22em] text-black uppercase">
               RABBI AZANDUNA LTD
             </span>
           </a>
@@ -70,7 +70,7 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-end gap-3 sm:gap-4 w-auto lg:w-72 xl:w-80">
           <a
             href="/about"
-            className="p-2 text-gray-700 hover:text-black transition-colors hidden sm:block"
+            className="p-2 text-gray-800 hover:text-black transition-colors hidden sm:block"
             title="Account"
           >
             <User size={22} strokeWidth={1.75} />
@@ -78,7 +78,7 @@ export const Navbar: React.FC = () => {
 
           <button
             onClick={() => cartStore.openDrawer()}
-            className="p-2 text-gray-900 hover:text-[#ff2d3b] transition-colors relative flex items-center gap-1 group"
+            className="p-2 text-gray-900 hover:text-[#ff2d3b] transition-colors relative flex items-center gap-1 group cursor-pointer"
             aria-label="Shopping Bag"
           >
             <ShoppingBag size={22} strokeWidth={1.75} />
@@ -90,13 +90,13 @@ export const Navbar: React.FC = () => {
       </div>
 
       {/* Sub-Navigation Row: Exact tall condensed typography from screenshot */}
-      <div className="hidden lg:flex items-center justify-center gap-10 py-2.5 border-t border-gray-100 font-['Barlow_Condensed',sans-serif] text-[17px] font-bold tracking-normal uppercase text-black">
+      <div className="hidden lg:flex items-center justify-center gap-8 py-2.5 border-t border-gray-100 font-['Barlow_Condensed',sans-serif] text-[15px] sm:text-[16px] font-bold tracking-wide uppercase text-black">
         <a href="/collections" className="hover:text-[#ff2d3b] transition-colors">
           SHOP
         </a>
         <a
           href="/sale"
-          className="bg-[#ff2d3b] text-white px-3 py-0.5 rounded text-[15px] font-extrabold hover:bg-[#e0202d] transition-colors shadow-xs"
+          className="bg-[#ff2d3b] text-white px-2.5 py-0.5 rounded text-[13px] font-bold hover:bg-[#e0202d] transition-colors shadow-xs"
         >
           SALE
         </a>
