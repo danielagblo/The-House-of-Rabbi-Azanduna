@@ -25,7 +25,7 @@ export const Navbar: React.FC = () => {
   return (
     <header className="w-full bg-white z-40 sticky top-0 shadow-xs">
       {/* Top Row: Search, Logo, User/Cart on Pure White Canvas */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-4">
         {/* Mobile menu trigger */}
         <div className="flex items-center gap-2 lg:hidden">
           <button
@@ -45,7 +45,7 @@ export const Navbar: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="What are you looking for?"
-              className="w-full bg-white border border-gray-300 rounded-[5px] py-1.5 px-3.5 pr-9 text-xs text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-black transition-colors"
+              className="w-full bg-white border border-gray-300 rounded-[6px] py-1.5 px-3.5 pr-9 text-xs text-gray-900 placeholder:text-gray-500 focus:outline-none focus:border-black transition-colors"
             />
             <button
               type="submit"
@@ -91,13 +91,13 @@ export const Navbar: React.FC = () => {
 
       {/* Sub-Navigation Row: Dedicated Light Gray Strip matching screenshot */}
       <div className="bg-[#f4f4f4] border-y border-gray-200/80">
-        <div className="hidden lg:flex items-center justify-center gap-8 sm:gap-10 py-1.5 max-w-7xl mx-auto px-4 font-['Montserrat',sans-serif] text-[13px] font-bold tracking-[0.08em] uppercase text-[#1a1a1a]">
+        <div className="hidden lg:flex items-center justify-center gap-8 sm:gap-10 py-3 sm:py-3.5 max-w-7xl mx-auto px-4 font-['Montserrat',sans-serif] text-[13px] sm:text-[14px] font-bold tracking-[0.08em] uppercase text-[#1a1a1a]">
           <a href="/collections" className="text-[#e62b32] hover:opacity-80 transition-colors">
             SHOP
           </a>
           <a
             href="/sale"
-            className="bg-[#e62b32] text-white px-3 py-0.5 rounded-[4px] text-[12px] font-bold hover:bg-[#cf2229] transition-colors shadow-2xs tracking-[0.06em] flex items-center justify-center"
+            className="bg-[#e62b32] text-white px-3 py-1 rounded-[4px] text-[12px] font-bold hover:bg-[#cf2229] transition-colors shadow-2xs tracking-[0.06em] flex items-center justify-center"
           >
             SALE
           </a>
