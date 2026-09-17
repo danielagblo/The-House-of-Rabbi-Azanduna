@@ -25,7 +25,7 @@ export const Navbar: React.FC = () => {
   return (
     <header className="w-full bg-white z-40 sticky top-0 shadow-xs">
       {/* Top Row: Search, Logo, User/Cart on Pure White Canvas */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex items-center justify-between gap-4">
         {/* Mobile menu trigger */}
         <div className="flex items-center gap-2 lg:hidden">
           <button
@@ -91,13 +91,13 @@ export const Navbar: React.FC = () => {
 
       {/* Sub-Navigation Row: Dedicated Light Gray Strip matching screenshot */}
       <div className="bg-[#f4f4f4] border-y border-gray-200/80">
-        <div className="hidden lg:flex items-center justify-center gap-7 sm:gap-9 py-2.5 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[15px] sm:text-[16px] font-bold tracking-normal uppercase text-[#111111]">
+        <div className="hidden lg:flex items-center justify-center gap-5 sm:gap-6 py-1.5 sm:py-2 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[15px] font-bold tracking-normal uppercase text-[#111111]">
           <a href="/collections" className="text-[#e62b32] hover:opacity-80 transition-colors">
             SHOP
           </a>
           <a
             href="/sale"
-            className="bg-[#e62b32] text-white px-3 py-0.5 rounded-[4px] text-[13px] font-bold hover:bg-[#cf2229] transition-colors shadow-2xs"
+            className="bg-[#e62b32] text-white px-2.5 py-0.5 rounded-[3px] text-[12px] font-bold hover:bg-[#cf2229] transition-colors shadow-2xs"
           >
             SALE
           </a>
