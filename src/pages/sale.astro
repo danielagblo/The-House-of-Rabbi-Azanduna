@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ProductCard } from '../components/ProductCard';
+import { FALLBACK_PRODUCTS } from '../data/fallbackData';
+import { Tag } from 'lucide-react';
+
+let products = FALLBACK_PRODUCTS;
+
+try {
+  const prodRes = await fetch('http://localhost:8080/api/products');
+  if (prodRes.ok) {
+    const data = await prodRes.json();
+    if (data && data.length > 0) products = data;
+  }
+} catch (e) {
+  // fallback
+}
+
+// STRICTLY ONLY DISCOUNTED PRODUCTS
+const saleProducts = products.filter(
+  (p) => p.compareAtPrice && p.compareAtPrice > p.price
+);
+---
+
+<Layout title="Special Offers & Sale | Rabbi Azanduna Ltd">
+  <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+    {/* Header Banner */}
+    <div class="bg-red-50 border border-red-200 rounded-2xl p-8 sm:p-12 mb-12 text-center">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ff2d3b] text-white text-[11px] font-extrabold uppercase tracking-widest mb-4">
+        <Tag size={12} />
+        Special Limited Offers
+      </div>
+      <h1 class="font-['Barlow',sans-serif] text-4xl sm:text-5xl font-extrabold text-black uppercase tracking-tight mb-3">
+        Fragrance Sale & Reductions
+      </h1>
+      <p class="text-gray-700 text-xs sm:text-sm max-w-lg mx-auto font-light leading-relaxed">
+        Exclusive savings across our signature pure Oud perfume oils and discovery sets. Limited quantities available.
+      </p>
+    </div>
+
+    {/* Sale Products Grid */}
+    <div className="mb-6 flex items-center justify-between">
+      <h2 className="font-['Barlow',sans-serif] text-xl font-bold text-black uppercase">
+        Discounted Creations ({saleProducts.length} Items)
+      </h2>
+      <span className="text-xs text-gray-500 font-semibold">
+        Automatic discount applied at checkout
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+      {saleProducts.map((product) => (
+        <ProductCard client:load product={product} />
+      ))}
+    </div>
+  </div>
+</Layout>

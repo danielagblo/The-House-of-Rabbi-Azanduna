@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { BookOpen, Calendar, ArrowRight } from 'lucide-react';
+
+const articles = [
+  {
+    slug: "how-to-apply-pure-oud-perfume-oils",
+    title: "The Art of Applying Pure Perfume Oils for 24-Hour Longevity",
+    excerpt: "Learn the traditional warming pulse-point technique that allows concentrated botanical oils to project gracefully throughout the day.",
+    date: "March 12, 2026",
+    category: "Rituals & Guide",
+    imageUrl: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80",
+    readTime: "4 min read"
+  },
+  {
+    slug: "difference-between-cambodian-and-assam-oud",
+    title: "Cambodian vs. Indian Assam Oud: Decoding Scent Profiles",
+    excerpt: "From the sweet dried-fruit nuances of Koh Kong Agarwood to the deep, smoky balsamic depths of Assam wild trees.",
+    date: "February 24, 2026",
+    category: "Master Perfumer Notes",
+    imageUrl: "https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?auto=format&fit=crop&w=800&q=80",
+    readTime: "6 min read"
+  },
+  {
+    slug: "why-non-alcoholic-perfumes-last-longer",
+    title: "Why Alcohol-Free Perfume Oils Outperform Commercial Sprays",
+    excerpt: "Commercial fragrances evaporate quickly due to 80% alcohol carriers. Discover why pure oils meld with skin heat for an intimate aroma.",
+    date: "January 18, 2026",
+    category: "Science & Craft",
+    imageUrl: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80",
+    readTime: "5 min read"
+  }
+];
+---
+
+<Layout title="Fragrance Journal & Blog | Rabbi Azanduna Ltd">
+  <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-black text-[10px] uppercase font-bold tracking-widest mb-3">
+        <BookOpen size={12} />
+        The Olfactory Journal
+      </div>
+      <h1 class="font-['Barlow',sans-serif] text-4xl sm:text-5xl font-extrabold text-black uppercase tracking-tight">
+        Perfumer's Journal
+      </h1>
+      <p class="text-xs text-gray-500 mt-2">
+        Guides, artisan rituals, and insights into the world of rare Agarwood and botanical attars.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {articles.map((art) => (
+        <article class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+          <div>
+            <div class="aspect-[16/10] overflow-hidden bg-neutral-100">
+              <img
+                src={art.imageUrl}
+                alt={art.title}
+                class="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div class="p-6">
+              <div class="flex items-center justify-between text-[11px] text-gray-400 mb-2 font-medium">
+                <span class="text-[#ff2d3b] font-bold uppercase">{art.category}</span>
+                <span class="flex items-center gap-1"><Calendar size={11} /> {art.date}</span>
+              </div>
+              <h2 class="font-['Barlow',sans-serif] text-xl font-bold text-gray-900 leading-snug mb-2 hover:text-[#ff2d3b] transition-colors">
+                <a href={`/blog/${art.slug}`}>{art.title}</a>
+              </h2>
+              <p class="text-xs text-gray-600 font-light leading-relaxed">
+                {art.excerpt}
+              </p>
+            </div>
+          </div>
+          <div class="p-6 pt-0">
+            <a
+              href={`/blog/${art.slug}`}
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-black uppercase tracking-wider hover:text-[#ff2d3b] transition-colors"
+            >
+              <span>Read Story</span>
+              <ArrowRight size={13} />
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</Layout>

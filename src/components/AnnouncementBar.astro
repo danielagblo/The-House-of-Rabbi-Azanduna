@@ -1,15 +1,20 @@
 ---
-// AnnouncementBar.astro - Exact Red Banner from Oud Attar
+// AnnouncementBar.astro - Exact Red Banner with Tall Slim Condensed Typography
 ---
-<div class="bg-[#ff2d3b] text-white py-2.5 px-4 text-xs font-bold tracking-wider relative z-50 flex items-center justify-between shadow-sm">
+<div class="bg-[#ff2d3b] text-white py-2 px-4 text-xs font-bold relative z-50 flex items-center justify-between shadow-xs">
   <button class="text-white hover:opacity-80 transition-opacity p-1" aria-label="Previous announcement">
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path>
     </svg>
   </button>
 
-  <div class="text-center flex-1 uppercase tracking-widest text-[11px] sm:text-xs font-extrabold hover:underline cursor-pointer">
-    <a href="/collections">DISCOUNT AT CHECKOUT</a>
+  <div class="text-center flex-1">
+    <a
+      href="/sale"
+      class="font-['Barlow_Condensed',sans-serif] text-sm sm:text-base font-extrabold tracking-wide uppercase hover:underline"
+    >
+      DISCOUNT AT CHECKOUT
+    </a>
   </div>
 
   <button class="text-white hover:opacity-80 transition-opacity p-1" aria-label="Next announcement">

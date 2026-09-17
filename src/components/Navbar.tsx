@@ -18,15 +18,15 @@ export const Navbar: React.FC = () => {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/collections?search=${encodeURIComponent(searchQuery.trim())}`;
+      window.location.href = `/shop?search=${encodeURIComponent(searchQuery.trim())}`;
     }
   };
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 z-40 sticky top-0 shadow-sm">
-      {/* Top Header Row: Search, Logo, Utilities */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
-        {/* Mobile menu trigger & Mobile search */}
+    <header className="w-full bg-white border-b border-gray-200 z-40 sticky top-0 shadow-xs">
+      {/* Top Row: Search, Logo, User/Cart */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+        {/* Mobile menu trigger */}
         <div className="flex items-center gap-2 lg:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -37,7 +37,7 @@ export const Navbar: React.FC = () => {
           </button>
         </div>
 
-        {/* Left: Wide Search Box (Exact match to Oud Attar screenshot) */}
+        {/* Left: Search Box */}
         <div className="hidden lg:block w-72 xl:w-80">
           <form onSubmit={handleSearchSubmit} className="relative">
             <input
@@ -45,34 +45,34 @@ export const Navbar: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="What are you looking for?"
-              className="w-full bg-white border border-gray-300 rounded-lg py-2 px-4 pr-10 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
+              className="w-full bg-white border border-gray-300 rounded-lg py-1.5 px-4 pr-10 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-black transition-colors"
             />
             <button
               type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
               aria-label="Search"
             >
-              <Search size={16} />
+              <Search size={15} />
             </button>
           </form>
         </div>
 
-        {/* Center: RABBI AZANDUNA LTD Brand Logo Wordmark */}
+        {/* Center: RABBI AZANDUNA LTD Brand Wordmark */}
         <div className="flex-1 lg:flex-initial text-center">
           <a href="/" className="inline-block group">
-            <span className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-extrabold tracking-[0.18em] text-black uppercase block">
+            <span className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-extrabold tracking-[0.16em] text-black uppercase block">
               RABBI AZANDUNA
             </span>
-            <span className="text-[10px] tracking-[0.35em] text-gray-500 font-bold uppercase block -mt-1">
+            <span className="text-[9px] tracking-[0.3em] text-gray-500 font-bold uppercase block -mt-1">
               L T D
             </span>
           </a>
         </div>
 
-        {/* Right: User Icon & Shopping Bag with Badge */}
+        {/* Right: User & Cart Icons */}
         <div className="flex items-center justify-end gap-3 sm:gap-4 w-auto lg:w-72 xl:w-80">
           <a
-            href="/collections"
+            href="/about"
             className="p-2 text-gray-700 hover:text-black transition-colors hidden sm:block"
             title="Account"
           >
@@ -92,44 +92,29 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Sub-Navigation Menu matching Oud Attar */}
-      <div className="hidden lg:flex items-center justify-center gap-7 py-3 border-t border-gray-100 text-[13px] font-bold uppercase tracking-wider text-black">
-        <a href="/collections" className="hover:text-[#ff2d3b] transition-colors">
-          NEW
-        </a>
-        <a href="/collections" className="hover:text-[#ff2d3b] transition-colors">
+      {/* Sub-Navigation Row: Exact tall condensed typography from screenshot */}
+      <div className="hidden lg:flex items-center justify-center gap-10 py-2.5 border-t border-gray-100 font-['Barlow_Condensed',sans-serif] text-[17px] font-bold tracking-normal uppercase text-black">
+        <a href="/shop" className="hover:text-[#ff2d3b] transition-colors">
           SHOP
         </a>
         <a
-          href="/collections"
-          className="bg-[#ff2d3b] text-white px-2.5 py-0.5 rounded text-[11px] font-extrabold hover:bg-[#e0202d] transition-colors"
+          href="/sale"
+          className="bg-[#ff2d3b] text-white px-3 py-0.5 rounded text-[15px] font-extrabold hover:bg-[#e0202d] transition-colors shadow-xs"
         >
           SALE
         </a>
-        <a href="/collections" className="hover:text-[#ff2d3b] transition-colors">
-          COLLECTIONS
-        </a>
-        <a href="/collections/oud-perfume-oils" className="hover:text-[#ff2d3b] transition-colors">
-          OUD OILS
-        </a>
-        <a href="/collections/extrait-de-parfum" className="hover:text-[#ff2d3b] transition-colors">
-          EXTRAIT
-        </a>
-        <a href="/collections/discovery-sets" className="hover:text-[#ff2d3b] transition-colors">
-          DISCOVERY
-        </a>
-        <a href="/collections" className="hover:text-[#ff2d3b] transition-colors">
+        <a href="/blog" className="hover:text-[#ff2d3b] transition-colors">
           BLOG
         </a>
-        <a href="/collections" className="hover:text-[#ff2d3b] transition-colors">
+        <a href="/faqs" className="hover:text-[#ff2d3b] transition-colors">
           FAQS
         </a>
-        <a href="/collections" className="hover:text-[#ff2d3b] transition-colors">
+        <a href="/about" className="hover:text-[#ff2d3b] transition-colors">
           ABOUT US
         </a>
       </div>
 
-      {/* Mobile Navigation Dropdown */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-t border-gray-200 px-6 py-5 shadow-xl">
           <form onSubmit={handleSearchSubmit} className="relative mb-5">
@@ -138,36 +123,30 @@ export const Navbar: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="What are you looking for?"
-              className="w-full bg-gray-50 border border-gray-300 rounded-lg py-2.5 px-4 pr-10 text-xs text-gray-800"
+              className="w-full bg-gray-50 border border-gray-300 rounded-lg py-2 px-4 pr-10 text-xs text-gray-800"
             />
             <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
           </form>
 
-          <nav className="flex flex-col gap-3 font-bold text-sm uppercase tracking-wider text-black">
-            <a href="/collections" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
-              NEW
-            </a>
-            <a href="/collections" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
+          <nav className="flex flex-col gap-4 font-['Barlow_Condensed',sans-serif] text-lg font-bold uppercase text-black">
+            <a href="/shop" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
               SHOP
             </a>
             <a
-              href="/collections"
+              href="/sale"
               onClick={() => setMobileMenuOpen(false)}
-              className="inline-block self-start bg-[#ff2d3b] text-white px-2.5 py-0.5 rounded text-xs font-bold"
+              className="inline-block self-start bg-[#ff2d3b] text-white px-3 py-0.5 rounded text-base font-bold"
             >
               SALE
             </a>
-            <a href="/collections" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
-              ALL COLLECTIONS
+            <a href="/blog" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
+              BLOG
             </a>
-            <a href="/collections/oud-perfume-oils" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
-              OUD PERFUME OILS
+            <a href="/faqs" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
+              FAQS
             </a>
-            <a href="/collections/extrait-de-parfum" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
-              EXTRAIT DE PARFUM
-            </a>
-            <a href="/collections/discovery-sets" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
-              DISCOVERY SETS
+            <a href="/about" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
+              ABOUT US
             </a>
           </nav>
         </div>
