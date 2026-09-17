@@ -97,7 +97,7 @@ export const Navbar: React.FC = () => {
           </a>
           <a
             href="/sale"
-            className="bg-[#e62b32] text-white px-3 py-1 rounded-[4px] text-[12px] font-bold hover:bg-[#cf2229] transition-colors shadow-2xs tracking-[0.06em] flex items-center justify-center"
+            className="bg-[#e62b32] text-white px-4 py-1.5 sm:py-2 rounded-[5px] text-[13px] font-extrabold hover:bg-[#cf2229] transition-colors shadow-2xs tracking-[0.08em] leading-none inline-flex items-center justify-center"
           >
             SALE
           </a>
