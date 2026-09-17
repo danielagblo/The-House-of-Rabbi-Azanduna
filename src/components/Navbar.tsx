@@ -91,13 +91,13 @@ export const Navbar: React.FC = () => {
 
       {/* Sub-Navigation Row: Dedicated Light Gray Strip matching screenshot */}
       <div className="bg-[#f4f4f4] border-y border-gray-200/80">
-        <div className="hidden lg:flex items-center justify-center gap-8 sm:gap-10 py-3 sm:py-3.5 max-w-7xl mx-auto px-4 font-['Montserrat',sans-serif] text-[13px] sm:text-[14px] font-bold tracking-[0.08em] uppercase text-[#1a1a1a]">
+        <div className="hidden lg:flex items-center justify-center gap-8 sm:gap-10 py-3 sm:py-3.5 max-w-7xl mx-auto px-4 font-['Barlow_Semi_Condensed',sans-serif] text-[16px] sm:text-[17px] font-bold tracking-[0.06em] uppercase text-[#1a1a1a]">
           <a href="/collections" className="text-[#e62b32] hover:opacity-80 transition-colors">
             SHOP
           </a>
           <a
             href="/sale"
-            className="bg-[#e62b32] text-white px-4 py-1.5 sm:py-2 rounded-[5px] text-[13px] font-extrabold hover:bg-[#cf2229] transition-colors shadow-2xs tracking-[0.08em] leading-none inline-flex items-center justify-center"
+            className="bg-[#e62b32] text-white px-4 py-1.5 sm:py-2 rounded-[5px] text-[14px] font-extrabold hover:bg-[#cf2229] transition-colors shadow-2xs tracking-[0.06em] leading-none inline-flex items-center justify-center"
           >
             SALE
           </a>
