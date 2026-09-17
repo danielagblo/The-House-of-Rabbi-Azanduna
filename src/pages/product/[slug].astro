@@ -27,7 +27,7 @@ const product = products.find((p) => p.slug === slug) || products[0];
 const related = products.filter((p) => p.id !== product.id && (p.scentFamily === product.scentFamily || p.collectionId === product.collectionId));
 ---
 
-<Layout title={`${product.name} | Oud Attar Haute Parfumerie`}>
+<Layout title={`${product.name} | Rabbi Azanduna Ltd`}>
   <ProductDetailView
     client:load
     product={product}

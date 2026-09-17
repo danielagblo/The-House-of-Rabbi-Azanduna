@@ -29,7 +29,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	api.Get("/health", func(c fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"status":  "healthy",
-			"service": "Rabbi Azanduna / Oud Attar API",
+			"service": "Rabbi Azanduna Ltd API",
 			"version": "1.0.0",
 		})
 	})

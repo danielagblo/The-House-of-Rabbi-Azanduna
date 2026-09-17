@@ -22,7 +22,7 @@ func main() {
 
 	// Initialize Fiber App
 	app := fiber.New(fiber.Config{
-		AppName: "Rabbi Azanduna / Oud Attar Luxury API",
+		AppName: "Rabbi Azanduna Ltd Luxury API",
 	})
 
 	// Middleware
@@ -43,6 +43,6 @@ func main() {
 		port = "8080"
 	}
 
-	log.Printf("[Server] Starting Oud Attar Luxury Fragrance API on port :%s ...", port)
+	log.Printf("[Server] Starting Rabbi Azanduna Ltd Luxury API on port :%s ...", port)
 	log.Fatal(app.Listen(":" + port))
 }
