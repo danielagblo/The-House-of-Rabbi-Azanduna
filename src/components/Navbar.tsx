@@ -92,9 +92,6 @@ export const Navbar: React.FC = () => {
       {/* Sub-Navigation Row: Dedicated Light Gray Strip matching screenshot */}
       <div className="bg-[#f4f4f4] border-y border-gray-200/80">
         <div className="hidden lg:flex items-center justify-center gap-7 sm:gap-9 py-2.5 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[15px] sm:text-[16px] font-bold tracking-normal uppercase text-[#111111]">
-          <a href="/collections" className="hover:text-[#e62b32] transition-colors">
-            NEW
-          </a>
           <a href="/collections" className="text-[#e62b32] hover:opacity-80 transition-colors">
             SHOP
           </a>
