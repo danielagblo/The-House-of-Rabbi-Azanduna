@@ -91,23 +91,23 @@ export const Navbar: React.FC = () => {
 
       {/* Sub-Navigation Row: Dedicated Light Gray Strip matching screenshot */}
       <div className="bg-[#f4f4f4] border-y border-gray-200/80">
-        <div className="hidden lg:flex items-center justify-center gap-9 sm:gap-10 py-1 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[16px] font-bold tracking-normal uppercase text-[#111111] leading-none">
-          <a href="/collections" className="text-[#e62b32] hover:opacity-80 transition-colors py-1">
+        <div className="hidden lg:flex items-center justify-center gap-8 sm:gap-10 py-1.5 max-w-7xl mx-auto px-4 font-['Montserrat',sans-serif] text-[13px] font-bold tracking-[0.08em] uppercase text-[#1a1a1a]">
+          <a href="/collections" className="text-[#e62b32] hover:opacity-80 transition-colors">
             SHOP
           </a>
           <a
             href="/sale"
-            className="bg-[#e62b32] text-white px-3.5 py-1 rounded-[5px] text-[13px] font-bold hover:bg-[#cf2229] transition-colors shadow-2xs leading-none flex items-center justify-center"
+            className="bg-[#e62b32] text-white px-3 py-0.5 rounded-[4px] text-[12px] font-bold hover:bg-[#cf2229] transition-colors shadow-2xs tracking-[0.06em] flex items-center justify-center"
           >
             SALE
           </a>
-          <a href="/blog" className="hover:text-[#e62b32] transition-colors py-1">
+          <a href="/blog" className="hover:text-[#e62b32] transition-colors">
             BLOG
           </a>
-          <a href="/faqs" className="hover:text-[#e62b32] transition-colors py-1">
+          <a href="/faqs" className="hover:text-[#e62b32] transition-colors">
             FAQS
           </a>
-          <a href="/about" className="hover:text-[#e62b32] transition-colors py-1">
+          <a href="/about" className="hover:text-[#e62b32] transition-colors">
             ABOUT US
           </a>
         </div>
