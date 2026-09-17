@@ -16,9 +16,9 @@ export const CollectionsGrid: React.FC<Props> = ({
 
   return (
     <section className="pt-6 sm:pt-7 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-transparent">
-      {/* Bold Heading matching Oud Attar screenshot */}
+      {/* Bold Tall Heading matching Oud Attar screenshot */}
       <div className="text-center mb-5 sm:mb-6">
-        <h1 className="font-['Barlow',sans-serif] text-3xl sm:text-[34px] font-extrabold text-black tracking-tight">
+        <h1 className="font-['Barlow_Semi_Condensed',sans-serif] text-[34px] sm:text-[42px] font-extrabold text-black tracking-tight leading-none">
           {title}
         </h1>
       </div>
