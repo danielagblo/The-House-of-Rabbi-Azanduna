@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { CollectionsGrid } from '../components/CollectionsGrid';
 import { ProductsCatalog } from '../components/ProductsCatalog';
 import { FALLBACK_COLLECTIONS, FALLBACK_PRODUCTS } from '../data/fallbackData';
 
@@ -25,15 +26,16 @@ try {
 const search = Astro.url.searchParams.get('search') || '';
 ---
 
-<Layout title="Shop All Fragrances | Rabbi Azanduna Ltd">
-  <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
-    <div class="text-center mb-10">
-      <h1 class="font-['Barlow',sans-serif] text-4xl sm:text-5xl font-extrabold text-black uppercase tracking-tight">
-        Shop All Fragrances
-      </h1>
-      <p class="text-xs text-gray-500 mt-2 font-medium">
-        Explore our pure Oud perfume oils, high-concentration extrait sprays, and artisanal discovery sets.
-      </p>
+<Layout title="Shop All Collections | Rabbi Azanduna Ltd">
+  <!-- Discovery Collections Grid -->
+  <CollectionsGrid client:load collections={collections} title="Discovery Collections" />
+
+  <!-- Products Catalog -->
+  <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-gray-100">
+    <div class="mb-8">
+      <h2 class="font-['Barlow',sans-serif] text-2xl font-bold text-black uppercase">
+        All Fragrances
+      </h2>
     </div>
 
     <ProductsCatalog
@@ -42,5 +44,5 @@ const search = Astro.url.searchParams.get('search') || '';
       collections={collections}
       initialSearch={search}
     />
-  </div>
+  </section>
 </Layout>

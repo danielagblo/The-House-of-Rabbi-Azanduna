@@ -94,7 +94,7 @@ export const Navbar: React.FC = () => {
 
       {/* Sub-Navigation Row: Exact tall condensed typography from screenshot */}
       <div className="hidden lg:flex items-center justify-center gap-10 py-2.5 border-t border-gray-100 font-['Barlow_Condensed',sans-serif] text-[17px] font-bold tracking-normal uppercase text-black">
-        <a href="/shop" className="hover:text-[#ff2d3b] transition-colors">
+        <a href="/collections" className="hover:text-[#ff2d3b] transition-colors">
           SHOP
         </a>
         <a
@@ -129,7 +129,7 @@ export const Navbar: React.FC = () => {
           </form>
 
           <nav className="flex flex-col gap-4 font-['Barlow_Condensed',sans-serif] text-lg font-bold uppercase text-black">
-            <a href="/shop" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
+            <a href="/collections" onClick={() => setMobileMenuOpen(false)} className="py-1 hover:text-[#ff2d3b]">
               SHOP
             </a>
             <a
