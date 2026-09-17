@@ -22,3 +22,11 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Go server build and database files
+server/*.exe
+server/*.db
+server/*.db-journal
+server/*.log
+server/tmp/
+*.exe
