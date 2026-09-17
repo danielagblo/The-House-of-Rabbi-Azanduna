@@ -39,9 +39,9 @@ export const CollectionsGrid: React.FC<Props> = ({
                 className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
               />
 
-              {/* Red Discount / Save Badge in Top Left (Exact match to screenshot) */}
+              {/* Red Discount / Save Badge in Top Left */}
               <div className="absolute top-4 left-4 z-10">
-                <span className="bg-[#ff2d3b] text-white font-extrabold text-xs uppercase px-3 py-1 rounded shadow-md tracking-wider">
+                <span className="bg-[#ff2d3b] text-white font-semibold text-xs uppercase px-3 py-1 rounded shadow-sm tracking-wider">
                   {discountBadges[idx % discountBadges.length]}
                 </span>
               </div>
