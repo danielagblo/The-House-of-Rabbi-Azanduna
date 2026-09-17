@@ -18,7 +18,7 @@ export const Navbar: React.FC = () => {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/shop?search=${encodeURIComponent(searchQuery.trim())}`;
+      window.location.href = `/collections?search=${encodeURIComponent(searchQuery.trim())}`;
     }
   };
 
