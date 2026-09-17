@@ -27,22 +27,6 @@ const search = Astro.url.searchParams.get('search') || '';
 ---
 
 <Layout title="Collections | Rabbi Azanduna Ltd">
-  <!-- Discovery Collections Grid (Exact match to Oud Attar screenshot) -->
+  <!-- Discovery Collections Storefront matching exact screenshot -->
   <CollectionsGrid client:load collections={collections} title="Discovery Collections" />
-
-  <!-- Products Catalog -->
-  <section class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-gray-100">
-    <div class="mb-8">
-      <h2 class="font-['Barlow',sans-serif] text-2xl font-bold text-black uppercase">
-        All Fragrances
-      </h2>
-    </div>
-
-    <ProductsCatalog
-      client:load
-      initialProducts={products}
-      collections={collections}
-      initialSearch={search}
-    />
-  </section>
 </Layout>
