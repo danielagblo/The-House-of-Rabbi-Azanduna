@@ -1,0 +1,85 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { ProductsCatalog } from '../../components/ProductsCatalog';
+import { FALLBACK_COLLECTIONS, FALLBACK_PRODUCTS } from '../../data/fallbackData';
+import { Sparkles, ArrowLeft } from 'lucide-react';
+
+export async function getStaticPaths() {
+  return FALLBACK_COLLECTIONS.map((c) => ({
+    params: { slug: c.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+
+let collections = FALLBACK_COLLECTIONS;
+let products = FALLBACK_PRODUCTS;
+
+try {
+  const colRes = await fetch('http://localhost:8080/api/collections');
+  if (colRes.ok) {
+    const data = await colRes.json();
+    if (data && data.length > 0) collections = data;
+  }
+
+  const prodRes = await fetch('http://localhost:8080/api/products');
+  if (prodRes.ok) {
+    const data = await prodRes.json();
+    if (data && data.length > 0) products = data;
+  }
+} catch (e) {
+  // Use fallback data
+}
+
+const currentCollection = collections.find((c) => c.slug === slug) || collections[0];
+---
+
+<Layout title={`${currentCollection.name} | Oud Attar Collections`}>
+  <!-- Collection Hero Banner -->
+  <div class="relative py-20 px-4 sm:px-6 lg:px-8 bg-[#09090c] border-b border-amber-500/20 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img
+        src={currentCollection.imageUrl}
+        alt={currentCollection.name}
+        class="w-full h-full object-cover object-center opacity-25"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-[#09090c] via-[#09090c]/80 to-transparent"></div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto text-center">
+      <a
+        href="/collections"
+        class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-amber-400 hover:text-amber-300 font-semibold mb-6 group"
+      >
+        <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+        <span>Back to All Collections</span>
+      </a>
+
+      {currentCollection.badge && (
+        <div class="block mb-3">
+          <span class="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] uppercase font-bold tracking-widest rounded">
+            {currentCollection.badge}
+          </span>
+        </div>
+      )}
+
+      <h1 class="font-serif text-4xl sm:text-5xl font-bold text-white uppercase tracking-tight mb-4">
+        {currentCollection.name}
+      </h1>
+      <div class="w-16 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mb-4"></div>
+      <p class="text-zinc-300 text-sm font-light max-w-xl mx-auto leading-relaxed">
+        {currentCollection.description}
+      </p>
+    </div>
+  </div>
+
+  <!-- Filterable Catalog for this Collection -->
+  <div class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <ProductsCatalog
+      client:load
+      initialProducts={products}
+      collections={collections}
+      initialCollectionSlug={slug}
+    />
+  </div>
+</Layout>

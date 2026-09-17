@@ -1,23 +1,61 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import '../styles/global.css';
+import AnnouncementBar from '../components/AnnouncementBar.astro';
+import { Navbar } from '../components/Navbar';
+import { CartDrawer } from '../components/CartDrawer';
+import { QuickViewModal } from '../components/QuickViewModal';
+import Footer from '../components/Footer.astro';
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Oud Attar | Artisanal Pure Oud Perfume Oils & Sprays",
+  description = "Specialists in infusing rich botanical perfume oils with our signature aged Oud to deliver an unforgettable, long-lasting aroma."
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth bg-white text-gray-900">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+
+    <!-- Google Fonts Preconnect & Stylesheets (Barlow & Poppins for Oud Attar) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-h-screen flex flex-col antialiased bg-white text-gray-900 selection:bg-[#ff2d3b] selection:text-white font-['Poppins',sans-serif]">
+    <!-- Red Top Announcement Bar -->
+    <AnnouncementBar />
+
+    <!-- Clean White Navbar matching screenshot -->
+    <Navbar client:load />
+
+    <!-- Main Content -->
+    <main class="flex-1 bg-white">
+      <slot />
+    </main>
+
+    <!-- Slide-over Cart Drawer -->
+    <CartDrawer client:idle />
+
+    <!-- Quick View Modal -->
+    <QuickViewModal client:idle />
+
+    <!-- Footer -->
+    <Footer />
+  </body>
+</html>

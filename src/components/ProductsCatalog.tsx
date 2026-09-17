@@ -1,0 +1,168 @@
+import React, { useState, useMemo } from 'react';
+import type { Product, Collection } from '../types';
+import { ProductCard } from './ProductCard';
+import { X } from 'lucide-react';
+
+interface Props {
+  initialProducts: Product[];
+  collections: Collection[];
+  initialCollectionSlug?: string;
+  initialSearch?: string;
+}
+
+export const ProductsCatalog: React.FC<Props> = ({
+  initialProducts,
+  collections,
+  initialCollectionSlug = 'all',
+  initialSearch = '',
+}) => {
+  const [selectedCollection, setSelectedCollection] = useState<string>(initialCollectionSlug);
+  const [selectedFamily, setSelectedFamily] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('featured');
+  const [searchQuery, setSearchQuery] = useState<string>(initialSearch);
+
+  const scentFamilies = ['all', 'Oud', 'Woody', 'Amber', 'Floral', 'Oriental', 'Gourmand'];
+
+  const filteredProducts = useMemo(() => {
+    return initialProducts
+      .filter((product) => {
+        if (selectedCollection !== 'all') {
+          const col = collections.find((c) => c.slug === selectedCollection);
+          if (col && product.collectionId !== col.id) return false;
+        }
+
+        if (selectedFamily !== 'all' && product.scentFamily.toLowerCase() !== selectedFamily.toLowerCase()) {
+          return false;
+        }
+
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase();
+          const matchName = product.name.toLowerCase().includes(q);
+          const matchDesc = product.description.toLowerCase().includes(q);
+          const matchSubtitle = product.subtitle?.toLowerCase().includes(q);
+          const matchNotes = product.notes?.some((n) => n.noteName.toLowerCase().includes(q));
+          if (!matchName && !matchDesc && !matchSubtitle && !matchNotes) {
+            return false;
+          }
+        }
+
+        return true;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'price_asc') return a.price - b.price;
+        if (sortBy === 'price_desc') return b.price - a.price;
+        if (sortBy === 'rating') return b.rating - a.rating;
+        return (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0);
+      });
+  }, [initialProducts, collections, selectedCollection, selectedFamily, searchQuery, sortBy]);
+
+  return (
+    <div className="w-full bg-white">
+      {/* Category Tabs */}
+      <div className="border-b border-gray-200 pb-5 mb-8 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-2 min-w-max">
+          <button
+            onClick={() => setSelectedCollection('all')}
+            className={`px-4 py-2 text-xs uppercase tracking-wider rounded-lg font-bold transition-all ${
+              selectedCollection === 'all'
+                ? 'bg-black text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            All Products
+          </button>
+          {collections.map((col) => (
+            <button
+              key={col.slug}
+              onClick={() => setSelectedCollection(col.slug)}
+              className={`px-4 py-2 text-xs uppercase tracking-wider rounded-lg font-bold transition-all ${
+                selectedCollection === col.slug
+                  ? 'bg-black text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {col.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Filter and Control Bar */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-200">
+        {/* Scent Family Pills */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs uppercase text-gray-600 font-bold mr-1">
+            Notes:
+          </span>
+          {scentFamilies.map((fam) => (
+            <button
+              key={fam}
+              onClick={() => setSelectedFamily(fam)}
+              className={`px-3 py-1 text-xs rounded-md font-semibold transition-all ${
+                selectedFamily === fam
+                  ? 'bg-[#ff2d3b] text-white'
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+              }`}
+            >
+              {fam === 'all' ? 'All Notes' : fam}
+            </button>
+          ))}
+        </div>
+
+        {/* Right Sort */}
+        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+          <span className="text-xs text-gray-500 font-medium">
+            Showing <strong className="text-black">{filteredProducts.length}</strong> fragrances
+          </span>
+
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-white text-gray-800 text-xs border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:border-black font-medium"
+          >
+            <option value="featured">Featured</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+            <option value="rating">Top Rated</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Active Filter Chips */}
+      {(selectedCollection !== 'all' || selectedFamily !== 'all' || searchQuery !== '') && (
+        <div className="flex items-center gap-2 mb-6 flex-wrap">
+          <span className="text-xs text-gray-500 font-medium">Active:</span>
+          {selectedCollection !== 'all' && (
+            <span className="inline-flex items-center gap-1 text-xs bg-gray-200 text-black px-2.5 py-0.5 rounded-full font-semibold">
+              {collections.find((c) => c.slug === selectedCollection)?.name}
+              <button onClick={() => setSelectedCollection('all')}><X size={12} /></button>
+            </span>
+          )}
+          {selectedFamily !== 'all' && (
+            <span className="inline-flex items-center gap-1 text-xs bg-gray-200 text-black px-2.5 py-0.5 rounded-full font-semibold">
+              {selectedFamily}
+              <button onClick={() => setSelectedFamily('all')}><X size={12} /></button>
+            </span>
+          )}
+          <button
+            onClick={() => {
+              setSelectedCollection('all');
+              setSelectedFamily('all');
+              setSearchQuery('');
+            }}
+            className="text-xs text-[#ff2d3b] underline font-bold ml-2"
+          >
+            Clear All
+          </button>
+        </div>
+      )}
+
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.id || product.slug} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+};

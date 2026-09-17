@@ -1,0 +1,74 @@
+---
+// HeroBanner.astro - Cinematic Luxury Hero Section
+---
+<section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-[#070709] border-b border-amber-500/20">
+  <!-- Atmospheric Background Image with Gradient Overlay -->
+  <div class="absolute inset-0 z-0">
+    <img
+      src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=2000&q=85"
+      alt="Luxury Artisanal Oud Perfume Oils"
+      class="w-full h-full object-cover object-center opacity-30 scale-105 transform motion-safe:animate-pulse"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-[#08080a] via-[#08080a]/70 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-[#08080a] via-transparent to-[#08080a]"></div>
+    <!-- Ambient Radial Golden Glow -->
+    <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[140px] pointer-events-none"></div>
+  </div>
+
+  <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-20 flex flex-col items-center">
+    <!-- Royal Crest / Subheading -->
+    <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-950/30 backdrop-blur-md mb-6 animate-fade-in">
+      <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+      <span class="text-[11px] uppercase tracking-[0.25em] text-amber-200/90 font-medium">
+        Artisanal Haute Parfumerie
+      </span>
+    </div>
+
+    <!-- Main Title -->
+    <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white mb-6 uppercase leading-tight">
+      The Art of <br />
+      <span class="gold-gradient-text drop-shadow-2xl">Pure Artisanal Oud</span>
+    </h1>
+
+    <!-- Narrative Subtitle -->
+    <p class="max-w-2xl mx-auto text-base sm:text-lg text-zinc-300/90 leading-relaxed font-light mb-10 tracking-wide">
+      Specialists in infusing rich botanical perfume oils with our signature aged Oud to deliver a truly unique and long-lasting olfactory experience.
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+      <a
+        href="/collections"
+        class="w-full sm:w-auto px-9 py-4 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black font-semibold text-xs uppercase tracking-[0.2em] rounded-sm hover:brightness-110 transition-all shadow-xl shadow-amber-500/20 transform hover:-translate-y-0.5"
+      >
+        Explore Collections
+      </a>
+      <a
+        href="/collections/discovery-sets"
+        class="w-full sm:w-auto px-9 py-4 border border-amber-500/40 bg-zinc-900/60 backdrop-blur-md text-amber-200 font-medium text-xs uppercase tracking-[0.2em] rounded-sm hover:border-amber-400 hover:text-white transition-all transform hover:-translate-y-0.5"
+      >
+        Discover Sample Sets
+      </a>
+    </div>
+
+    <!-- Trust Feature Strip -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-12 mt-16 pt-12 border-t border-white/10 w-full">
+      <div class="flex flex-col items-center">
+        <span class="text-amber-400 font-serif text-xl sm:text-2xl font-bold">100%</span>
+        <span class="text-[11px] uppercase tracking-wider text-zinc-400 mt-1">Pure Perfume Oils</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <span class="text-amber-400 font-serif text-xl sm:text-2xl font-bold">16+ Hrs</span>
+        <span class="text-[11px] uppercase tracking-wider text-zinc-400 mt-1">Extravagant Longevity</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <span class="text-amber-400 font-serif text-xl sm:text-2xl font-bold">Aged Oud</span>
+        <span class="text-[11px] uppercase tracking-wider text-zinc-400 mt-1">Wild Cambodian & Assam</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <span class="text-amber-400 font-serif text-xl sm:text-2xl font-bold">Non-Alcoholic</span>
+        <span class="text-[11px] uppercase tracking-wider text-zinc-400 mt-1">Gentle on Skin</span>
+      </div>
+    </div>
+  </div>
+</section>

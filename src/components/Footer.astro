@@ -1,0 +1,89 @@
+---
+// Footer.astro - Clean Oud Attar Footer
+---
+<footer class="bg-gray-100 border-t border-gray-200 text-gray-700 text-xs pt-14 pb-10 font-['Poppins',sans-serif]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-gray-300">
+      <!-- Column 1: Brand & Bio -->
+      <div class="space-y-3">
+        <span class="font-['Barlow',sans-serif] text-xl font-extrabold uppercase tracking-widest text-black block">
+          O U D &nbsp; A T T A R
+        </span>
+        <p class="text-gray-600 text-xs leading-relaxed font-light">
+          Specialists in infusing Perfume Oils with our signature Oud scent to deliver a truly unique aroma. Discover our fine, long lasting range.
+        </p>
+        <p class="text-xs text-gray-500 font-medium">
+          Hand-crafted in England • Worldwide Shipping
+        </p>
+      </div>
+
+      <!-- Column 2: Collections -->
+      <div>
+        <h4 class="font-['Barlow',sans-serif] text-sm font-bold text-black uppercase tracking-wider mb-3">
+          Collections
+        </h4>
+        <ul class="space-y-2 text-xs text-gray-600 font-medium">
+          <li><a href="/collections" class="hover:text-[#ff2d3b]">Discovery Collections</a></li>
+          <li><a href="/collections/oud-perfume-oils" class="hover:text-[#ff2d3b]">Oud Perfume Oils</a></li>
+          <li><a href="/collections/extrait-de-parfum" class="hover:text-[#ff2d3b]">Extrait De Parfum</a></li>
+          <li><a href="/collections/royal-attars" class="hover:text-[#ff2d3b]">Royal Attars</a></li>
+          <li><a href="/collections/discovery-sets" class="hover:text-[#ff2d3b]">Sample Sets</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Help & Info -->
+      <div>
+        <h4 class="font-['Barlow',sans-serif] text-sm font-bold text-black uppercase tracking-wider mb-3">
+          Information
+        </h4>
+        <ul class="space-y-2 text-xs text-gray-600 font-medium">
+          <li><a href="/collections" class="hover:text-[#ff2d3b]">Delivery & Returns</a></li>
+          <li><a href="/collections" class="hover:text-[#ff2d3b]">FAQs</a></li>
+          <li><a href="/collections" class="hover:text-[#ff2d3b]">About Us</a></li>
+          <li><a href="/collections" class="hover:text-[#ff2d3b]">Contact Concierge</a></li>
+          <li><a href="/collections" class="hover:text-[#ff2d3b]">Privacy & Terms</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 4: Newsletter -->
+      <div class="space-y-3">
+        <h4 class="font-['Barlow',sans-serif] text-sm font-bold text-black uppercase tracking-wider">
+          Stay Connected
+        </h4>
+        <p class="text-xs text-gray-600">
+          Subscribe to receive exclusive deals and private releases.
+        </p>
+        <form class="flex gap-2">
+          <input
+            type="email"
+            placeholder="Your email address"
+            class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-black w-full focus:outline-none focus:border-black"
+            required
+          />
+          <button
+            type="submit"
+            class="px-4 py-2 bg-black hover:bg-[#ff2d3b] text-white font-bold text-xs uppercase rounded-lg transition-colors"
+          >
+            Join
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bottom Strip -->
+    <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-gray-500">
+      <div>
+        © {new Date().getFullYear()} Oud Attar UK / Rabbi Azanduna Ltd. All rights reserved.
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="font-semibold text-gray-600">Payments by:</span>
+        <span class="px-2 py-0.5 bg-white border border-gray-300 rounded text-emerald-600 font-bold text-[10px]">
+          Paystack
+        </span>
+        <span class="px-2 py-0.5 bg-white border border-gray-300 rounded font-semibold text-[10px] text-gray-700">
+          Card / Bank
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>
