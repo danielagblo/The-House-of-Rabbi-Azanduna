@@ -42,5 +42,24 @@ const saleProducts = products.filter(
         <ProductCard client:load product={product} />
       ))}
     </div>
+
+    {/* Product Pagination Progress Section matching reference screenshot */}
+    <div class="mt-14 mb-4 text-center flex flex-col items-center justify-center">
+      <p class="text-xs sm:text-sm text-gray-600 mb-3 font-['Poppins',sans-serif]">
+        You have seen <strong class="text-black font-bold">{saleProducts.length}</strong> out of <strong class="text-black font-bold">{saleProducts.length}</strong> products
+      </p>
+
+      {/* Red Progress Bar */}
+      <div class="w-48 sm:w-64 h-1 bg-gray-200 rounded-full overflow-hidden mb-6">
+        <div class="bg-[#ff2d3b] h-full rounded-full" style="width: 100%;"></div>
+      </div>
+
+      <button
+        type="button"
+        class="bg-[#ff2d3b] hover:bg-[#e0202d] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
+      >
+        Show more products
+      </button>
+    </div>
   </div>
 </Layout>

@@ -20,6 +20,7 @@ export const ProductsCatalog: React.FC<Props> = ({
   const [selectedFamily, setSelectedFamily] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('featured');
   const [searchQuery, setSearchQuery] = useState<string>(initialSearch);
+  const [visibleLimit, setVisibleLimit] = useState<number>(6);
 
   const scentFamilies = ['all', 'Oud', 'Woody', 'Amber', 'Floral', 'Oriental', 'Gourmand'];
 
@@ -159,9 +160,36 @@ export const ProductsCatalog: React.FC<Props> = ({
 
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-        {filteredProducts.map((product) => (
+        {filteredProducts.slice(0, visibleLimit).map((product) => (
           <ProductCard key={product.id || product.slug} product={product} />
         ))}
+      </div>
+
+      {/* Pagination Progress Section */}
+      <div className="mt-14 mb-4 text-center flex flex-col items-center justify-center">
+        <p className="text-xs sm:text-sm text-gray-600 mb-3 font-['Poppins',sans-serif]">
+          You have seen <strong className="text-black font-bold">{Math.min(visibleLimit, filteredProducts.length)}</strong> out of <strong className="text-black font-bold">{filteredProducts.length}</strong> products
+        </p>
+
+        {/* Red Progress Bar */}
+        <div className="w-48 sm:w-64 h-1 bg-gray-200 rounded-full overflow-hidden mb-6">
+          <div
+            className="bg-[#ff2d3b] h-full rounded-full transition-all duration-300"
+            style={{
+              width: `${filteredProducts.length > 0 ? (Math.min(visibleLimit, filteredProducts.length) / filteredProducts.length) * 100 : 100}%`
+            }}
+          ></div>
+        </div>
+
+        {visibleLimit < filteredProducts.length && (
+          <button
+            type="button"
+            onClick={() => setVisibleLimit((prev) => prev + 6)}
+            className="bg-[#ff2d3b] hover:bg-[#e0202d] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
+          >
+            Show more products
+          </button>
+        )}
       </div>
     </div>
   );
