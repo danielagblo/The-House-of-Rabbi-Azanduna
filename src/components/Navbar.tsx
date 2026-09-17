@@ -60,7 +60,7 @@ export const Navbar: React.FC = () => {
         {/* Center: RABBI AZANDUNA LTD Brand Wordmark (Inline, Clean Non-Bold Light Weight) */}
         <div className="flex-1 lg:flex-initial text-center">
           <a href="/" className="inline-block group whitespace-nowrap">
-            <span className="font-['Barlow',sans-serif] text-xl sm:text-2xl font-light tracking-[0.2em] text-black uppercase">
+            <span className="font-['Barlow',sans-serif] text-2xl sm:text-3xl lg:text-[30px] font-light tracking-[0.2em] text-black uppercase">
               RABBI AZANDUNA LTD
             </span>
           </a>
