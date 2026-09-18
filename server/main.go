@@ -26,7 +26,7 @@ func main() {
 	// Seed catalog if empty
 	seeds.SeedDatabase(db)
 
-	// Initialize Fiber App
+	//  Initialize Fiber App
 	app := fiber.New(fiber.Config{
 		AppName: "Rabbi Azanduna Ltd Luxury API",
 	})
