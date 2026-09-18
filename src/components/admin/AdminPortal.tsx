@@ -68,7 +68,6 @@ export const AdminPortal: React.FC = () => {
         setIsAuthenticated(true);
         fetchData();
       } else {
-        // Direct master password fallback for flexibility
         if (password === 'RabbiAzanduna2026!' || password === 'admin123') {
           sessionStorage.setItem('rabbi_admin_auth_token', 'auth_fallback_valid');
           setIsAuthenticated(true);
@@ -161,7 +160,6 @@ export const AdminPortal: React.FC = () => {
 
     try {
       if (editingProduct.id) {
-        // Update
         const res = await fetch(`http://localhost:8080/api/admin/products/${editingProduct.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -170,12 +168,10 @@ export const AdminPortal: React.FC = () => {
         if (res.ok) {
           showToast('Product updated successfully!');
         } else {
-          // Local state update fallback
           setProducts((prev) => prev.map((p) => (p.id === editingProduct.id ? { ...p, ...editingProduct } as Product : p)));
           showToast('Product updated (Local Session)!');
         }
       } else {
-        // Create
         const newProd = {
           ...editingProduct,
           slug: editingProduct.slug || editingProduct.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
@@ -265,33 +261,33 @@ export const AdminPortal: React.FC = () => {
     return p.name.toLowerCase().includes(q) || p.scentFamily?.toLowerCase().includes(q);
   });
 
-  // 1. LOCKED LOGIN SCREEN
+  // 1. LOCKED LIGHT LOGIN SCREEN
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#0d0d0d] flex items-center justify-center px-4 font-['Montserrat',sans-serif]">
-        <div className="w-full max-w-md bg-[#161616] border border-neutral-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-          {/* Subtle Glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-1 bg-[#e62b32] rounded-full shadow-[0_0_25px_#e62b32]"></div>
+      <div className="min-h-screen bg-[#f8f9fa] flex items-center justify-center px-4 font-['Montserrat',sans-serif]">
+        <div className="w-full max-w-md bg-white border border-gray-200/90 rounded-2xl p-8 shadow-xl relative overflow-hidden">
+          {/* Subtle Top Red Bar */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#e62b32]"></div>
 
-          <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-neutral-900 border border-neutral-700 rounded-xl flex items-center justify-center mx-auto mb-4 text-[#e62b32] shadow-inner">
+          <div className="text-center mb-8 pt-2">
+            <div className="w-12 h-12 bg-red-50 border border-red-100 rounded-xl flex items-center justify-center mx-auto mb-4 text-[#e62b32] shadow-xs">
               <Lock size={22} />
             </div>
-            <h1 className="text-xl font-bold tracking-[0.2em] text-white uppercase mb-1">
+            <h1 className="text-xl font-bold tracking-[0.2em] text-gray-900 uppercase mb-1">
               RABBI AZANDUNA
             </h1>
-            <p className="text-xs text-neutral-400 font-medium tracking-wider">
+            <p className="text-xs text-gray-500 font-medium tracking-wider">
               Control Portal Authorization
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-[11px] font-bold text-neutral-300 uppercase tracking-wider mb-2">
-                Master Security Key
+              <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-2">
+                Master Security Passphrase
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-neutral-500">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
                   <KeyRound size={16} />
                 </div>
                 <input
@@ -300,12 +296,12 @@ export const AdminPortal: React.FC = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter access passphrase"
                   required
-                  className="w-full bg-[#202020] border border-neutral-700 focus:border-[#e62b32] rounded-lg py-2.5 pl-10 pr-10 text-sm text-white placeholder:text-neutral-600 focus:outline-none transition-colors"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg py-2.5 pl-10 pr-10 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none transition-colors shadow-2xs"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-white cursor-pointer"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-black cursor-pointer"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -313,8 +309,8 @@ export const AdminPortal: React.FC = () => {
             </div>
 
             {loginError && (
-              <div className="flex items-center gap-2 text-xs text-[#ff4d56] bg-red-950/40 border border-red-900/50 p-2.5 rounded-lg">
-                <AlertCircle size={14} className="shrink-0" />
+              <div className="flex items-center gap-2 text-xs text-[#e62b32] bg-red-50 border border-red-200 p-3 rounded-lg">
+                <AlertCircle size={15} className="shrink-0" />
                 <span>{loginError}</span>
               </div>
             )}
@@ -328,7 +324,7 @@ export const AdminPortal: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-8 text-center text-[10px] text-neutral-600 tracking-wider uppercase">
+          <div className="mt-8 text-center text-[10px] text-gray-400 tracking-wider uppercase">
             Strictly Private · Confidential Access
           </div>
         </div>
@@ -336,9 +332,9 @@ export const AdminPortal: React.FC = () => {
     );
   }
 
-  // 2. AUTHENTICATED ADMIN DASHBOARD
+  // 2. AUTHENTICATED LIGHT ADMIN DASHBOARD
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-neutral-100 font-['Montserrat',sans-serif]">
+    <div className="min-h-screen bg-[#f8f9fa] text-gray-900 font-['Montserrat',sans-serif]">
       {/* Toast Notification */}
       {notification && (
         <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-lg text-xs font-bold shadow-xl animate-fade-in ${
@@ -350,10 +346,10 @@ export const AdminPortal: React.FC = () => {
       )}
 
       {/* Top Navbar */}
-      <header className="bg-[#181818] border-b border-neutral-800 sticky top-0 z-30">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <span className="font-bold text-sm sm:text-base tracking-[0.2em] text-white uppercase">
+            <span className="font-bold text-sm sm:text-base tracking-[0.2em] text-black uppercase">
               RABBI AZANDUNA <span className="text-[#e62b32] text-xs font-semibold ml-1">[CONTROL PORTAL]</span>
             </span>
           </div>
@@ -363,14 +359,14 @@ export const AdminPortal: React.FC = () => {
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1.5 text-xs text-neutral-400 hover:text-white px-3 py-1.5 rounded-lg border border-neutral-700 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-black px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors shadow-2xs"
             >
               <ExternalLink size={13} />
               <span className="hidden sm:inline">View Storefront</span>
             </a>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 text-xs text-[#e62b32] hover:bg-red-950/30 px-3 py-1.5 rounded-lg border border-red-900/40 transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 text-xs text-[#e62b32] hover:bg-red-50 px-3 py-1.5 rounded-lg border border-red-200 bg-white transition-colors cursor-pointer shadow-2xs"
             >
               <LogOut size={13} />
               <span>Lock Portal</span>
@@ -380,12 +376,12 @@ export const AdminPortal: React.FC = () => {
       </header>
 
       {/* Navigation Sub-Tabs */}
-      <div className="bg-[#121212] border-b border-neutral-800/80">
+      <div className="bg-[#f4f4f4] border-b border-gray-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 overflow-x-auto py-2">
           <button
             onClick={() => setActiveTab('overview')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              activeTab === 'overview' ? 'bg-[#e62b32] text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+              activeTab === 'overview' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
             }`}
           >
             <TrendingUp size={14} />
@@ -394,7 +390,7 @@ export const AdminPortal: React.FC = () => {
           <button
             onClick={() => setActiveTab('products')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              activeTab === 'products' ? 'bg-[#e62b32] text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+              activeTab === 'products' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
             }`}
           >
             <Package size={14} />
@@ -403,7 +399,7 @@ export const AdminPortal: React.FC = () => {
           <button
             onClick={() => setActiveTab('collections')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              activeTab === 'collections' ? 'bg-[#e62b32] text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+              activeTab === 'collections' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
             }`}
           >
             <Layers size={14} />
@@ -412,7 +408,7 @@ export const AdminPortal: React.FC = () => {
           <button
             onClick={() => setActiveTab('orders')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              activeTab === 'orders' ? 'bg-[#e62b32] text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+              activeTab === 'orders' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
             }`}
           >
             <ShoppingBag size={14} />
@@ -422,7 +418,7 @@ export const AdminPortal: React.FC = () => {
           <button
             onClick={fetchData}
             title="Refresh Live Data"
-            className="ml-auto text-neutral-400 hover:text-white p-2 rounded-lg hover:bg-neutral-800 transition-colors cursor-pointer"
+            className="ml-auto text-gray-500 hover:text-black p-2 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           </button>
@@ -436,46 +432,46 @@ export const AdminPortal: React.FC = () => {
           <div className="space-y-8">
             {/* Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              <div className="bg-[#181818] border border-neutral-800 p-5 rounded-xl">
-                <div className="flex items-center justify-between text-neutral-400 mb-2">
+              <div className="bg-white border border-gray-200/90 p-5 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-gray-500 mb-2">
                   <span className="text-xs uppercase font-bold tracking-wider">Total Products</span>
                   <Package size={18} className="text-[#e62b32]" />
                 </div>
-                <div className="text-2xl font-bold text-white">{products.length}</div>
-                <p className="text-[11px] text-neutral-500 mt-1">Live active fragrances</p>
+                <div className="text-2xl font-bold text-gray-900">{products.length}</div>
+                <p className="text-[11px] text-gray-500 mt-1">Live active fragrances</p>
               </div>
 
-              <div className="bg-[#181818] border border-neutral-800 p-5 rounded-xl">
-                <div className="flex items-center justify-between text-neutral-400 mb-2">
+              <div className="bg-white border border-gray-200/90 p-5 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-gray-500 mb-2">
                   <span className="text-xs uppercase font-bold tracking-wider">Collections</span>
-                  <Layers size={18} className="text-amber-500" />
+                  <Layers size={18} className="text-amber-600" />
                 </div>
-                <div className="text-2xl font-bold text-white">{collections.length}</div>
-                <p className="text-[11px] text-neutral-500 mt-1">Discovery & ranges</p>
+                <div className="text-2xl font-bold text-gray-900">{collections.length}</div>
+                <p className="text-[11px] text-gray-500 mt-1">Discovery & ranges</p>
               </div>
 
-              <div className="bg-[#181818] border border-neutral-800 p-5 rounded-xl">
-                <div className="flex items-center justify-between text-neutral-400 mb-2">
+              <div className="bg-white border border-gray-200/90 p-5 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-gray-500 mb-2">
                   <span className="text-xs uppercase font-bold tracking-wider">Orders Recorded</span>
-                  <ShoppingBag size={18} className="text-emerald-500" />
+                  <ShoppingBag size={18} className="text-emerald-600" />
                 </div>
-                <div className="text-2xl font-bold text-white">{orders.length > 0 ? orders.length : stats.orders_count}</div>
-                <p className="text-[11px] text-neutral-500 mt-1">Processed transactions</p>
+                <div className="text-2xl font-bold text-gray-900">{orders.length > 0 ? orders.length : stats.orders_count}</div>
+                <p className="text-[11px] text-gray-500 mt-1">Processed transactions</p>
               </div>
 
-              <div className="bg-[#181818] border border-neutral-800 p-5 rounded-xl">
-                <div className="flex items-center justify-between text-neutral-400 mb-2">
+              <div className="bg-white border border-gray-200/90 p-5 rounded-xl shadow-xs">
+                <div className="flex items-center justify-between text-gray-500 mb-2">
                   <span className="text-xs uppercase font-bold tracking-wider">Est. Revenue</span>
-                  <DollarSign size={18} className="text-emerald-400" />
+                  <DollarSign size={18} className="text-emerald-600" />
                 </div>
-                <div className="text-2xl font-bold text-white">£{stats.total_revenue.toFixed(2)}</div>
-                <p className="text-[11px] text-neutral-500 mt-1">Paystack sales</p>
+                <div className="text-2xl font-bold text-gray-900">£{stats.total_revenue.toFixed(2)}</div>
+                <p className="text-[11px] text-gray-500 mt-1">Paystack sales</p>
               </div>
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-[#181818] border border-neutral-800 p-6 rounded-xl">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-white mb-4">
+            <div className="bg-white border border-gray-200/90 p-6 rounded-xl shadow-xs">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900 mb-4">
                 Management Quick Actions
               </h2>
               <div className="flex flex-wrap gap-3">
@@ -496,7 +492,7 @@ export const AdminPortal: React.FC = () => {
                     });
                     setIsProductModalOpen(true);
                   }}
-                  className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm transition-colors cursor-pointer"
+                  className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
                 >
                   <Plus size={14} /> Add New Fragrance
                 </button>
@@ -512,7 +508,7 @@ export const AdminPortal: React.FC = () => {
                     });
                     setIsCollectionModalOpen(true);
                   }}
-                  className="flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider border border-neutral-700 transition-colors cursor-pointer"
+                  className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-900 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider border border-gray-300 transition-colors cursor-pointer"
                 >
                   <Plus size={14} /> Add Collection Category
                 </button>
@@ -526,13 +522,13 @@ export const AdminPortal: React.FC = () => {
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="relative w-full sm:w-80">
-                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
+                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search products by name or note..."
-                  className="w-full bg-[#181818] border border-neutral-800 rounded-lg py-2 pl-10 pr-4 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#e62b32]"
+                  className="w-full bg-white border border-gray-300 rounded-lg py-2 pl-10 pr-4 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black shadow-2xs"
                 />
               </div>
 
@@ -553,17 +549,17 @@ export const AdminPortal: React.FC = () => {
                   });
                   setIsProductModalOpen(true);
                 }}
-                className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm transition-colors cursor-pointer"
+                className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
               >
                 <Plus size={14} /> New Product
               </button>
             </div>
 
             {/* Products Table */}
-            <div className="bg-[#181818] border border-neutral-800 rounded-xl overflow-hidden">
+            <div className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#202020] text-neutral-400 uppercase font-bold tracking-wider text-[11px] border-b border-neutral-800">
+                  <thead className="bg-[#f4f4f4] text-gray-700 uppercase font-bold tracking-wider text-[11px] border-b border-gray-200">
                     <tr>
                       <th className="py-3.5 px-4">Item</th>
                       <th className="py-3.5 px-4">Category</th>
@@ -572,28 +568,28 @@ export const AdminPortal: React.FC = () => {
                       <th className="py-3.5 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-800/60">
+                  <tbody className="divide-y divide-gray-100">
                     {filteredProducts.map((prod) => (
-                      <tr key={prod.id || prod.slug} className="hover:bg-neutral-800/30 transition-colors">
+                      <tr key={prod.id || prod.slug} className="hover:bg-gray-50/80 transition-colors">
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-3">
                             <img
                               src={prod.imageUrl}
                               alt={prod.name}
-                              className="w-10 h-10 object-cover rounded-md bg-neutral-800"
+                              className="w-11 h-11 object-cover rounded-md bg-gray-100 border border-gray-200"
                             />
                             <div>
-                              <span className="font-bold text-white block">{prod.name}</span>
-                              <span className="text-[10px] text-neutral-400">{prod.concentration || 'Pure Oil'}</span>
+                              <span className="font-bold text-gray-900 block text-sm">{prod.name}</span>
+                              <span className="text-[11px] text-gray-500">{prod.concentration || 'Pure Oil'}</span>
                             </div>
                           </div>
                         </td>
-                        <td className="py-3.5 px-4 text-neutral-300">
-                          <span className="px-2 py-0.5 rounded bg-neutral-800 text-[10px] font-semibold text-neutral-300">
+                        <td className="py-3.5 px-4 text-gray-700">
+                          <span className="px-2.5 py-1 rounded-full bg-gray-100 text-[11px] font-semibold text-gray-800 border border-gray-200">
                             {prod.scentFamily || 'Fragrance'}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-white">
+                        <td className="py-3.5 px-4 font-bold text-gray-900 text-sm">
                           £{prod.price.toFixed(2)}
                         </td>
                         <td className="py-3.5 px-4">
@@ -602,7 +598,7 @@ export const AdminPortal: React.FC = () => {
                               £{prod.compareAtPrice.toFixed(2)} (SAVE £{(prod.compareAtPrice - prod.price).toFixed(2)})
                             </span>
                           ) : (
-                            <span className="text-neutral-500">—</span>
+                            <span className="text-gray-400">—</span>
                           )}
                         </td>
                         <td className="py-3.5 px-4 text-right space-x-2">
@@ -611,17 +607,17 @@ export const AdminPortal: React.FC = () => {
                               setEditingProduct(prod);
                               setIsProductModalOpen(true);
                             }}
-                            className="p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-700/50 rounded transition-colors cursor-pointer"
+                            className="p-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded transition-colors cursor-pointer"
                             title="Edit Product"
                           >
-                            <Edit2 size={14} />
+                            <Edit2 size={15} />
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(prod.id)}
-                            className="p-1.5 text-neutral-400 hover:text-[#e62b32] hover:bg-red-950/30 rounded transition-colors cursor-pointer"
+                            className="p-1.5 text-gray-400 hover:text-[#e62b32] hover:bg-red-50 rounded transition-colors cursor-pointer"
                             title="Delete Product"
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={15} />
                           </button>
                         </td>
                       </tr>
@@ -649,7 +645,7 @@ export const AdminPortal: React.FC = () => {
                   });
                   setIsCollectionModalOpen(true);
                 }}
-                className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm transition-colors cursor-pointer"
+                className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
               >
                 <Plus size={14} /> New Collection
               </button>
@@ -657,31 +653,31 @@ export const AdminPortal: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {collections.map((col) => (
-                <div key={col.id || col.slug} className="bg-[#181818] border border-neutral-800 rounded-xl overflow-hidden flex flex-col justify-between">
+                <div key={col.id || col.slug} className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs flex flex-col justify-between">
                   <div>
-                    <div className="relative aspect-[16/10] bg-neutral-800">
+                    <div className="relative aspect-[16/10] bg-gray-100">
                       <img src={col.imageUrl} alt={col.name} className="w-full h-full object-cover" />
                       {col.badge && (
-                        <span className="absolute top-2 left-2 bg-[#e62b32] text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                        <span className="absolute top-2 left-2 bg-[#e62b32] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
                           {col.badge}
                         </span>
                       )}
                     </div>
                     <div className="p-4">
-                      <h3 className="font-bold text-white text-base mb-1">{col.name}</h3>
-                      <p className="text-xs text-[#e62b32] font-semibold mb-2">{col.subtitle || 'Category'}</p>
-                      <p className="text-xs text-neutral-400 line-clamp-2">{col.description}</p>
+                      <h3 className="font-bold text-gray-900 text-base mb-1">{col.name}</h3>
+                      <p className="text-xs text-[#e62b32] font-bold mb-2">{col.subtitle || 'Category'}</p>
+                      <p className="text-xs text-gray-600 line-clamp-2">{col.description}</p>
                     </div>
                   </div>
 
-                  <div className="p-4 border-t border-neutral-800/80 flex items-center justify-between">
+                  <div className="p-4 border-t border-gray-100 flex items-center justify-between">
                     <a
                       href={`/collections/${col.slug}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs text-neutral-400 hover:text-white flex items-center gap-1"
+                      className="text-xs font-semibold text-gray-600 hover:text-black flex items-center gap-1"
                     >
-                      View <ExternalLink size={12} />
+                      View Live <ExternalLink size={12} />
                     </a>
                     <div className="space-x-2">
                       <button
@@ -689,17 +685,17 @@ export const AdminPortal: React.FC = () => {
                           setEditingCollection(col);
                           setIsCollectionModalOpen(true);
                         }}
-                        className="p-1.5 text-neutral-400 hover:text-white cursor-pointer"
+                        className="p-1.5 text-gray-600 hover:text-black cursor-pointer"
                         title="Edit"
                       >
-                        <Edit2 size={14} />
+                        <Edit2 size={15} />
                       </button>
                       <button
                         onClick={() => handleDeleteCollection(col.id)}
-                        className="p-1.5 text-neutral-400 hover:text-[#e62b32] cursor-pointer"
+                        className="p-1.5 text-gray-400 hover:text-[#e62b32] cursor-pointer"
                         title="Delete"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={15} />
                       </button>
                     </div>
                   </div>
@@ -712,22 +708,22 @@ export const AdminPortal: React.FC = () => {
         {/* TAB 4: ORDERS & PAYSTACK TRANSACTIONS */}
         {activeTab === 'orders' && (
           <div className="space-y-6">
-            <div className="bg-[#181818] border border-neutral-800 rounded-xl overflow-hidden">
-              <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
+            <div className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs">
+              <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                  <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
                     Customer Orders & Paystack Settlements
                   </h3>
-                  <p className="text-xs text-neutral-400">Live payment verification logs</p>
+                  <p className="text-xs text-gray-500">Live payment verification logs</p>
                 </div>
-                <span className="text-xs text-emerald-400 font-bold bg-emerald-950/40 px-3 py-1 rounded border border-emerald-800/40">
+                <span className="text-xs text-emerald-700 font-bold bg-emerald-50 px-3 py-1 rounded border border-emerald-200">
                   Paystack Connected
                 </span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#202020] text-neutral-400 uppercase font-bold tracking-wider text-[11px] border-b border-neutral-800">
+                  <thead className="bg-[#f4f4f4] text-gray-700 uppercase font-bold tracking-wider text-[11px] border-b border-gray-200">
                     <tr>
                       <th className="py-3.5 px-4">Reference</th>
                       <th className="py-3.5 px-4">Customer</th>
@@ -736,37 +732,37 @@ export const AdminPortal: React.FC = () => {
                       <th className="py-3.5 px-4">Date</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-800/60">
+                  <tbody className="divide-y divide-gray-100">
                     {orders.length > 0 ? (
                       orders.map((ord) => (
-                        <tr key={ord.id || ord.reference} className="hover:bg-neutral-800/30">
-                          <td className="py-3.5 px-4 font-mono text-[11px] text-neutral-300">
+                        <tr key={ord.id || ord.reference} className="hover:bg-gray-50/80">
+                          <td className="py-3.5 px-4 font-mono text-[11px] text-gray-700">
                             {ord.reference}
                           </td>
                           <td className="py-3.5 px-4">
-                            <span className="font-bold text-white block">{ord.customerName}</span>
-                            <span className="text-[10px] text-neutral-400">{ord.customerEmail}</span>
+                            <span className="font-bold text-gray-900 block">{ord.customerName}</span>
+                            <span className="text-[10px] text-gray-500">{ord.customerEmail}</span>
                           </td>
-                          <td className="py-3.5 px-4 font-bold text-white">
+                          <td className="py-3.5 px-4 font-bold text-gray-900 text-sm">
                             £{ord.total.toFixed(2)}
                           </td>
                           <td className="py-3.5 px-4">
-                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                            <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase ${
                               ord.status === 'paid' || ord.status === 'successful'
-                                ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/50'
-                                : 'bg-amber-950/80 text-amber-300 border border-amber-800/50'
+                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                : 'bg-amber-100 text-amber-800 border border-amber-300'
                             }`}>
                               {ord.status}
                             </span>
                           </td>
-                          <td className="py-3.5 px-4 text-neutral-400 text-[11px]">
+                          <td className="py-3.5 px-4 text-gray-500 text-[11px]">
                             {new Date().toLocaleDateString('en-GB')}
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={5} className="py-8 text-center text-neutral-500">
+                        <td colSpan={5} className="py-8 text-center text-gray-500">
                           No customer orders recorded yet. Ready to receive Paystack checkouts.
                         </td>
                       </tr>
@@ -781,74 +777,74 @@ export const AdminPortal: React.FC = () => {
 
       {/* EDIT / CREATE PRODUCT MODAL */}
       {isProductModalOpen && editingProduct && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#181818] border border-neutral-800 rounded-2xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl relative my-8">
             <button
               onClick={() => setIsProductModalOpen(false)}
-              className="absolute top-6 right-6 text-neutral-400 hover:text-white cursor-pointer"
+              className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
             >
               <X size={20} />
             </button>
 
-            <h2 className="text-lg font-bold text-white uppercase tracking-wider mb-6">
+            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wider mb-6">
               {editingProduct.id ? 'Edit Fragrance Details' : 'Add New Fragrance'}
             </h2>
 
             <form onSubmit={handleSaveProduct} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-neutral-300 font-bold uppercase mb-1">Product Name *</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Product Name *</label>
                   <input
                     type="text"
                     value={editingProduct.name || ''}
                     onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
                     required
-                    className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-neutral-300 font-bold uppercase mb-1">Subtitle / Blend</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Subtitle / Blend</label>
                   <input
                     type="text"
                     value={editingProduct.subtitle || ''}
                     onChange={(e) => setEditingProduct({ ...editingProduct, subtitle: e.target.value })}
-                    className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-neutral-300 font-bold uppercase mb-1">Price (£) *</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Price (£) *</label>
                   <input
                     type="number"
                     step="0.01"
                     value={editingProduct.price || ''}
                     onChange={(e) => setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })}
                     required
-                    className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-neutral-300 font-bold uppercase mb-1">Compare-At / Regular Price (£)</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Compare-At / Regular Price (£)</label>
                   <input
                     type="number"
                     step="0.01"
                     value={editingProduct.compareAtPrice || ''}
                     onChange={(e) => setEditingProduct({ ...editingProduct, compareAtPrice: parseFloat(e.target.value) || 0 })}
                     placeholder="Leave 0 if not on sale"
-                    className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-neutral-300 font-bold uppercase mb-1">Scent Family</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Scent Family</label>
                   <select
                     value={editingProduct.scentFamily || 'Oud'}
                     onChange={(e) => setEditingProduct({ ...editingProduct, scentFamily: e.target.value })}
-                    className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   >
                     <option value="Oud">Oud</option>
                     <option value="Woody">Woody</option>
@@ -859,20 +855,20 @@ export const AdminPortal: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-neutral-300 font-bold uppercase mb-1">Concentration</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Concentration</label>
                   <input
                     type="text"
                     value={editingProduct.concentration || 'Pure Perfume Oil'}
                     onChange={(e) => setEditingProduct({ ...editingProduct, concentration: e.target.value })}
-                    className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   />
                 </div>
                 <div>
-                  <label className="block text-neutral-300 font-bold uppercase mb-1">Gender</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Gender</label>
                   <select
                     value={editingProduct.gender || 'Unisex'}
                     onChange={(e) => setEditingProduct({ ...editingProduct, gender: e.target.value })}
-                    className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   >
                     <option value="Unisex">Unisex</option>
                     <option value="Men">Men</option>
@@ -882,34 +878,34 @@ export const AdminPortal: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-neutral-300 font-bold uppercase mb-1">Primary Image URL</label>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Primary Image URL</label>
                 <input
                   type="url"
                   value={editingProduct.imageUrl || ''}
                   onChange={(e) => setEditingProduct({ ...editingProduct, imageUrl: e.target.value })}
                   placeholder="https://..."
-                  className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-300 font-bold uppercase mb-1">Hover Image URL (Optional)</label>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Hover Image URL (Optional)</label>
                 <input
                   type="url"
                   value={editingProduct.hoverImageUrl || ''}
                   onChange={(e) => setEditingProduct({ ...editingProduct, hoverImageUrl: e.target.value })}
                   placeholder="https://..."
-                  className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-300 font-bold uppercase mb-1">Description</label>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Description</label>
                 <textarea
                   rows={3}
                   value={editingProduct.description || ''}
                   onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-                  className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>
 
@@ -921,7 +917,7 @@ export const AdminPortal: React.FC = () => {
                     onChange={(e) => setEditingProduct({ ...editingProduct, isBestSeller: e.target.checked })}
                     className="rounded text-[#e62b32]"
                   />
-                  <span className="text-neutral-300 font-bold">Best Seller Badge</span>
+                  <span className="text-gray-800 font-bold">Best Seller Badge</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -930,7 +926,7 @@ export const AdminPortal: React.FC = () => {
                     onChange={(e) => setEditingProduct({ ...editingProduct, isNew: e.target.checked })}
                     className="rounded text-[#e62b32]"
                   />
-                  <span className="text-neutral-300 font-bold">New Arrival</span>
+                  <span className="text-gray-800 font-bold">New Arrival</span>
                 </label>
               </div>
 
@@ -938,13 +934,13 @@ export const AdminPortal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsProductModalOpen(false)}
-                  className="px-5 py-2.5 rounded-lg border border-neutral-700 text-neutral-300 hover:bg-neutral-800 uppercase font-bold"
+                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider"
+                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
                 >
                   Save Product
                 </button>
@@ -956,58 +952,58 @@ export const AdminPortal: React.FC = () => {
 
       {/* EDIT / CREATE COLLECTION MODAL */}
       {isCollectionModalOpen && editingCollection && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#181818] border border-neutral-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative my-8">
             <button
               onClick={() => setIsCollectionModalOpen(false)}
-              className="absolute top-6 right-6 text-neutral-400 hover:text-white cursor-pointer"
+              className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
             >
               <X size={20} />
             </button>
 
-            <h2 className="text-lg font-bold text-white uppercase tracking-wider mb-6">
+            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wider mb-6">
               {editingCollection.id ? 'Edit Collection' : 'Add Collection Category'}
             </h2>
 
             <form onSubmit={handleSaveCollection} className="space-y-4 text-xs">
               <div>
-                <label className="block text-neutral-300 font-bold uppercase mb-1">Collection Title *</label>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Collection Title *</label>
                 <input
                   type="text"
                   value={editingCollection.name || ''}
                   onChange={(e) => setEditingCollection({ ...editingCollection, name: e.target.value })}
                   required
-                  className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-300 font-bold uppercase mb-1">Subtitle</label>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Subtitle</label>
                 <input
                   type="text"
                   value={editingCollection.subtitle || ''}
                   onChange={(e) => setEditingCollection({ ...editingCollection, subtitle: e.target.value })}
-                  className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-300 font-bold uppercase mb-1">Image URL</label>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Image URL</label>
                 <input
                   type="url"
                   value={editingCollection.imageUrl || ''}
                   onChange={(e) => setEditingCollection({ ...editingCollection, imageUrl: e.target.value })}
-                  className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-300 font-bold uppercase mb-1">Description</label>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Description</label>
                 <textarea
                   rows={3}
                   value={editingCollection.description || ''}
                   onChange={(e) => setEditingCollection({ ...editingCollection, description: e.target.value })}
-                  className="w-full bg-[#242424] border border-neutral-700 rounded-lg p-2.5 text-white"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>
 
@@ -1015,13 +1011,13 @@ export const AdminPortal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsCollectionModalOpen(false)}
-                  className="px-5 py-2.5 rounded-lg border border-neutral-700 text-neutral-300 hover:bg-neutral-800 uppercase font-bold"
+                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider"
+                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
                 >
                   Save Collection
                 </button>
