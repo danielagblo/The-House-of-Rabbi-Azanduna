@@ -18,8 +18,8 @@ import { CertificateViewer } from '../components/CertificateViewer';
       </p>
     </div>
 
-    {/* Narrative Section */}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
+    {/* Narrative Section 1: The Journey */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14 items-center mb-16">
       <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100 shadow-md">
         <img
           src="https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?auto=format&fit=crop&w=1000&q=80"
@@ -29,15 +29,40 @@ import { CertificateViewer } from '../components/CertificateViewer';
       </div>
 
       <div class="space-y-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">Our Origins</span>
         <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase">
-          Our Philosophy
+          The Journey to Extraordinary Scent
         </h2>
         <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
-          At The House of Rabbi Azanduna, we believe true luxury in perfumery is measured in purity, patience, and longevity. Most commercial designer fragrances contain up to 90% alcohol that flashes off within minutes.
+          Our passion for rare perfumery began with a simple discovery: the world of authentic Oriental attars and aged Oud. We were captivated by how pure botanical oils melt into the skin, unfolding layer by layer throughout the day without the harsh sting or quick fade of commercial alcohol sprays.
         </p>
         <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
-          We reject dilution. Every bottle of our Oud Perfume Oils and Royal Attars is formulated with 100% concentrated botanical extracts, aged Aquilaria wood resins, and pure distillates for a rich, intimate sillage that lasts all day.
+          What started as a personal quest for genuine luxury evolved into The House of Rabbi Azanduna — a dedicated atelier committed to making the most concentrated, evocative, and lasting perfume oils accessible to connoisseurs who demand true quality.
         </p>
+      </div>
+    </div>
+
+    {/* Narrative Section 2: Pure Philosophy */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14 items-center mb-16 md:flex-row-reverse">
+      <div class="space-y-4 order-2 md:order-1">
+        <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">Zero Dilution</span>
+        <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase">
+          Why 100% Pure Perfume Oils?
+        </h2>
+        <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
+          Most mainstream designer fragrances are composed of up to 90% denatured alcohol and synthetic fillers. While they project loudly for the first few minutes, they rapidly evaporate, leaving behind only faint chemical notes.
+        </p>
+        <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
+          At Rabbi Azanduna, we reject dilution. Every flacon is filled with 100% concentrated perfume oil and genuine aged agarwood resins. Because our formulas contain zero alcohol, they are gentle on sensitive skin, deeply nourishing, and produce an intimate, alluring sillage that lasts easily from morning until night.
+        </p>
+      </div>
+
+      <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100 shadow-md order-1 md:order-2">
+        <img
+          src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=80"
+          alt="Luxury perfume oil bottles"
+          class="w-full h-full object-cover"
+        />
       </div>
     </div>
 
