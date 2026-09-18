@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Award, ShieldCheck, HeartHandshake, CheckCircle2, Building, FileCheck, ZoomIn, X, ExternalLink } from 'lucide-react';
+import { Award, ShieldCheck, HeartHandshake, ZoomIn, X } from 'lucide-react';
 import certImg from '../assets/cert.png';
 ---
 
@@ -8,9 +8,6 @@ import certImg from '../assets/cert.png';
   <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto bg-white font-['Poppins',sans-serif]">
     {/* Hero Header */}
     <div class="text-center max-w-3xl mx-auto mb-14">
-      <span class="text-[11px] font-bold uppercase tracking-widest text-[#ff2d3b] bg-red-50 border border-red-200 px-3 py-1 rounded-full inline-block mb-3">
-        Authentic Artisanal Fragrance House
-      </span>
       <h1 class="font-['Barlow',sans-serif] text-4xl sm:text-6xl font-extrabold text-black uppercase tracking-tight mb-4">
         The House of Rabbi Azanduna
       </h1>
@@ -44,84 +41,33 @@ import certImg from '../assets/cert.png';
     </div>
 
     {/* Official Registration & Certificate Section */}
-    <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl p-6 sm:p-10 mb-16 shadow-xs">
-      <div class="text-center max-w-2xl mx-auto mb-8">
-        <div class="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full uppercase tracking-wider mb-2">
-          <CheckCircle2 size={13} className="text-emerald-600" />
-          Officially Registered & Verified Company
-        </div>
-        <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight">
+    <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl p-6 sm:p-10 mb-16 shadow-xs text-center">
+      <div class="max-w-2xl mx-auto mb-8">
+        <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight mb-2">
           Certificate of Incorporation
         </h2>
-        <p class="text-xs sm:text-sm text-gray-600 mt-1">
-          Registered and licensed under the Registrar of Companies, Republic of Ghana.
+        <div class="w-12 h-1 bg-[#ff2d3b] mx-auto mb-3"></div>
+        <p class="text-xs sm:text-sm text-gray-600">
+          Official registration under the Registrar of Companies, Republic of Ghana.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-        {/* Certificate Image Preview */}
-        <div class="md:col-span-5 flex flex-col items-center">
-          <div class="relative group cursor-pointer max-w-[280px] sm:max-w-[320px] bg-white p-2.5 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
-            <img
-              src={certImg.src}
-              alt="Official Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
-              class="w-full h-auto rounded-lg object-contain shadow-xs"
-              id="certThumbnail"
-            />
-            <div class="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-2xs">
-              <ZoomIn size={20} />
-              <span>Click to view</span>
-            </div>
-          </div>
-          <span class="text-[11px] text-gray-500 mt-2.5 font-medium flex items-center gap-1">
-            <ZoomIn size={12} /> Tap image to view full high-res certificate
-          </span>
-        </div>
-
-        {/* Certificate Details */}
-        <div class="md:col-span-7 space-y-4 text-xs sm:text-sm">
-          <div class="bg-white p-5 rounded-xl border border-gray-200 space-y-3">
-            <div class="flex items-start gap-3 border-b border-gray-100 pb-3">
-              <Building className="text-[#ff2d3b] shrink-0 mt-0.5" size={18} />
-              <div>
-                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Registered Entity Name</span>
-                <span class="font-bold text-gray-900 text-sm sm:text-base">THE HOUSE OF RABBI AZANDUNA LTD</span>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 border-b border-gray-100 pb-3">
-              <div>
-                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Registration Number</span>
-                <span class="font-bold font-mono text-gray-900 text-xs sm:text-sm">CS182810926</span>
-              </div>
-              <div>
-                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Tax Identification No (TIN)</span>
-                <span class="font-bold font-mono text-gray-900 text-xs sm:text-sm">C0067838006</span>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-3 border-b border-gray-100 pb-3">
-              <FileCheck className="text-emerald-600 shrink-0 mt-0.5" size={18} />
-              <div>
-                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Issuing Authority</span>
-                <span class="font-semibold text-gray-800 text-xs sm:text-sm">Office of the Registrar of Companies, Republic of Ghana</span>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-3">
-              <ShieldCheck className="text-[#ff2d3b] shrink-0 mt-0.5" size={18} />
-              <div>
-                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Statutory Act</span>
-                <span class="text-xs text-gray-600">Incorporated under the Companies Act, 2019 (Act 992) as a limited liability entity.</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2 p-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xl text-emerald-900 text-xs font-medium">
-            <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-            <span>Guaranteed 100% legitimate, authentic artisanal operations and customer security.</span>
+      <div class="flex flex-col items-center justify-center">
+        <div class="relative group cursor-pointer max-w-sm sm:max-w-md bg-white p-3 rounded-2xl shadow-xl border border-gray-200 hover:shadow-2xl transition-all duration-300">
+          <img
+            src={certImg.src}
+            alt="Official Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
+            class="w-full h-auto rounded-xl object-contain shadow-xs"
+            id="certThumbnail"
+          />
+          <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-2xs">
+            <ZoomIn size={22} />
+            <span>Click to view full certificate</span>
           </div>
         </div>
+        <span class="text-[11px] text-gray-500 mt-3 font-medium flex items-center gap-1.5">
+          <ZoomIn size={13} /> Click to expand high-resolution certificate
+        </span>
       </div>
     </div>
 
