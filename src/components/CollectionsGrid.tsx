@@ -36,7 +36,7 @@ export const CollectionsGrid: React.FC<Props> = ({
     },
   ];
 
-  // 4 Category Showcase Cards matching reference style with uniform 3:4 cards and VIEW NOW buttons
+  // 3-Column Category Showcase Cards matching reference screenshot
   const showcaseCategories = [
     {
       title: "Oud Perfume Oils",
@@ -52,11 +52,6 @@ export const CollectionsGrid: React.FC<Props> = ({
       title: "Limited Edition",
       slug: "extrait-de-parfum",
       imageUrl: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1000&q=80",
-    },
-    {
-      title: "Home Scents",
-      slug: "home-scents",
-      imageUrl: "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=80",
     },
   ];
 
@@ -125,8 +120,8 @@ export const CollectionsGrid: React.FC<Props> = ({
         ))}
       </div>
 
-      {/* 3. 4-Column Category Showcase Cards (Oud Perfume Oils, Oud Elixirs, Limited Edition, Home Scents) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+      {/* 3. 3-Column Category Showcase Cards (Oud Perfume Oils, Oud Elixirs, Limited Edition) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mb-10 sm:mb-12">
         {showcaseCategories.map((cat, idx) => (
           <div key={idx} className="flex flex-col items-center group">
             <a
@@ -157,6 +152,36 @@ export const CollectionsGrid: React.FC<Props> = ({
             </div>
           </div>
         ))}
+      </div>
+
+      {/* 4. Full-Width Picture Showcase for Home Scents with Title and VIEW NOW below it */}
+      <div className="flex flex-col items-center group">
+        <a
+          href="/collections/home-scents"
+          className="relative aspect-[16/8] sm:aspect-[21/9] w-full overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1800&q=80"
+            alt="Home Scents"
+            className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+          />
+        </a>
+
+        <div className="pt-3.5 pb-2 text-center flex flex-col items-center w-full">
+          <a href="/collections/home-scents">
+            <h3 className="font-['Barlow_Condensed',sans-serif] text-2xl sm:text-[28px] font-bold text-black group-hover:text-[#e62b32] transition-colors mb-2.5">
+              Home Scents
+            </h3>
+          </a>
+
+          {/* Red VIEW NOW Button */}
+          <a
+            href="/collections/home-scents"
+            className="inline-block bg-[#e62b32] hover:bg-[#cf2229] text-white px-7 py-2 rounded-[4px] text-[11px] sm:text-[12px] font-extrabold uppercase tracking-wider shadow-xs transition-colors"
+          >
+            VIEW NOW
+          </a>
+        </div>
       </div>
     </section>
   );
