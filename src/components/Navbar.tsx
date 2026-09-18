@@ -23,7 +23,7 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="w-full bg-white z-40 sticky top-0 shadow-xs">
+    <header className="w-full bg-white z-40">
       {/* Top Row: Search, Logo, Cart on Pure White Canvas */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-4">
         {/* Mobile menu trigger */}
