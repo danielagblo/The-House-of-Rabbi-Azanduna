@@ -13,41 +13,28 @@ const announcements = [
 
 export const AnnouncementBar: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      handleNext();
+      setCurrentIndex((prev) => (prev + 1) % announcements.length);
     }, 4500);
 
     return () => clearInterval(timer);
-  }, [currentIndex]);
-
-  const changeSlide = (newIndex: number) => {
-    setIsFading(true);
-    setTimeout(() => {
-      setCurrentIndex(newIndex);
-      setIsFading(false);
-    }, 200);
-  };
+  }, []);
 
   const handlePrev = () => {
-    const nextIdx = (currentIndex - 1 + announcements.length) % announcements.length;
-    changeSlide(nextIdx);
+    setCurrentIndex((prev) => (prev - 1 + announcements.length) % announcements.length);
   };
 
   const handleNext = () => {
-    const nextIdx = (currentIndex + 1) % announcements.length;
-    changeSlide(nextIdx);
+    setCurrentIndex((prev) => (prev + 1) % announcements.length);
   };
 
-  const current = announcements[currentIndex];
-
   return (
-    <div className="bg-[#e62b32] text-white py-1.5 sm:py-2 px-4 sm:px-6 sticky top-0 z-50 flex items-center justify-between shadow-xs select-none">
+    <div className="bg-[#e62b32] text-white py-1.5 sm:py-2 px-4 sm:px-6 sticky top-0 z-50 flex items-center justify-between shadow-xs select-none overflow-hidden">
       <button
         onClick={handlePrev}
-        className="text-white hover:opacity-80 transition-opacity p-1 cursor-pointer flex items-center"
+        className="text-white hover:opacity-80 transition-opacity p-1 cursor-pointer flex items-center z-10 shrink-0"
         aria-label="Previous announcement"
       >
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,20 +42,27 @@ export const AnnouncementBar: React.FC = () => {
         </svg>
       </button>
 
-      <div className="text-center flex-1 overflow-hidden px-2">
-        <a
-          href={current.href}
-          className={`font-['Barlow_Condensed',sans-serif] text-[15px] sm:text-[16px] font-semibold tracking-[0.06em] uppercase underline underline-offset-0 decoration-1 hover:opacity-90 transition-opacity duration-200 inline-block ${
-            isFading ? 'opacity-0 scale-98' : 'opacity-100 scale-100'
-          }`}
+      <div className="text-center flex-1 overflow-hidden px-2 relative h-6 flex items-center">
+        <div
+          className="flex w-full transition-transform duration-500 ease-out items-center"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {current.text}
-        </a>
+          {announcements.map((item, idx) => (
+            <div key={idx} className="w-full shrink-0 flex items-center justify-center">
+              <a
+                href={item.href}
+                className="font-['Barlow_Condensed',sans-serif] text-[15px] sm:text-[16px] font-semibold tracking-[0.06em] uppercase underline underline-offset-0 decoration-1 hover:opacity-90 whitespace-nowrap block"
+              >
+                {item.text}
+              </a>
+            </div>
+          ))}
+        </div>
       </div>
 
       <button
         onClick={handleNext}
-        className="text-white hover:opacity-80 transition-opacity p-1 cursor-pointer flex items-center"
+        className="text-white hover:opacity-80 transition-opacity p-1 cursor-pointer flex items-center z-10 shrink-0"
         aria-label="Next announcement"
       >
         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,3 +72,4 @@ export const AnnouncementBar: React.FC = () => {
     </div>
   );
 };
+

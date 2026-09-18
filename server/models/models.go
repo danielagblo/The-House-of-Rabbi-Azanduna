@@ -120,3 +120,14 @@ type BlogPost struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
+
+type FAQ struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	Category  string    `gorm:"size:100;not null" json:"category"` // "Order Enquiries", "Shipping issues", "Returns & Refunds", "Perfume Care"
+	Question  string    `gorm:"size:500;not null" json:"question"`
+	Answer    string    `gorm:"type:text;not null" json:"answer"`
+	SortOrder int       `gorm:"default:0" json:"sortOrder"`
+	Published bool      `gorm:"default:true" json:"published"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}

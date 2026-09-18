@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import type { Product, Collection, Order } from '../../types';
+import type { Product, Collection, Order, BlogPost, FAQ } from '../../types';
 import { FALLBACK_PRODUCTS, FALLBACK_COLLECTIONS } from '../../data/fallbackData';
 import { 
   Lock, KeyRound, Eye, EyeOff, LogOut, Package, Layers, 
   ShoppingBag, Plus, Edit2, Trash2, CheckCircle2, AlertCircle, 
   ExternalLink, Search, DollarSign, TrendingUp, RefreshCw, X,
-  Filter, Tag, ArrowRight
+  Filter, Tag, ArrowRight, BookOpen, HelpCircle, FileText
 } from 'lucide-react';
 
 export const AdminPortal: React.FC = () => {
@@ -15,9 +15,11 @@ export const AdminPortal: React.FC = () => {
   const [loginError, setLoginError] = useState<string>('');
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
-  const [activeTab, setActiveTab] = useState<'products' | 'collections' | 'orders' | 'overview'>('overview');
+  const [activeTab, setActiveTab] = useState<'products' | 'collections' | 'blogs' | 'faqs' | 'orders' | 'overview'>('overview');
   const [products, setProducts] = useState<Product[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [blogs, setBlogs] = useState<BlogPost[]>([]);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState<{ products_count: number; collections_count: number; orders_count: number; total_revenue: number }>({
     products_count: 0,
@@ -27,6 +29,7 @@ export const AdminPortal: React.FC = () => {
   });
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCollectionFilter, setSelectedCollectionFilter] = useState<string>('all');
+  const [selectedFaqCategoryFilter, setSelectedFaqCategoryFilter] = useState<string>('all');
   const [loading, setLoading] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
@@ -37,6 +40,14 @@ export const AdminPortal: React.FC = () => {
   // Edit / Add Collection Modal State
   const [isCollectionModalOpen, setIsCollectionModalOpen] = useState<boolean>(false);
   const [editingCollection, setEditingCollection] = useState<Partial<Collection> | null>(null);
+
+  // Edit / Add Blog Modal State
+  const [isBlogModalOpen, setIsBlogModalOpen] = useState<boolean>(false);
+  const [editingBlog, setEditingBlog] = useState<Partial<BlogPost> | null>(null);
+
+  // Edit / Add FAQ Modal State
+  const [isFAQModalOpen, setIsFAQModalOpen] = useState<boolean>(false);
+  const [editingFAQ, setEditingFAQ] = useState<Partial<FAQ> | null>(null);
 
   // Check existing session on mount
   useEffect(() => {
@@ -141,6 +152,20 @@ export const AdminPortal: React.FC = () => {
       if (orderRes.ok) {
         const orderData = await orderRes.json();
         setOrders(orderData || []);
+      }
+
+      // Blogs
+      const blogRes = await fetch('http://localhost:8080/api/blogs');
+      if (blogRes.ok) {
+        const blogData = await blogRes.json();
+        setBlogs(blogData || []);
+      }
+
+      // FAQs
+      const faqRes = await fetch('http://localhost:8080/api/faqs');
+      if (faqRes.ok) {
+        const faqData = await faqRes.json();
+        setFaqs(faqData || []);
       }
     } catch (e) {
       setProducts(FALLBACK_PRODUCTS);
@@ -309,6 +334,138 @@ export const AdminPortal: React.FC = () => {
       showToast('Collection deleted (Local Session).');
     }
   };
+
+  // Blog Actions
+  const handleOpenAddBlog = () => {
+    setEditingBlog({
+      title: '',
+      slug: '',
+      category: 'Fragrance Care',
+      readTime: '4 min read',
+      imageUrl: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=80',
+      excerpt: '',
+      content: '',
+      published: true,
+      sortOrder: blogs.length + 1,
+    });
+    setIsBlogModalOpen(true);
+  };
+
+  const handleSaveBlog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingBlog || !editingBlog.title || !editingBlog.content) {
+      showToast('Please fill in required fields (Title, Content)', 'error');
+      return;
+    }
+
+    const payload = {
+      ...editingBlog,
+      slug: editingBlog.slug || editingBlog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      category: editingBlog.category || 'Fragrance Care',
+      readTime: editingBlog.readTime || '4 min read',
+      imageUrl: editingBlog.imageUrl || 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=80',
+      published: editingBlog.published !== false,
+      sortOrder: Number(editingBlog.sortOrder) || 1,
+    };
+
+    try {
+      if (editingBlog.id) {
+        await fetch(`http://localhost:8080/api/admin/blogs/${editingBlog.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        showToast('Blog article updated!');
+      } else {
+        await fetch('http://localhost:8080/api/admin/blogs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        showToast('New blog article published!');
+      }
+      setIsBlogModalOpen(false);
+      fetchData();
+    } catch (err) {
+      showToast('Saved to session (Local)');
+      setIsBlogModalOpen(false);
+    }
+  };
+
+  const handleDeleteBlog = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this blog article?')) return;
+    try {
+      await fetch(`http://localhost:8080/api/admin/blogs/${id}`, { method: 'DELETE' });
+      setBlogs((prev) => prev.filter((b) => b.id !== id));
+      showToast('Blog article deleted.');
+    } catch (err) {
+      setBlogs((prev) => prev.filter((b) => b.id !== id));
+      showToast('Blog article deleted (Local Session).');
+    }
+  };
+
+  // FAQ Actions
+  const handleOpenAddFAQ = () => {
+    setEditingFAQ({
+      category: selectedFaqCategoryFilter !== 'all' ? selectedFaqCategoryFilter : 'Order Enquiries',
+      question: '',
+      answer: '',
+      published: true,
+      sortOrder: faqs.length + 1,
+    });
+    setIsFAQModalOpen(true);
+  };
+
+  const handleSaveFAQ = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingFAQ || !editingFAQ.question || !editingFAQ.answer) {
+      showToast('Please fill in required fields (Question, Answer)', 'error');
+      return;
+    }
+
+    const payload = {
+      ...editingFAQ,
+      category: editingFAQ.category || 'Order Enquiries',
+      published: editingFAQ.published !== false,
+      sortOrder: Number(editingFAQ.sortOrder) || 1,
+    };
+
+    try {
+      if (editingFAQ.id) {
+        await fetch(`http://localhost:8080/api/admin/faqs/${editingFAQ.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        showToast('FAQ updated!');
+      } else {
+        await fetch('http://localhost:8080/api/admin/faqs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        showToast('New FAQ added!');
+      }
+      setIsFAQModalOpen(false);
+      fetchData();
+    } catch (err) {
+      showToast('Saved to session (Local)');
+      setIsFAQModalOpen(false);
+    }
+  };
+
+  const handleDeleteFAQ = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this FAQ?')) return;
+    try {
+      await fetch(`http://localhost:8080/api/admin/faqs/${id}`, { method: 'DELETE' });
+      setFaqs((prev) => prev.filter((f) => f.id !== id));
+      showToast('FAQ deleted.');
+    } catch (err) {
+      setFaqs((prev) => prev.filter((f) => f.id !== id));
+      showToast('FAQ deleted (Local Session).');
+    }
+  };
+
 
   // Filtered Products based on search query AND selected collection
   const filteredProducts = products.filter((p) => {
@@ -479,6 +636,24 @@ export const AdminPortal: React.FC = () => {
           >
             <Layers size={14} />
             Collections ({collections.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('blogs')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              activeTab === 'blogs' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
+            }`}
+          >
+            <BookOpen size={14} />
+            Blogs ({blogs.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('faqs')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              activeTab === 'faqs' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
+            }`}
+          >
+            <HelpCircle size={14} />
+            FAQs ({faqs.length})
           </button>
           <button
             onClick={() => setActiveTab('orders')}
@@ -1009,6 +1184,223 @@ export const AdminPortal: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* TAB 5: BLOGS MANAGER */}
+        {activeTab === 'blogs' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-gray-200/90 shadow-2xs">
+              <div>
+                <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900">
+                  Fragrance Journal & Blog Articles
+                </h2>
+                <p className="text-xs text-gray-500">
+                  Publish guides, care tips, and fragrance culture articles
+                </p>
+              </div>
+
+              <button
+                onClick={handleOpenAddBlog}
+                className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
+              >
+                <Plus size={14} /> New Article
+              </button>
+            </div>
+
+            <div className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-[#f4f4f4] text-gray-700 uppercase font-bold tracking-wider text-[11px] border-b border-gray-200">
+                    <tr>
+                      <th className="py-3.5 px-4">Article</th>
+                      <th className="py-3.5 px-4">Category</th>
+                      <th className="py-3.5 px-4">Read Time</th>
+                      <th className="py-3.5 px-4">Status</th>
+                      <th className="py-3.5 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {blogs.length > 0 ? (
+                      blogs.map((b) => (
+                        <tr key={b.id || b.slug} className="hover:bg-gray-50/80 transition-colors">
+                          <td className="py-3.5 px-4">
+                            <div className="flex items-center gap-3">
+                              <img
+                                src={b.imageUrl}
+                                alt={b.title}
+                                className="w-12 h-10 object-cover rounded bg-gray-100 border border-gray-200"
+                              />
+                              <div>
+                                <span className="font-bold text-gray-900 block text-sm">{b.title}</span>
+                                <span className="text-[11px] text-gray-500 line-clamp-1">{b.excerpt}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="px-2.5 py-1 rounded-full bg-gray-100 text-[11px] font-semibold text-gray-800 border border-gray-200">
+                              {b.category}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-gray-600 font-medium">
+                            {b.readTime || '3 min read'}
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                              Published
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-right space-x-2">
+                            <a
+                              href={`/blog/${b.slug}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="p-1.5 text-gray-600 hover:text-black inline-block"
+                              title="View Article"
+                            >
+                              <ExternalLink size={14} />
+                            </a>
+                            <button
+                              onClick={() => {
+                                setEditingBlog(b);
+                                setIsBlogModalOpen(true);
+                              }}
+                              className="p-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded transition-colors cursor-pointer"
+                              title="Edit Article"
+                            >
+                              <Edit2 size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteBlog(b.id)}
+                              className="p-1.5 text-gray-400 hover:text-[#e62b32] hover:bg-red-50 rounded transition-colors cursor-pointer"
+                              title="Delete Article"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="py-12 text-center text-gray-500">
+                          <p className="text-sm font-semibold mb-1">No blog articles found.</p>
+                          <button
+                            onClick={handleOpenAddBlog}
+                            className="mt-2 text-xs font-bold text-[#e62b32] hover:underline"
+                          >
+                            + Write your first article
+                          </button>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: FAQS MANAGER */}
+        {activeTab === 'faqs' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-gray-200/90 shadow-2xs">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div>
+                  <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900">
+                    Frequently Asked Questions (FAQ)
+                  </h2>
+                  <p className="text-xs text-gray-500">
+                    Live questions and answers shown on the customer FAQ page
+                  </p>
+                </div>
+
+                <select
+                  value={selectedFaqCategoryFilter}
+                  onChange={(e) => setSelectedFaqCategoryFilter(e.target.value)}
+                  className="bg-white border border-gray-300 focus:border-black rounded-lg py-1.5 px-3 text-xs text-gray-900 font-semibold shadow-2xs"
+                >
+                  <option value="all">All Categories ({faqs.length})</option>
+                  <option value="Order Enquiries">Order Enquiries</option>
+                  <option value="Shipping issues">Shipping issues</option>
+                  <option value="Returns & Product Care">Returns & Product Care</option>
+                </select>
+              </div>
+
+              <button
+                onClick={handleOpenAddFAQ}
+                className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
+              >
+                <Plus size={14} /> Add FAQ
+              </button>
+            </div>
+
+            <div className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-[#f4f4f4] text-gray-700 uppercase font-bold tracking-wider text-[11px] border-b border-gray-200">
+                    <tr>
+                      <th className="py-3.5 px-4">Question & Answer</th>
+                      <th className="py-3.5 px-4">Category</th>
+                      <th className="py-3.5 px-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {(selectedFaqCategoryFilter === 'all'
+                      ? faqs
+                      : faqs.filter((f) => f.category === selectedFaqCategoryFilter)
+                    ).length > 0 ? (
+                      (selectedFaqCategoryFilter === 'all'
+                        ? faqs
+                        : faqs.filter((f) => f.category === selectedFaqCategoryFilter)
+                      ).map((faq) => (
+                        <tr key={faq.id} className="hover:bg-gray-50/80 transition-colors">
+                          <td className="py-3.5 px-4 max-w-xl">
+                            <span className="font-bold text-gray-900 block text-sm mb-1">{faq.question}</span>
+                            <p className="text-[12px] text-gray-600 line-clamp-2">{faq.answer}</p>
+                          </td>
+                          <td className="py-3.5 px-4">
+                            <span className="px-2.5 py-1 rounded-full bg-red-50 text-[11px] font-bold text-[#e62b32] border border-red-200">
+                              {faq.category}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 text-right space-x-2">
+                            <button
+                              onClick={() => {
+                                setEditingFAQ(faq);
+                                setIsFAQModalOpen(true);
+                              }}
+                              className="p-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded transition-colors cursor-pointer"
+                              title="Edit FAQ"
+                            >
+                              <Edit2 size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteFAQ(faq.id)}
+                              className="p-1.5 text-gray-400 hover:text-[#e62b32] hover:bg-red-50 rounded transition-colors cursor-pointer"
+                              title="Delete FAQ"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3} className="py-12 text-center text-gray-500">
+                          <p className="text-sm font-semibold mb-1">No FAQs found.</p>
+                          <button
+                            onClick={handleOpenAddFAQ}
+                            className="mt-2 text-xs font-bold text-[#e62b32] hover:underline"
+                          >
+                            + Add FAQ now
+                          </button>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* EDIT / CREATE PRODUCT MODAL */}
@@ -1287,6 +1679,189 @@ export const AdminPortal: React.FC = () => {
                   className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
                 >
                   Save Collection
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT / CREATE BLOG MODAL */}
+      {isBlogModalOpen && editingBlog && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl relative my-8">
+            <button
+              onClick={() => setIsBlogModalOpen(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
+            >
+              <X size={20} />
+            </button>
+
+            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wider mb-6">
+              {editingBlog.id ? 'Edit Blog Article' : 'Write New Blog Article'}
+            </h2>
+
+            <form onSubmit={handleSaveBlog} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Article Title *</label>
+                  <input
+                    type="text"
+                    value={editingBlog.title || ''}
+                    onChange={(e) => setEditingBlog({ ...editingBlog, title: e.target.value })}
+                    required
+                    placeholder="e.g. How to Make Perfume Oil Last All Day"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Category</label>
+                  <select
+                    value={editingBlog.category || 'Fragrance Care'}
+                    onChange={(e) => setEditingBlog({ ...editingBlog, category: e.target.value })}
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                  >
+                    <option value="Fragrance Care">Fragrance Care</option>
+                    <option value="Oud Culture">Oud Culture</option>
+                    <option value="Layering Guide">Layering Guide</option>
+                    <option value="Behind The Craft">Behind The Craft</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Featured Image URL</label>
+                  <input
+                    type="url"
+                    value={editingBlog.imageUrl || ''}
+                    onChange={(e) => setEditingBlog({ ...editingBlog, imageUrl: e.target.value })}
+                    placeholder="https://images.unsplash.com/..."
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Read Time</label>
+                  <input
+                    type="text"
+                    value={editingBlog.readTime || '4 min read'}
+                    onChange={(e) => setEditingBlog({ ...editingBlog, readTime: e.target.value })}
+                    placeholder="e.g. 4 min read"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Short Excerpt / Summary</label>
+                <textarea
+                  rows={2}
+                  value={editingBlog.excerpt || ''}
+                  onChange={(e) => setEditingBlog({ ...editingBlog, excerpt: e.target.value })}
+                  placeholder="Brief 1-2 sentence teaser for cards..."
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Full Article Content (Markdown or Text) *</label>
+                <textarea
+                  rows={8}
+                  value={editingBlog.content || ''}
+                  onChange={(e) => setEditingBlog({ ...editingBlog, content: e.target.value })}
+                  required
+                  placeholder="Write complete article paragraphs here..."
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 font-mono text-[11px]"
+                />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsBlogModalOpen(false)}
+                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
+                >
+                  Publish Article
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT / CREATE FAQ MODAL */}
+      {isFAQModalOpen && editingFAQ && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-lg p-6 sm:p-8 shadow-2xl relative my-8">
+            <button
+              onClick={() => setIsFAQModalOpen(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
+            >
+              <X size={20} />
+            </button>
+
+            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wider mb-6">
+              {editingFAQ.id ? 'Edit FAQ' : 'Add New FAQ'}
+            </h2>
+
+            <form onSubmit={handleSaveFAQ} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-gray-700 font-bold uppercase mb-1">FAQ Category *</label>
+                <select
+                  value={editingFAQ.category || 'Order Enquiries'}
+                  onChange={(e) => setEditingFAQ({ ...editingFAQ, category: e.target.value })}
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                  required
+                >
+                  <option value="Order Enquiries">Order Enquiries</option>
+                  <option value="Shipping issues">Shipping issues</option>
+                  <option value="Returns & Product Care">Returns & Product Care</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Question *</label>
+                <input
+                  type="text"
+                  value={editingFAQ.question || ''}
+                  onChange={(e) => setEditingFAQ({ ...editingFAQ, question: e.target.value })}
+                  required
+                  placeholder="e.g. How do I apply concentrated perfume oil?"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Answer *</label>
+                <textarea
+                  rows={5}
+                  value={editingFAQ.answer || ''}
+                  onChange={(e) => setEditingFAQ({ ...editingFAQ, answer: e.target.value })}
+                  required
+                  placeholder="Clear and simple plain english answer..."
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                />
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsFAQModalOpen(false)}
+                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
+                >
+                  Save FAQ
                 </button>
               </div>
             </form>

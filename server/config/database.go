@@ -71,6 +71,7 @@ func InitDB() *gorm.DB {
 		&models.Order{},
 		&models.OrderItem{},
 		&models.BlogPost{},
+		&models.FAQ{},
 	)
 	if err != nil {
 		log.Fatalf("[DB] AutoMigration failed: %v", err)

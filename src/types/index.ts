@@ -84,3 +84,13 @@ export interface BlogPost {
   sortOrder: number;
   createdAt: string;
 }
+
+export interface FAQ {
+  id: number;
+  category: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+  published: boolean;
+  createdAt: string;
+}

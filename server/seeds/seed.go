@@ -9,6 +9,7 @@ import (
 
 func SeedDatabase(db *gorm.DB) {
 	seedBlogs(db)
+	seedFAQs(db)
 
 	var count int64
 	db.Model(&models.Collection{}).Count(&count)
@@ -481,4 +482,118 @@ func seedBlogs(db *gorm.DB) {
 		db.Create(&posts[i])
 	}
 	log.Printf("[DB Seed] Successfully seeded %d blog posts.", len(posts))
+}
+
+func seedFAQs(db *gorm.DB) {
+	var count int64
+	db.Model(&models.FAQ{}).Count(&count)
+	if count > 0 {
+		return
+	}
+
+	log.Println("[DB Seed] Seeding FAQs into database...")
+
+	faqs := []models.FAQ{
+		// Order Enquiries
+		{
+			Category:  "Order Enquiries",
+			Question:  "I have not received any updates/emails about my order?",
+			Answer:    "Please check the Junk/Spam folder as the email could be there. If it's not there, please reach out to the team and they will resend the tracking information.",
+			SortOrder: 1,
+			Published: true,
+		},
+		{
+			Category:  "Order Enquiries",
+			Question:  "I am trying to place an order but the website keeps crashing?",
+			Answer:    "We are working on the website from time to time. We would advise checking the website an hour later and trying again. If it does not work, email the team and they will look into this.",
+			SortOrder: 2,
+			Published: true,
+		},
+		{
+			Category:  "Order Enquiries",
+			Question:  "I placed an order for a product but now I do not want it, can I get a refund?",
+			Answer:    "If the order has been dispatched, you will need to send it back to the office unopened in order to qualify for a refund. If your order is not yet dispatched, please contact our team so they can cancel your order.",
+			SortOrder: 3,
+			Published: true,
+		},
+		{
+			Category:  "Order Enquiries",
+			Question:  "I placed an order but the money has been taken from my account twice?",
+			Answer:    "This is occasionally an issue with payment gateways. If you notice a duplicate charge, please contact our team with proof and we will ensure the duplicate amount is refunded promptly.",
+			SortOrder: 4,
+			Published: true,
+		},
+
+		// Shipping issues
+		{
+			Category:  "Shipping issues",
+			Question:  "Why is delivery taking so long?",
+			Answer:    "We use reliable courier dispatch services. Deliveries are typically completed within 1 to 3 working days in major cities, but can take up to 5 business days for distant areas.\n\nPlease check the tracking information provided in your confirmation email. If your order does not arrive within expected business days, please contact us so we can trace your package.",
+			SortOrder: 5,
+			Published: true,
+		},
+		{
+			Category:  "Shipping issues",
+			Question:  "It has been over a couple of weeks and my order has not been delivered, can you contact the courier?",
+			Answer:    "Yes. Please reach out to our team with your order reference and we will contact the dispatch team directly to locate your package.",
+			SortOrder: 6,
+			Published: true,
+		},
+		{
+			Category:  "Shipping issues",
+			Question:  "My tracking information states delivered but I do not have the product?",
+			Answer:    "We ask you to check with neighbours, family members, or reception to ensure it was not received on your behalf. If not, please contact our team so we can investigate with the delivery courier.",
+			SortOrder: 7,
+			Published: true,
+		},
+		{
+			Category:  "Shipping issues",
+			Question:  "I put the wrong address details in my order, can this be changed?",
+			Answer:    "If the order has not yet been dispatched, contact us immediately and we will update the address for you. If it has already been shipped, we will need to wait for it to be returned before resending.",
+			SortOrder: 8,
+			Published: true,
+		},
+		{
+			Category:  "Shipping issues",
+			Question:  "Do you offer international shipping?",
+			Answer:    "Yes, we do. However, there may be extra costs relating to import and customs duties which the customer will need to pay for depending on destination country policies.",
+			SortOrder: 9,
+			Published: true,
+		},
+		{
+			Category:  "Shipping issues",
+			Question:  "What delivery service do you offer?",
+			Answer:    "We offer tracked, secure express courier delivery across Ghana and international shipping with tracking links sent by email and SMS.",
+			SortOrder: 10,
+			Published: true,
+		},
+		{
+			Category:  "Shipping issues",
+			Question:  "My tracking status won't update, is there something wrong with my order?",
+			Answer:    "Tracking status updates when packages are scanned at delivery checkpoints. If there is no update for more than 48 hours, please contact us and our team will follow up on your delivery.",
+			SortOrder: 11,
+			Published: true,
+		},
+
+		// Received Incorrect Items & Returns
+		{
+			Category:  "Returns & Product Care",
+			Question:  "Received Incorrect Items?",
+			Answer:    "If you received an item different from what you ordered, please contact us within 48 hours with a picture of the items and we will send the correct items right away.",
+			SortOrder: 12,
+			Published: true,
+		},
+		{
+			Category:  "Returns & Product Care",
+			Question:  "How should I store my Oud perfume oils and attars?",
+			Answer:    "Keep your bottles in a cool, dry place away from direct sunlight and excessive heat. When stored properly, authentic pure Oud oils age gracefully and become smoother over time.",
+			SortOrder: 13,
+			Published: true,
+		},
+	}
+
+	for i := range faqs {
+		db.Create(&faqs[i])
+	}
+	log.Printf("[DB Seed] Successfully seeded %d FAQs.", len(faqs))
 }

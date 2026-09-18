@@ -6,8 +6,12 @@ export const Navbar: React.FC = () => {
   const [itemCount, setItemCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPath, setCurrentPath] = useState('');
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentPath(window.location.pathname);
+    }
     const update = () => {
       setItemCount(cartStore.getItemCount());
     };
@@ -21,6 +25,12 @@ export const Navbar: React.FC = () => {
       window.location.href = `/collections?search=${encodeURIComponent(searchQuery.trim())}`;
     }
   };
+
+  const isShopActive = currentPath === '/' || currentPath.startsWith('/collections') || currentPath.startsWith('/product');
+  const isSaleActive = currentPath.startsWith('/sale');
+  const isBlogActive = currentPath.startsWith('/blog');
+  const isFaqsActive = currentPath.startsWith('/faqs');
+  const isAboutActive = currentPath.startsWith('/about');
 
   return (
     <header className="w-full bg-white z-40">
@@ -83,23 +93,37 @@ export const Navbar: React.FC = () => {
 
       {/* Sub-Navigation Row: Dedicated Light Gray Strip matching screenshot */}
       <div className="bg-[#f4f4f4] border-y border-gray-200/80">
-        <div className="hidden lg:flex items-center justify-center gap-8 sm:gap-10 py-2 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[18px] sm:text-[19px] font-bold tracking-[0.04em] uppercase text-[#1a1a1a] leading-tight">
-          <a href="/collections" className="text-[#e62b32] hover:opacity-80 transition-colors">
+        <div className="hidden lg:flex items-center justify-center gap-8 sm:gap-10 py-2 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[18px] sm:text-[19px] font-bold tracking-[0.04em] uppercase leading-tight">
+          <a
+            href="/collections"
+            className={`${isShopActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+          >
             SHOP
           </a>
           <a
             href="/sale"
-            className="bg-[#e62b32] text-white px-3.5 py-1 rounded-[4px] text-[15px] font-extrabold hover:bg-[#cf2229] transition-colors shadow-2xs tracking-[0.04em] leading-tight inline-flex items-center justify-center"
+            className={`px-3.5 py-1 rounded-[4px] text-[15px] font-extrabold transition-colors shadow-2xs tracking-[0.04em] leading-tight inline-flex items-center justify-center ${
+              isSaleActive ? 'bg-[#cf2229] text-white ring-2 ring-[#e62b32]/50' : 'bg-[#e62b32] text-white hover:bg-[#cf2229]'
+            }`}
           >
             SALE
           </a>
-          <a href="/blog" className="hover:underline transition-all">
+          <a
+            href="/blog"
+            className={`${isBlogActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+          >
             BLOG
           </a>
-          <a href="/faqs" className="hover:underline transition-all">
+          <a
+            href="/faqs"
+            className={`${isFaqsActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+          >
             FAQS
           </a>
-          <a href="/about" className="hover:underline transition-all">
+          <a
+            href="/about"
+            className={`${isAboutActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+          >
             ABOUT US
           </a>
         </div>

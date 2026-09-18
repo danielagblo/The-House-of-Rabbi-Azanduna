@@ -14,6 +14,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	productRepo := repositories.NewProductRepository(db)
 	orderRepo := repositories.NewOrderRepository(db)
 	blogRepo := repositories.NewBlogRepository(db)
+	faqRepo := repositories.NewFAQRepository(db)
 
 	// Services
 	paystackService := services.NewPaystackService()
@@ -24,6 +25,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	paymentCtrl := controllers.NewPaymentController(paystackService, orderRepo)
 	adminCtrl := controllers.NewAdminController(productRepo, collectionRepo, orderRepo)
 	blogCtrl := controllers.NewBlogController(blogRepo)
+	faqCtrl := controllers.NewFAQController(faqRepo)
 
 	// API Group
 	api := app.Group("/api")
@@ -49,6 +51,9 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	api.Get("/blogs", blogCtrl.GetAll)
 	api.Get("/blogs/:slug", blogCtrl.GetBySlug)
 
+	// FAQs (Public)
+	api.Get("/faqs", faqCtrl.GetAll)
+
 	// Payments & Checkout (Paystack)
 	api.Post("/payments/initialize", paymentCtrl.InitializeCheckout)
 	api.Get("/payments/verify/:reference", paymentCtrl.VerifyPayment)
@@ -69,4 +74,14 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	admin.Post("/collections", adminCtrl.CreateCollection)
 	admin.Put("/collections/:id", adminCtrl.UpdateCollection)
 	admin.Delete("/collections/:id", adminCtrl.DeleteCollection)
+
+	// Admin Blog Management
+	admin.Post("/blogs", blogCtrl.Create)
+	admin.Put("/blogs/:id", blogCtrl.Update)
+	admin.Delete("/blogs/:id", blogCtrl.Delete)
+
+	// Admin FAQ Management
+	admin.Post("/faqs", faqCtrl.Create)
+	admin.Put("/faqs/:id", faqCtrl.Update)
+	admin.Delete("/faqs/:id", faqCtrl.Delete)
 }

@@ -1,75 +1,79 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { HelpCircle, ChevronDown } from 'lucide-react';
+import type { FAQ } from '../types';
 
-const faqs = [
-  {
-    q: "What makes Rabbi Azanduna Ltd pure Oud oils unique?",
-    a: "We specialize in 100% pure concentrated perfume oils and artisanal Attars distilled from aged wild Agarwood (Cambodian and Assam) blended with precious botanicals. Our creations contain zero synthetic alcohol, meaning you receive 100% pure oil that melds intimately with your skin's natural warmth."
-  },
-  {
-    q: "How long does the scent linger on skin and fabric?",
-    a: "Because of our high oil density (30-100% pure fragrance oil concentration), our perfumes typically last 14 to 18+ hours on pulse points, and up to 3 days on natural fabric like wool or cotton lapels."
-  },
-  {
-    q: "Are all products completely alcohol-free?",
-    a: "Yes! Our Oud Perfume Oils, Royal Attars, and Discovery Sets are completely non-alcoholic, skin-gentle, non-drying, and suitable for all skin types and religious considerations."
-  },
-  {
-    q: "How does the Paystack checkout work?",
-    a: "We utilize Paystack's bank-grade 256-bit encrypted payment gateway. You can securely checkout using debit/credit cards (Visa, Mastercard, American Express), Apple Pay, or direct mobile money."
-  },
-  {
-    q: "What are the shipping times and free delivery conditions?",
-    a: "We offer complimentary tracked express delivery on all orders over GH₵350 across Ghana (including Greater Accra, Kumasi, Takoradi, and nationwide). Standard orders are dispatched within 24 hours and delivered in 1-2 business days. Worldwide international shipping is also available."
-  },
-  {
-    q: "Can I sample the fragrances before buying full flacons?",
-    a: "Absolutely. We offer our Royal Quintet Discovery Set featuring five 3ml flacons of our most celebrated creations, allowing you to wear and experience each fragrance in your own routine before committing to full flacons."
+let faqs: FAQ[] = [];
+
+try {
+  const res = await fetch('http://localhost:8080/api/faqs');
+  if (res.ok) {
+    const data = await res.json();
+    if (data && data.length > 0) {
+      faqs = data;
+    }
   }
-];
+} catch (e) {
+  // fallback if offline
+}
+
+// Group FAQs by category in order
+const categoryOrder = ["Order Enquiries", "Shipping issues", "Returns & Product Care"];
+const groupedFaqs: Record<string, FAQ[]> = {};
+
+faqs.forEach((item) => {
+  const cat = item.category || "General";
+  if (!groupedFaqs[cat]) {
+    groupedFaqs[cat] = [];
+  }
+  groupedFaqs[cat].push(item);
+});
+
+// Sorted categories
+const categories = Object.keys(groupedFaqs).sort((a, b) => {
+  const idxA = categoryOrder.indexOf(a);
+  const idxB = categoryOrder.indexOf(b);
+  if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+  if (idxA !== -1) return -1;
+  if (idxB !== -1) return 1;
+  return a.localeCompare(b);
+});
 ---
 
-<Layout title="Frequently Asked Questions (FAQs) | Rabbi Azanduna Ltd">
-  <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto bg-white font-['Poppins',sans-serif]">
-    <div class="text-center mb-12">
-      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-100 text-black text-[10px] uppercase font-bold tracking-widest mb-3">
-        <HelpCircle size={12} />
-        Help & Concierge
-      </div>
-      <h1 class="font-['Barlow',sans-serif] text-4xl sm:text-5xl font-extrabold text-black uppercase tracking-tight">
-        Frequently Asked Questions
+<Layout title="FAQs | Rabbi Azanduna Ltd">
+  <div class="pt-5 sm:pt-6 pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto bg-white">
+    {/* Left-Aligned Heading matching exact reference screenshot */}
+    <div class="mb-4 sm:mb-6">
+      <h1 class="font-['Barlow',sans-serif] text-[32px] sm:text-[38px] font-extrabold text-black tracking-tight">
+        FAQs
       </h1>
-      <p class="text-xs text-gray-500 mt-2">
-        Everything you need to know about our artisanal oils, application rituals, shipping, and payment.
-      </p>
     </div>
 
-    <div class="space-y-4">
-      {faqs.map((faq, idx) => (
-        <details class="group bg-gray-50 border border-gray-200 rounded-xl p-6 transition-all [&_summary::-webkit-details-marker]:hidden open:border-black open:bg-white open:shadow-sm">
-          <summary class="flex items-center justify-between cursor-pointer list-none font-['Barlow',sans-serif] text-lg font-bold text-gray-900 group-hover:text-[#ff2d3b] transition-colors">
-            <span>{faq.q}</span>
-            <ChevronDown size={18} class="text-gray-400 group-open:rotate-180 transition-transform duration-300 shrink-0 ml-4" />
-          </summary>
-          <p class="text-xs sm:text-sm text-gray-600 font-light leading-relaxed mt-3 pt-3 border-t border-gray-100">
-            {faq.a}
-          </p>
-        </details>
+    {/* Categorized FAQs in clean, readable editorial format */}
+    <div class="space-y-10">
+      {categories.map((category) => (
+        <section>
+          {/* Category Title */}
+          <h2 class="font-['Barlow',sans-serif] text-xl sm:text-[22px] font-bold text-black mb-5 tracking-tight">
+            {category}
+          </h2>
+
+          {/* Q&A List */}
+          <div class="space-y-6">
+            {groupedFaqs[category].map((item) => (
+              <div>
+                <h3 class="font-bold text-[14px] sm:text-[15px] text-black mb-1.5 leading-snug">
+                  {item.question}
+                </h3>
+                <div class="text-[13px] sm:text-[13.5px] text-gray-800 leading-relaxed font-normal space-y-2">
+                  {item.answer.split('\n\n').map((paragraph) => (
+                    <p>{paragraph}</p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       ))}
-    </div>
-
-    <div class="mt-16 bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
-      <h3 class="font-['Barlow',sans-serif] text-xl font-bold text-black uppercase mb-2">
-        Have further inquiries?
-      </h3>
-      <p class="text-xs text-gray-600 mb-6">Our fragrance concierge team is at your disposal.</p>
-      <a
-        href="mailto:concierge@rabbi-azanduna.co.uk"
-        class="inline-block px-6 py-2.5 bg-black hover:bg-[#ff2d3b] text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors"
-      >
-        Contact Concierge
-      </a>
     </div>
   </div>
 </Layout>
