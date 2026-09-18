@@ -104,25 +104,34 @@ func InitDB() *gorm.DB {
 		log.Fatalf("[DB] Fatal error initializing database: %v", err)
 	}
 
-	// Auto Migrate tables
-	log.Printf("[DB] Running AutoMigrations for models...")
-	err = db.AutoMigrate(
-		&models.Collection{},
-		&models.Product{},
-		&models.FragranceNote{},
-		&models.ProductVariant{},
-		&models.Review{},
-		&models.Order{},
-		&models.OrderItem{},
-		&models.BlogPost{},
-		&models.FAQ{},
-	)
-	if err != nil {
-		log.Printf("[DB Warning] AutoMigration encountered notice: %v", err)
-	} else {
-		log.Printf("[DB] AutoMigrations completed successfully.")
+	sqlDB, err := db.DB()
+	if err == nil {
+		sqlDB.SetMaxOpenConns(20)
+		sqlDB.SetMaxIdleConns(5)
 	}
+
+	// Auto Migrate tables in background goroutine so server starts listening instantly (<100ms)
+	go func(database *gorm.DB) {
+		log.Printf("[DB] Running AutoMigrations for models...")
+		mErr := database.AutoMigrate(
+			&models.Collection{},
+			&models.Product{},
+			&models.FragranceNote{},
+			&models.ProductVariant{},
+			&models.Review{},
+			&models.Order{},
+			&models.OrderItem{},
+			&models.BlogPost{},
+			&models.FAQ{},
+		)
+		if mErr != nil {
+			log.Printf("[DB Notice] AutoMigration notice: %v", mErr)
+		} else {
+			log.Printf("[DB] AutoMigrations completed successfully.")
+		}
+	}(db)
 
 	DB = db
 	return db
 }
+

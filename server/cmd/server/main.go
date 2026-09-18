@@ -21,7 +21,7 @@ func main() {
 	_ = godotenv.Load("../../.env")
 
 	db := config.InitDB()
-	seeds.SeedDatabase(db)
+	go seeds.SeedDatabase(db)
 
 	app := fiber.New(fiber.Config{
 		AppName: "Rabbi Azanduna Ltd Luxury API",

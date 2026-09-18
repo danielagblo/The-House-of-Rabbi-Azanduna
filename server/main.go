@@ -24,8 +24,8 @@ func main() {
 	// Initialize Database (MySQL with SQLite fallback)
 	db := config.InitDB()
 
-	// Seed catalog if empty
-	seeds.SeedDatabase(db)
+	// Seed catalog if empty in background
+	go seeds.SeedDatabase(db)
 
 	// Initialize Fiber App
 	app := fiber.New(fiber.Config{
