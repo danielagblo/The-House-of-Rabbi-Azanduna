@@ -1,12 +1,202 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Product, Collection, Order, BlogPost, FAQ } from '../../types';
 import { FALLBACK_PRODUCTS, FALLBACK_COLLECTIONS } from '../../data/fallbackData';
 import { 
   Lock, KeyRound, Eye, EyeOff, LogOut, Package, Layers, 
   ShoppingBag, Plus, Edit2, Trash2, CheckCircle2, AlertCircle, 
   ExternalLink, Search, DollarSign, TrendingUp, RefreshCw, X,
-  Filter, Tag, ArrowRight, BookOpen, HelpCircle, FileText
+  Filter, Tag, ArrowRight, BookOpen, HelpCircle, FileText,
+  Upload, Image as ImageIcon
 } from 'lucide-react';
+
+interface ImageUploadFieldProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  helperText?: string;
+}
+
+const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
+  label,
+  value,
+  onChange,
+  placeholder = 'Select image file or paste URL...',
+  helperText,
+}) => {
+  const [mode, setMode] = useState<'upload' | 'url'>(value && !value.startsWith('data:') ? 'url' : 'upload');
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const processFile = (file: File) => {
+    if (!file) return;
+    setIsProcessing(true);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        // Optimize on canvas to produce crisp webp/jpeg data URL for clean database storage
+        const maxDim = 1200;
+        let width = img.width;
+        let height = img.height;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          let dataUrl = canvas.toDataURL('image/webp', 0.85);
+          if (!dataUrl.startsWith('data:image/webp')) {
+            dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          }
+          onChange(dataUrl);
+        } else {
+          onChange(e.target?.result as string);
+        }
+        setIsProcessing(false);
+      };
+      img.onerror = () => {
+        setIsProcessing(false);
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      processFile(file);
+    }
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <label className="block text-gray-700 font-bold uppercase text-[11px]">{label}</label>
+        <div className="flex items-center gap-2 text-[10px]">
+          <button
+            type="button"
+            onClick={() => setMode('upload')}
+            className={`font-semibold px-2 py-0.5 rounded cursor-pointer transition-colors ${
+              mode === 'upload' ? 'bg-black text-white' : 'text-gray-500 hover:text-black'
+            }`}
+          >
+            Upload From Device
+          </button>
+          <span className="text-gray-300">|</span>
+          <button
+            type="button"
+            onClick={() => setMode('url')}
+            className={`font-semibold px-2 py-0.5 rounded cursor-pointer transition-colors ${
+              mode === 'url' ? 'bg-black text-white' : 'text-gray-500 hover:text-black'
+            }`}
+          >
+            Paste URL
+          </button>
+        </div>
+      </div>
+
+      {mode === 'upload' ? (
+        <div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            className="hidden"
+          />
+          {value ? (
+            <div className="relative border border-gray-200 rounded-xl p-2.5 bg-gray-50/80 flex items-center gap-3">
+              <img
+                src={value}
+                alt="Preview"
+                className="w-14 h-14 object-cover rounded-lg border border-gray-200 shrink-0 bg-white"
+              />
+              <div className="flex-1 min-w-0">
+                <span className="text-xs font-bold text-gray-900 block truncate">
+                  {value.startsWith('data:') ? 'Device Image Ready' : 'Online Image Ready'}
+                </span>
+                <span className="text-[10px] text-emerald-600 font-semibold block">
+                  ✓ Saves directly to database
+                </span>
+                <div className="flex items-center gap-3 mt-1">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-[11px] font-bold text-gray-800 hover:underline cursor-pointer"
+                  >
+                    Change
+                  </button>
+                  <span className="text-gray-300">•</span>
+                  <button
+                    type="button"
+                    onClick={() => onChange('')}
+                    className="text-[11px] font-bold text-red-600 hover:underline cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files?.[0];
+                if (file) processFile(file);
+              }}
+              className="border-2 border-dashed border-gray-300 hover:border-black rounded-xl p-3.5 text-center cursor-pointer transition-colors bg-gray-50/50 hover:bg-gray-50"
+            >
+              {isProcessing ? (
+                <div className="py-2 text-gray-600 font-semibold text-xs animate-pulse">Processing image for database...</div>
+              ) : (
+                <div className="flex flex-col items-center gap-1 py-1">
+                  <Upload size={18} className="text-gray-400" />
+                  <span className="text-xs font-bold text-gray-800">
+                    Click to browse or drop image file
+                  </span>
+                  <span className="text-[10px] text-gray-500">
+                    PNG, JPG, WebP — Saves directly into database
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex gap-2">
+          <input
+            type="url"
+            value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={placeholder}
+            className="flex-1 bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 text-xs"
+          />
+          {value && (
+            <img
+              src={value}
+              alt="Preview"
+              className="w-10 h-10 object-cover rounded-lg border border-gray-200 shrink-0 bg-gray-100"
+            />
+          )}
+        </div>
+      )}
+      {helperText && <p className="text-[11px] text-gray-500">{helperText}</p>}
+    </div>
+  );
+};
 
 export const AdminPortal: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -1405,186 +1595,187 @@ export const AdminPortal: React.FC = () => {
 
       {/* EDIT / CREATE PRODUCT MODAL */}
       {isProductModalOpen && editingProduct && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl relative my-8">
-            <button
-              onClick={() => setIsProductModalOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
-            >
-              <X size={20} />
-            </button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/90">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wider">
+                {editingProduct.id ? 'Edit Fragrance Details' : 'Add New Fragrance'}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsProductModalOpen(false)}
+                className="text-gray-400 hover:text-black p-1 rounded-lg hover:bg-gray-200/60 transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wider mb-6">
-              {editingProduct.id ? 'Edit Fragrance Details' : 'Add New Fragrance'}
-            </h2>
-
-            <form onSubmit={handleSaveProduct} className="space-y-4 text-xs">
-              {/* Product Collection Selector */}
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">
-                  Assigned Collection / Category *
-                </label>
-                <select
-                  value={editingProduct.collectionId || collections[0]?.id || 1}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, collectionId: Number(e.target.value) })}
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 font-medium text-sm"
-                  required
-                >
-                  {collections.map((col) => (
-                    <option key={col.id} value={col.id}>
-                      {col.name} — {col.subtitle || 'Category'}
-                    </option>
-                  ))}
-                </select>
-                <p className="text-[11px] text-gray-500 mt-1">
-                  Choose which collection page and category showcase this product belongs to.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Modal Scrollable Form Body */}
+            <form onSubmit={handleSaveProduct} className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4 text-xs">
+                {/* Product Collection Selector */}
                 <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Product Name *</label>
-                  <input
-                    type="text"
-                    value={editingProduct.name || ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                    required
-                    placeholder="e.g. Royal Cambodian Oud"
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Subtitle / Blend</label>
-                  <input
-                    type="text"
-                    value={editingProduct.subtitle || ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, subtitle: e.target.value })}
-                    placeholder="e.g. Aged Wild Agarwood & Sweet Resins"
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Price (GH₵) *</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={editingProduct.price || ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })}
-                    required
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Compare-At / Regular Price (GH₵)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={editingProduct.compareAtPrice || ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, compareAtPrice: parseFloat(e.target.value) || 0 })}
-                    placeholder="Leave 0 if not on sale"
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Scent Family</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">
+                    Assigned Collection / Category *
+                  </label>
                   <select
-                    value={editingProduct.scentFamily || 'Oud'}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, scentFamily: e.target.value })}
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                    value={editingProduct.collectionId || collections[0]?.id || 1}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, collectionId: Number(e.target.value) })}
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 font-medium text-sm shadow-2xs"
+                    required
                   >
-                    <option value="Oud">Oud</option>
-                    <option value="Woody">Woody</option>
-                    <option value="Amber">Amber</option>
-                    <option value="Floral">Floral</option>
-                    <option value="Oriental">Oriental</option>
-                    <option value="Gourmand">Gourmand</option>
-                    <option value="Fresh Spicy">Fresh Spicy</option>
+                    {collections.map((col) => (
+                      <option key={col.id} value={col.id}>
+                        {col.name} — {col.subtitle || 'Category'}
+                      </option>
+                    ))}
                   </select>
+                  <p className="text-[11px] text-gray-500 mt-1">
+                    Choose which collection page and category showcase this product belongs to.
+                  </p>
                 </div>
-                <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Concentration</label>
-                  <input
-                    type="text"
-                    value={editingProduct.concentration || 'Pure Perfume Oil'}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, concentration: e.target.value })}
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Gender</label>
-                  <select
-                    value={editingProduct.gender || 'Unisex'}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, gender: e.target.value })}
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                  >
-                    <option value="Unisex">Unisex</option>
-                    <option value="For Him">For Him</option>
-                    <option value="For Her">For Her</option>
-                  </select>
-                </div>
-              </div>
 
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Primary Image URL</label>
-                <input
-                  type="url"
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Product Name *</label>
+                    <input
+                      type="text"
+                      value={editingProduct.name || ''}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                      required
+                      placeholder="e.g. Royal Cambodian Oud"
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Subtitle / Blend</label>
+                    <input
+                      type="text"
+                      value={editingProduct.subtitle || ''}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, subtitle: e.target.value })}
+                      placeholder="e.g. Aged Wild Agarwood & Sweet Resins"
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Price (GH₵) *</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingProduct.price || ''}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, price: parseFloat(e.target.value) || 0 })}
+                      required
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Compare-At / Regular Price (GH₵)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editingProduct.compareAtPrice || ''}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, compareAtPrice: parseFloat(e.target.value) || 0 })}
+                      placeholder="Leave 0 if not on sale"
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Scent Family</label>
+                    <select
+                      value={editingProduct.scentFamily || 'Oud'}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, scentFamily: e.target.value })}
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    >
+                      <option value="Oud">Oud</option>
+                      <option value="Woody">Woody</option>
+                      <option value="Amber">Amber</option>
+                      <option value="Floral">Floral</option>
+                      <option value="Oriental">Oriental</option>
+                      <option value="Gourmand">Gourmand</option>
+                      <option value="Fresh Spicy">Fresh Spicy</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Concentration</label>
+                    <input
+                      type="text"
+                      value={editingProduct.concentration || 'Pure Perfume Oil'}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, concentration: e.target.value })}
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Gender</label>
+                    <select
+                      value={editingProduct.gender || 'Unisex'}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, gender: e.target.value })}
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    >
+                      <option value="Unisex">Unisex</option>
+                      <option value="For Him">For Him</option>
+                      <option value="For Her">For Her</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Direct Image Upload Fields */}
+                <ImageUploadField
+                  label="Primary Product Photo *"
                   value={editingProduct.imageUrl || ''}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, imageUrl: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                  onChange={(val) => setEditingProduct({ ...editingProduct, imageUrl: val })}
+                  helperText="Upload product image directly from your computer/phone or paste a URL. Saved directly into the database."
                 />
-              </div>
 
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Hover Image URL (Optional)</label>
-                <input
-                  type="url"
+                <ImageUploadField
+                  label="Hover Image / Alternate View (Optional)"
                   value={editingProduct.hoverImageUrl || ''}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, hoverImageUrl: e.target.value })}
-                  placeholder="https://..."
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                  onChange={(val) => setEditingProduct({ ...editingProduct, hoverImageUrl: val })}
+                  helperText="Secondary image revealed when customer hovers on product card."
                 />
-              </div>
 
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Description</label>
-                <textarea
-                  rows={3}
-                  value={editingProduct.description || ''}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                />
-              </div>
-
-              <div className="flex items-center gap-6 pt-2">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={editingProduct.isBestSeller || false}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, isBestSeller: e.target.checked })}
-                    className="rounded text-[#e62b32]"
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Description</label>
+                  <textarea
+                    rows={3}
+                    value={editingProduct.description || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                    placeholder="Fragrance profile, notes, and characteristics..."
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
                   />
-                  <span className="text-gray-800 font-bold">Best Seller Badge</span>
-                </label>
+                </div>
+
+                <div className="flex items-center gap-6 pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={editingProduct.isBestSeller || false}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, isBestSeller: e.target.checked })}
+                      className="rounded text-[#e62b32] w-4 h-4 cursor-pointer"
+                    />
+                    <span className="text-gray-800 font-bold">Best Seller Badge</span>
+                  </label>
+                </div>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3">
+              {/* Modal Fixed Sticky Footer */}
+              <div className="shrink-0 px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsProductModalOpen(false)}
-                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold cursor-pointer"
+                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold text-xs tracking-wider cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
+                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider text-xs cursor-pointer shadow-xs transition-colors"
                 >
                   Save Fragrance
                 </button>
@@ -1596,87 +1787,90 @@ export const AdminPortal: React.FC = () => {
 
       {/* EDIT / CREATE COLLECTION MODAL */}
       {isCollectionModalOpen && editingCollection && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative my-8">
-            <button
-              onClick={() => setIsCollectionModalOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
-            >
-              <X size={20} />
-            </button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/90">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wider">
+                {editingCollection.id ? 'Edit Collection' : 'Add New Collection Category'}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsCollectionModalOpen(false)}
+                className="text-gray-400 hover:text-black p-1 rounded-lg hover:bg-gray-200/60 transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wider mb-6">
-              {editingCollection.id ? 'Edit Collection' : 'Add New Collection Category'}
-            </h2>
+            {/* Scrollable Form Body */}
+            <form onSubmit={handleSaveCollection} className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4 text-xs">
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Collection Title *</label>
+                  <input
+                    type="text"
+                    value={editingCollection.name || ''}
+                    onChange={(e) => setEditingCollection({ ...editingCollection, name: e.target.value })}
+                    placeholder="e.g. Discovery Sets, Oud Perfume Oils"
+                    required
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                  />
+                </div>
 
-            <form onSubmit={handleSaveCollection} className="space-y-4 text-xs">
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Collection Title *</label>
-                <input
-                  type="text"
-                  value={editingCollection.name || ''}
-                  onChange={(e) => setEditingCollection({ ...editingCollection, name: e.target.value })}
-                  placeholder="e.g. Discovery Sets, Oud Perfume Oils"
-                  required
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                />
-              </div>
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Subtitle</label>
+                  <input
+                    type="text"
+                    value={editingCollection.subtitle || ''}
+                    onChange={(e) => setEditingCollection({ ...editingCollection, subtitle: e.target.value })}
+                    placeholder="e.g. Pure Concentrated Essence"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Subtitle</label>
-                <input
-                  type="text"
-                  value={editingCollection.subtitle || ''}
-                  onChange={(e) => setEditingCollection({ ...editingCollection, subtitle: e.target.value })}
-                  placeholder="e.g. Pure Concentrated Essence"
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                />
-              </div>
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Badge (Optional)</label>
+                  <input
+                    type="text"
+                    value={editingCollection.badge || ''}
+                    onChange={(e) => setEditingCollection({ ...editingCollection, badge: e.target.value })}
+                    placeholder="e.g. Signature Range, Gift Ready"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Badge (Optional)</label>
-                <input
-                  type="text"
-                  value={editingCollection.badge || ''}
-                  onChange={(e) => setEditingCollection({ ...editingCollection, badge: e.target.value })}
-                  placeholder="e.g. Signature Range, Gift Ready"
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Image URL</label>
-                <input
-                  type="url"
+                <ImageUploadField
+                  label="Collection Cover Photo"
                   value={editingCollection.imageUrl || ''}
-                  onChange={(e) => setEditingCollection({ ...editingCollection, imageUrl: e.target.value })}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                  onChange={(val) => setEditingCollection({ ...editingCollection, imageUrl: val })}
+                  helperText="Upload collection banner or preview image directly into the database."
                 />
+
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Description</label>
+                  <textarea
+                    rows={3}
+                    value={editingCollection.description || ''}
+                    onChange={(e) => setEditingCollection({ ...editingCollection, description: e.target.value })}
+                    placeholder="Curated olfactory collection description..."
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Description</label>
-                <textarea
-                  rows={3}
-                  value={editingCollection.description || ''}
-                  onChange={(e) => setEditingCollection({ ...editingCollection, description: e.target.value })}
-                  placeholder="Curated olfactory collection description..."
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                />
-              </div>
-
-              <div className="pt-4 flex justify-end gap-3">
+              {/* Fixed Footer */}
+              <div className="shrink-0 px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsCollectionModalOpen(false)}
-                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold cursor-pointer"
+                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold text-xs tracking-wider cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
+                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider text-xs cursor-pointer shadow-xs transition-colors"
                 >
                   Save Collection
                 </button>
@@ -1688,104 +1882,107 @@ export const AdminPortal: React.FC = () => {
 
       {/* EDIT / CREATE BLOG MODAL */}
       {isBlogModalOpen && editingBlog && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl relative my-8">
-            <button
-              onClick={() => setIsBlogModalOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
-            >
-              <X size={20} />
-            </button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/90">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wider">
+                {editingBlog.id ? 'Edit Blog Article' : 'Write New Blog Article'}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsBlogModalOpen(false)}
+                className="text-gray-400 hover:text-black p-1 rounded-lg hover:bg-gray-200/60 transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wider mb-6">
-              {editingBlog.id ? 'Edit Blog Article' : 'Write New Blog Article'}
-            </h2>
-
-            <form onSubmit={handleSaveBlog} className="space-y-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Article Title *</label>
-                  <input
-                    type="text"
-                    value={editingBlog.title || ''}
-                    onChange={(e) => setEditingBlog({ ...editingBlog, title: e.target.value })}
-                    required
-                    placeholder="e.g. How to Make Perfume Oil Last All Day"
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                  />
+            {/* Scrollable Form Body */}
+            <form onSubmit={handleSaveBlog} className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Article Title *</label>
+                    <input
+                      type="text"
+                      value={editingBlog.title || ''}
+                      onChange={(e) => setEditingBlog({ ...editingBlog, title: e.target.value })}
+                      required
+                      placeholder="e.g. How to Make Perfume Oil Last All Day"
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Category</label>
+                    <select
+                      value={editingBlog.category || 'Fragrance Care'}
+                      onChange={(e) => setEditingBlog({ ...editingBlog, category: e.target.value })}
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    >
+                      <option value="Fragrance Care">Fragrance Care</option>
+                      <option value="Oud Culture">Oud Culture</option>
+                      <option value="Layering Guide">Layering Guide</option>
+                      <option value="Behind The Craft">Behind The Craft</option>
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Category</label>
-                  <select
-                    value={editingBlog.category || 'Fragrance Care'}
-                    onChange={(e) => setEditingBlog({ ...editingBlog, category: e.target.value })}
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                  >
-                    <option value="Fragrance Care">Fragrance Care</option>
-                    <option value="Oud Culture">Oud Culture</option>
-                    <option value="Layering Guide">Layering Guide</option>
-                    <option value="Behind The Craft">Behind The Craft</option>
-                  </select>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Featured Image URL</label>
-                  <input
-                    type="url"
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <ImageUploadField
+                    label="Featured Blog Image"
                     value={editingBlog.imageUrl || ''}
-                    onChange={(e) => setEditingBlog({ ...editingBlog, imageUrl: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                    onChange={(val) => setEditingBlog({ ...editingBlog, imageUrl: val })}
+                    helperText="Upload article cover image directly into database."
                   />
+                  <div>
+                    <label className="block text-gray-700 font-bold uppercase mb-1">Read Time</label>
+                    <input
+                      type="text"
+                      value={editingBlog.readTime || '4 min read'}
+                      onChange={(e) => setEditingBlog({ ...editingBlog, readTime: e.target.value })}
+                      placeholder="e.g. 4 min read"
+                      className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    />
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Read Time</label>
-                  <input
-                    type="text"
-                    value={editingBlog.readTime || '4 min read'}
-                    onChange={(e) => setEditingBlog({ ...editingBlog, readTime: e.target.value })}
-                    placeholder="e.g. 4 min read"
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Short Excerpt / Summary</label>
+                  <textarea
+                    rows={2}
+                    value={editingBlog.excerpt || ''}
+                    onChange={(e) => setEditingBlog({ ...editingBlog, excerpt: e.target.value })}
+                    placeholder="Brief 1-2 sentence teaser for cards..."
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Full Article Content (Markdown or Text) *</label>
+                  <textarea
+                    rows={7}
+                    value={editingBlog.content || ''}
+                    onChange={(e) => setEditingBlog({ ...editingBlog, content: e.target.value })}
+                    required
+                    placeholder="Write complete article paragraphs here..."
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 font-mono text-[11px] shadow-2xs"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Short Excerpt / Summary</label>
-                <textarea
-                  rows={2}
-                  value={editingBlog.excerpt || ''}
-                  onChange={(e) => setEditingBlog({ ...editingBlog, excerpt: e.target.value })}
-                  placeholder="Brief 1-2 sentence teaser for cards..."
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Full Article Content (Markdown or Text) *</label>
-                <textarea
-                  rows={8}
-                  value={editingBlog.content || ''}
-                  onChange={(e) => setEditingBlog({ ...editingBlog, content: e.target.value })}
-                  required
-                  placeholder="Write complete article paragraphs here..."
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 font-mono text-[11px]"
-                />
-              </div>
-
-              <div className="pt-4 flex justify-end gap-3">
+              {/* Fixed Footer */}
+              <div className="shrink-0 px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsBlogModalOpen(false)}
-                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold cursor-pointer"
+                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold text-xs tracking-wider cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
+                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider text-xs cursor-pointer shadow-xs transition-colors"
                 >
                   Publish Article
                 </button>
@@ -1797,69 +1994,76 @@ export const AdminPortal: React.FC = () => {
 
       {/* EDIT / CREATE FAQ MODAL */}
       {isFAQModalOpen && editingFAQ && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-lg p-6 sm:p-8 shadow-2xl relative my-8">
-            <button
-              onClick={() => setIsFAQModalOpen(false)}
-              className="absolute top-6 right-6 text-gray-400 hover:text-black cursor-pointer"
-            >
-              <X size={20} />
-            </button>
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/90">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wider">
+                {editingFAQ.id ? 'Edit FAQ' : 'Add New FAQ'}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsFAQModalOpen(false)}
+                className="text-gray-400 hover:text-black p-1 rounded-lg hover:bg-gray-200/60 transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
 
-            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wider mb-6">
-              {editingFAQ.id ? 'Edit FAQ' : 'Add New FAQ'}
-            </h2>
+            {/* Scrollable Form Body */}
+            <form onSubmit={handleSaveFAQ} className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4 text-xs">
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">FAQ Category *</label>
+                  <select
+                    value={editingFAQ.category || 'Order Enquiries'}
+                    onChange={(e) => setEditingFAQ({ ...editingFAQ, category: e.target.value })}
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                    required
+                  >
+                    <option value="Order Enquiries">Order Enquiries</option>
+                    <option value="Shipping issues">Shipping issues</option>
+                    <option value="Returns & Product Care">Returns & Product Care</option>
+                  </select>
+                </div>
 
-            <form onSubmit={handleSaveFAQ} className="space-y-4 text-xs">
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">FAQ Category *</label>
-                <select
-                  value={editingFAQ.category || 'Order Enquiries'}
-                  onChange={(e) => setEditingFAQ({ ...editingFAQ, category: e.target.value })}
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                  required
-                >
-                  <option value="Order Enquiries">Order Enquiries</option>
-                  <option value="Shipping issues">Shipping issues</option>
-                  <option value="Returns & Product Care">Returns & Product Care</option>
-                </select>
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Question *</label>
+                  <input
+                    type="text"
+                    value={editingFAQ.question || ''}
+                    onChange={(e) => setEditingFAQ({ ...editingFAQ, question: e.target.value })}
+                    required
+                    placeholder="e.g. How do I apply concentrated perfume oil?"
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Answer *</label>
+                  <textarea
+                    rows={6}
+                    value={editingFAQ.answer || ''}
+                    onChange={(e) => setEditingFAQ({ ...editingFAQ, answer: e.target.value })}
+                    required
+                    placeholder="Clear and simple plain english answer..."
+                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Question *</label>
-                <input
-                  type="text"
-                  value={editingFAQ.question || ''}
-                  onChange={(e) => setEditingFAQ({ ...editingFAQ, question: e.target.value })}
-                  required
-                  placeholder="e.g. How do I apply concentrated perfume oil?"
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-bold uppercase mb-1">Answer *</label>
-                <textarea
-                  rows={5}
-                  value={editingFAQ.answer || ''}
-                  onChange={(e) => setEditingFAQ({ ...editingFAQ, answer: e.target.value })}
-                  required
-                  placeholder="Clear and simple plain english answer..."
-                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
-                />
-              </div>
-
-              <div className="pt-4 flex justify-end gap-3">
+              {/* Fixed Footer */}
+              <div className="shrink-0 px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsFAQModalOpen(false)}
-                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold cursor-pointer"
+                  className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 uppercase font-bold text-xs tracking-wider cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
+                  className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider text-xs cursor-pointer shadow-xs transition-colors"
                 >
                   Save FAQ
                 </button>
