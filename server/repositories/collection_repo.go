@@ -41,6 +41,10 @@ func (r *CollectionRepository) Create(collection *models.Collection) error {
 	return r.db.Create(collection).Error
 }
 
+func (r *CollectionRepository) Save(collection *models.Collection) error {
+	return r.db.Model(&models.Collection{}).Where("id = ?", collection.ID).Updates(collection).Error
+}
+
 func (r *CollectionRepository) Update(id uint, updates map[string]interface{}) error {
 	return r.db.Model(&models.Collection{}).Where("id = ?", id).Updates(updates).Error
 }
@@ -48,3 +52,4 @@ func (r *CollectionRepository) Update(id uint, updates map[string]interface{}) e
 func (r *CollectionRepository) Delete(id uint) error {
 	return r.db.Delete(&models.Collection{}, id).Error
 }
+

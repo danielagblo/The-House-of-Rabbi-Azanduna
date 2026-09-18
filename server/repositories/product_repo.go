@@ -114,6 +114,10 @@ func (r *ProductRepository) Create(product *models.Product) error {
 	return r.db.Create(product).Error
 }
 
+func (r *ProductRepository) Save(product *models.Product) error {
+	return r.db.Model(&models.Product{}).Where("id = ?", product.ID).Updates(product).Error
+}
+
 func (r *ProductRepository) Update(id uint, updates map[string]interface{}) error {
 	return r.db.Model(&models.Product{}).Where("id = ?", id).Updates(updates).Error
 }
@@ -121,3 +125,4 @@ func (r *ProductRepository) Update(id uint, updates map[string]interface{}) erro
 func (r *ProductRepository) Delete(id uint) error {
 	return r.db.Delete(&models.Product{}, id).Error
 }
+

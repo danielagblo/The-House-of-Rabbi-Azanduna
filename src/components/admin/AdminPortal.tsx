@@ -4,7 +4,8 @@ import { FALLBACK_PRODUCTS, FALLBACK_COLLECTIONS } from '../../data/fallbackData
 import { 
   Lock, KeyRound, Eye, EyeOff, LogOut, Package, Layers, 
   ShoppingBag, Plus, Edit2, Trash2, CheckCircle2, AlertCircle, 
-  ExternalLink, Search, DollarSign, TrendingUp, RefreshCw, X
+  ExternalLink, Search, DollarSign, TrendingUp, RefreshCw, X,
+  Filter, Tag, ArrowRight
 } from 'lucide-react';
 
 export const AdminPortal: React.FC = () => {
@@ -25,6 +26,7 @@ export const AdminPortal: React.FC = () => {
     total_revenue: 0,
   });
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedCollectionFilter, setSelectedCollectionFilter] = useState<string>('all');
   const [loading, setLoading] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
@@ -98,23 +100,27 @@ export const AdminPortal: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Products
-      const prodRes = await fetch('http://localhost:8080/api/products');
-      if (prodRes.ok) {
-        const prodData = await prodRes.json();
-        setProducts(prodData && prodData.length > 0 ? prodData : FALLBACK_PRODUCTS);
-      } else {
-        setProducts(FALLBACK_PRODUCTS);
-      }
-
-      // Collections
+      // Collections first so products can reference them
+      let loadedCollections = FALLBACK_COLLECTIONS;
       const colRes = await fetch('http://localhost:8080/api/collections');
       if (colRes.ok) {
         const colData = await colRes.json();
-        setCollections(colData && colData.length > 0 ? colData : FALLBACK_COLLECTIONS);
-      } else {
-        setCollections(FALLBACK_COLLECTIONS);
+        if (colData && colData.length > 0) {
+          loadedCollections = colData;
+        }
       }
+      setCollections(loadedCollections);
+
+      // Products
+      let loadedProducts = FALLBACK_PRODUCTS;
+      const prodRes = await fetch('http://localhost:8080/api/products');
+      if (prodRes.ok) {
+        const prodData = await prodRes.json();
+        if (prodData && prodData.length > 0) {
+          loadedProducts = prodData;
+        }
+      }
+      setProducts(loadedProducts);
 
       // Stats
       const statsRes = await fetch('http://localhost:8080/api/admin/stats');
@@ -123,8 +129,8 @@ export const AdminPortal: React.FC = () => {
         setStats(statsData);
       } else {
         setStats({
-          products_count: FALLBACK_PRODUCTS.length,
-          collections_count: FALLBACK_COLLECTIONS.length,
+          products_count: loadedProducts.length,
+          collections_count: loadedCollections.length,
           orders_count: 8,
           total_revenue: 1420.0,
         });
@@ -150,50 +156,89 @@ export const AdminPortal: React.FC = () => {
     }
   };
 
+  // Open modal to add product, optionally pre-selecting a collection
+  const handleOpenAddProduct = (presetCollectionId?: number) => {
+    const targetCollectionId = presetCollectionId || (selectedCollectionFilter !== 'all' ? Number(selectedCollectionFilter) : collections[0]?.id || 1);
+    setEditingProduct({
+      collectionId: targetCollectionId,
+      name: '',
+      subtitle: '',
+      description: '',
+      price: 35.0,
+      compareAtPrice: 45.0,
+      imageUrl: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80',
+      scentFamily: 'Oud',
+      gender: 'Unisex',
+      concentration: 'Pure Perfume Oil',
+      isBestSeller: false,
+      isNew: true,
+      inStock: true,
+    });
+    setIsProductModalOpen(true);
+  };
+
   // Product Actions
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingProduct || !editingProduct.name || !editingProduct.price) {
-      showToast('Please fill in required fields (Name and Price)', 'error');
+      showToast('Please fill in required fields (Name, Price, Collection)', 'error');
       return;
     }
+
+    const assignedCollectionId = Number(editingProduct.collectionId) || collections[0]?.id || 1;
+    const assignedCollection = collections.find((c) => c.id === assignedCollectionId);
+
+    const productPayload = {
+      ...editingProduct,
+      collectionId: assignedCollectionId,
+      collection: assignedCollection,
+      price: Number(editingProduct.price),
+      compareAtPrice: editingProduct.compareAtPrice ? Number(editingProduct.compareAtPrice) : 0,
+      slug: editingProduct.slug || editingProduct.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      rating: editingProduct.rating || 5,
+      reviewCount: editingProduct.reviewCount || 1,
+      inStock: editingProduct.inStock !== false,
+      notes: editingProduct.notes || [
+        { layer: 'top', noteName: 'Sun-Dried Bergamot & Saffron', description: 'Opening' },
+        { layer: 'heart', noteName: 'Artisanal Agarwood & Rose', description: 'Heart' },
+        { layer: 'base', noteName: 'Smoked Ambergris & Sandalwood', description: 'Base' },
+      ],
+      variants: editingProduct.variants || [
+        { size: '6ml Crystal Flacon', price: Number(editingProduct.price), inStock: true },
+      ]
+    };
 
     try {
       if (editingProduct.id) {
         const res = await fetch(`http://localhost:8080/api/admin/products/${editingProduct.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(editingProduct),
+          body: JSON.stringify(productPayload),
         });
         if (res.ok) {
           showToast('Product updated successfully!');
         } else {
-          setProducts((prev) => prev.map((p) => (p.id === editingProduct.id ? { ...p, ...editingProduct } as Product : p)));
+          setProducts((prev) => prev.map((p) => (p.id === editingProduct.id ? { ...p, ...productPayload } as Product : p)));
           showToast('Product updated (Local Session)!');
         }
       } else {
-        const newProd = {
-          ...editingProduct,
-          slug: editingProduct.slug || editingProduct.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-          rating: 5,
-          reviewCount: 1,
-        };
         const res = await fetch('http://localhost:8080/api/admin/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newProd),
+          body: JSON.stringify(productPayload),
         });
         if (res.ok) {
-          showToast('New product created successfully!');
+          showToast('New fragrance created and linked to collection!');
         } else {
-          setProducts((prev) => [{ ...newProd, id: Date.now() } as Product, ...prev]);
-          showToast('New product created (Local Session)!');
+          setProducts((prev) => [{ ...productPayload, id: Date.now() } as Product, ...prev]);
+          showToast('New fragrance created (Local Session)!');
         }
       }
       setIsProductModalOpen(false);
       fetchData();
     } catch (err) {
-      showToast('Action completed in local session', 'success');
+      setProducts((prev) => [{ ...productPayload, id: Date.now() } as Product, ...prev]);
+      showToast('Action saved in local session', 'success');
       setIsProductModalOpen(false);
     }
   };
@@ -227,13 +272,15 @@ export const AdminPortal: React.FC = () => {
         const newCol = {
           ...editingCollection,
           slug: editingCollection.slug || editingCollection.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          featured: editingCollection.featured ?? true,
+          sortOrder: collections.length + 1,
         };
         await fetch('http://localhost:8080/api/admin/collections', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newCol),
         });
-        showToast('Collection created!');
+        showToast('New collection category created!');
       }
       setIsCollectionModalOpen(false);
       fetchData();
@@ -244,7 +291,15 @@ export const AdminPortal: React.FC = () => {
   };
 
   const handleDeleteCollection = async (id: number) => {
-    if (!confirm('Delete this collection?')) return;
+    const assignedProds = products.filter((p) => p.collectionId === id);
+    if (assignedProds.length > 0) {
+      if (!confirm(`Warning: This collection has ${assignedProds.length} product(s) assigned to it. Are you sure you want to delete it?`)) {
+        return;
+      }
+    } else {
+      if (!confirm('Delete this collection category?')) return;
+    }
+
     try {
       await fetch(`http://localhost:8080/api/admin/collections/${id}`, { method: 'DELETE' });
       setCollections((prev) => prev.filter((c) => c.id !== id));
@@ -255,11 +310,31 @@ export const AdminPortal: React.FC = () => {
     }
   };
 
+  // Filtered Products based on search query AND selected collection
   const filteredProducts = products.filter((p) => {
+    // Collection Filter
+    if (selectedCollectionFilter !== 'all') {
+      const targetId = Number(selectedCollectionFilter);
+      if (p.collectionId !== targetId && p.collection?.id !== targetId) {
+        return false;
+      }
+    }
+    // Search Query
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
-    return p.name.toLowerCase().includes(q) || p.scentFamily?.toLowerCase().includes(q);
+    const colName = collections.find((c) => c.id === p.collectionId)?.name || '';
+    return (
+      p.name.toLowerCase().includes(q) || 
+      p.scentFamily?.toLowerCase().includes(q) ||
+      colName.toLowerCase().includes(q)
+    );
   });
+
+  // Helper to find collection name by product
+  const getProductCollection = (prod: Product) => {
+    if (prod.collection && prod.collection.name) return prod.collection;
+    return collections.find((c) => c.id === prod.collectionId);
+  };
 
   // 1. LOCKED LIGHT LOGIN SCREEN
   if (!isAuthenticated) {
@@ -447,7 +522,7 @@ export const AdminPortal: React.FC = () => {
                   <Layers size={18} className="text-amber-600" />
                 </div>
                 <div className="text-2xl font-bold text-gray-900">{collections.length}</div>
-                <p className="text-[11px] text-gray-500 mt-1">Discovery & ranges</p>
+                <p className="text-[11px] text-gray-500 mt-1">Active categories & ranges</p>
               </div>
 
               <div className="bg-white border border-gray-200/90 p-5 rounded-xl shadow-xs">
@@ -476,22 +551,7 @@ export const AdminPortal: React.FC = () => {
               </h2>
               <div className="flex flex-wrap gap-3">
                 <button
-                  onClick={() => {
-                    setEditingProduct({
-                      name: '',
-                      subtitle: '',
-                      description: '',
-                      price: 32.0,
-                      compareAtPrice: 40.0,
-                      imageUrl: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80',
-                      scentFamily: 'Oud',
-                      gender: 'Unisex',
-                      concentration: 'Pure Perfume Oil',
-                      isBestSeller: false,
-                      isNew: true,
-                    });
-                    setIsProductModalOpen(true);
-                  }}
+                  onClick={() => handleOpenAddProduct()}
                   className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
                 >
                   <Plus size={14} /> Add New Fragrance
@@ -510,8 +570,60 @@ export const AdminPortal: React.FC = () => {
                   }}
                   className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-900 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider border border-gray-300 transition-colors cursor-pointer"
                 >
-                  <Plus size={14} /> Add Collection Category
+                  <Plus size={14} /> Add New Collection
                 </button>
+              </div>
+            </div>
+
+            {/* Collections Breakdown Card */}
+            <div className="bg-white border border-gray-200/90 p-6 rounded-xl shadow-xs">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900">
+                    Collections & Product Allocation Overview
+                  </h2>
+                  <p className="text-xs text-gray-500">Breakdown of fragrances assigned to each collection</p>
+                </div>
+                <button
+                  onClick={() => setActiveTab('collections')}
+                  className="text-xs font-bold text-[#e62b32] hover:underline flex items-center gap-1"
+                >
+                  Manage All Collections <ArrowRight size={13} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {collections.map((col) => {
+                  const colProds = products.filter((p) => p.collectionId === col.id || p.collection?.id === col.id);
+                  return (
+                    <div key={col.id || col.slug} className="border border-gray-200 rounded-xl p-4 bg-gray-50/50 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-bold text-gray-900 text-sm">{col.name}</h3>
+                        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-red-100 text-[#e62b32]">
+                          {colProds.length} {colProds.length === 1 ? 'Product' : 'Products'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-500 mb-3">{col.subtitle || 'Category'}</p>
+                      <div className="flex items-center justify-between text-xs pt-2 border-t border-gray-200/80">
+                        <button
+                          onClick={() => {
+                            setSelectedCollectionFilter(String(col.id));
+                            setActiveTab('products');
+                          }}
+                          className="font-semibold text-gray-700 hover:text-black hover:underline"
+                        >
+                          View Products
+                        </button>
+                        <button
+                          onClick={() => handleOpenAddProduct(col.id)}
+                          className="font-bold text-[#e62b32] hover:text-[#cf2229] flex items-center gap-1"
+                        >
+                          <Plus size={12} /> Add Product
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -520,39 +632,58 @@ export const AdminPortal: React.FC = () => {
         {/* TAB 2: PRODUCTS MANAGER */}
         {activeTab === 'products' && (
           <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="relative w-full sm:w-80">
-                <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products by name or note..."
-                  className="w-full bg-white border border-gray-300 rounded-lg py-2 pl-10 pr-4 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black shadow-2xs"
-                />
+            {/* Filter & Search Bar */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-gray-200/90 shadow-2xs">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                {/* Search Input */}
+                <div className="relative w-full sm:w-72">
+                  <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search fragrance or note..."
+                    className="w-full bg-white border border-gray-300 rounded-lg py-2 pl-10 pr-4 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-black shadow-2xs"
+                  />
+                </div>
+
+                {/* Collection Filter Dropdown */}
+                <div className="flex items-center gap-2">
+                  <Filter size={15} className="text-gray-400 shrink-0 hidden sm:block" />
+                  <select
+                    value={selectedCollectionFilter}
+                    onChange={(e) => setSelectedCollectionFilter(e.target.value)}
+                    className="bg-white border border-gray-300 focus:border-black rounded-lg py-2 px-3 text-xs text-gray-900 font-semibold shadow-2xs"
+                  >
+                    <option value="all">All Collections ({products.length})</option>
+                    {collections.map((col) => {
+                      const count = products.filter((p) => p.collectionId === col.id || p.collection?.id === col.id).length;
+                      return (
+                        <option key={col.id} value={col.id}>
+                          {col.name} ({count})
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
               </div>
 
-              <button
-                onClick={() => {
-                  setEditingProduct({
-                    name: '',
-                    subtitle: '',
-                    description: '',
-                    price: 28.0,
-                    compareAtPrice: 35.0,
-                    imageUrl: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80',
-                    scentFamily: 'Oud',
-                    gender: 'Unisex',
-                    concentration: 'Pure Perfume Oil',
-                    isBestSeller: false,
-                    isNew: true,
-                  });
-                  setIsProductModalOpen(true);
-                }}
-                className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
-              >
-                <Plus size={14} /> New Product
-              </button>
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                {selectedCollectionFilter !== 'all' && (
+                  <button
+                    onClick={() => setSelectedCollectionFilter('all')}
+                    className="text-xs text-gray-500 hover:text-black underline mr-2"
+                  >
+                    Clear Filter
+                  </button>
+                )}
+                <button
+                  onClick={() => handleOpenAddProduct()}
+                  className="flex items-center gap-2 bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider shadow-xs transition-colors cursor-pointer"
+                >
+                  <Plus size={14} /> Add Product
+                </button>
+              </div>
             </div>
 
             {/* Products Table */}
@@ -561,67 +692,98 @@ export const AdminPortal: React.FC = () => {
                 <table className="w-full text-left text-xs">
                   <thead className="bg-[#f4f4f4] text-gray-700 uppercase font-bold tracking-wider text-[11px] border-b border-gray-200">
                     <tr>
-                      <th className="py-3.5 px-4">Item</th>
-                      <th className="py-3.5 px-4">Category</th>
+                      <th className="py-3.5 px-4">Fragrance Item</th>
+                      <th className="py-3.5 px-4">Assigned Collection</th>
+                      <th className="py-3.5 px-4">Scent Family</th>
                       <th className="py-3.5 px-4">Price</th>
                       <th className="py-3.5 px-4">Sale / Compare</th>
                       <th className="py-3.5 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
-                    {filteredProducts.map((prod) => (
-                      <tr key={prod.id || prod.slug} className="hover:bg-gray-50/80 transition-colors">
-                        <td className="py-3.5 px-4">
-                          <div className="flex items-center gap-3">
-                            <img
-                              src={prod.imageUrl}
-                              alt={prod.name}
-                              className="w-11 h-11 object-cover rounded-md bg-gray-100 border border-gray-200"
-                            />
-                            <div>
-                              <span className="font-bold text-gray-900 block text-sm">{prod.name}</span>
-                              <span className="text-[11px] text-gray-500">{prod.concentration || 'Pure Oil'}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-3.5 px-4 text-gray-700">
-                          <span className="px-2.5 py-1 rounded-full bg-gray-100 text-[11px] font-semibold text-gray-800 border border-gray-200">
-                            {prod.scentFamily || 'Fragrance'}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-4 font-bold text-gray-900 text-sm">
-                          £{prod.price.toFixed(2)}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          {prod.compareAtPrice && prod.compareAtPrice > prod.price ? (
-                            <span className="text-[#e62b32] font-bold">
-                              £{prod.compareAtPrice.toFixed(2)} (SAVE £{(prod.compareAtPrice - prod.price).toFixed(2)})
-                            </span>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className="py-3.5 px-4 text-right space-x-2">
+                    {filteredProducts.length > 0 ? (
+                      filteredProducts.map((prod) => {
+                        const prodCol = getProductCollection(prod);
+                        return (
+                          <tr key={prod.id || prod.slug} className="hover:bg-gray-50/80 transition-colors">
+                            <td className="py-3.5 px-4">
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={prod.imageUrl}
+                                  alt={prod.name}
+                                  className="w-11 h-11 object-cover rounded-md bg-gray-100 border border-gray-200"
+                                />
+                                <div>
+                                  <span className="font-bold text-gray-900 block text-sm">{prod.name}</span>
+                                  <span className="text-[11px] text-gray-500">{prod.concentration || 'Pure Oil'}</span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-3.5 px-4">
+                              {prodCol ? (
+                                <button
+                                  onClick={() => setSelectedCollectionFilter(String(prodCol.id))}
+                                  className="px-2.5 py-1 rounded-full bg-red-50 text-[11px] font-bold text-[#e62b32] border border-red-200 hover:bg-red-100 transition-colors text-left"
+                                  title="Filter by this collection"
+                                >
+                                  {prodCol.name}
+                                </button>
+                              ) : (
+                                <span className="text-gray-400 text-[11px]">Unassigned</span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-4 text-gray-700">
+                              <span className="px-2.5 py-1 rounded-full bg-gray-100 text-[11px] font-semibold text-gray-800 border border-gray-200">
+                                {prod.scentFamily || 'Fragrance'}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4 font-bold text-gray-900 text-sm">
+                              £{prod.price.toFixed(2)}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              {prod.compareAtPrice && prod.compareAtPrice > prod.price ? (
+                                <span className="text-[#e62b32] font-bold">
+                                  £{prod.compareAtPrice.toFixed(2)} (SAVE £{(prod.compareAtPrice - prod.price).toFixed(2)})
+                                </span>
+                              ) : (
+                                <span className="text-gray-400">—</span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-4 text-right space-x-2">
+                              <button
+                                onClick={() => {
+                                  setEditingProduct(prod);
+                                  setIsProductModalOpen(true);
+                                }}
+                                className="p-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded transition-colors cursor-pointer"
+                                title="Edit Product"
+                              >
+                                <Edit2 size={15} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteProduct(prod.id)}
+                                className="p-1.5 text-gray-400 hover:text-[#e62b32] hover:bg-red-50 rounded transition-colors cursor-pointer"
+                                title="Delete Product"
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={6} className="py-12 text-center text-gray-500">
+                          <p className="text-sm font-semibold mb-1">No fragrances found matching your search or filter.</p>
                           <button
-                            onClick={() => {
-                              setEditingProduct(prod);
-                              setIsProductModalOpen(true);
-                            }}
-                            className="p-1.5 text-gray-600 hover:text-black hover:bg-gray-100 rounded transition-colors cursor-pointer"
-                            title="Edit Product"
+                            onClick={() => handleOpenAddProduct()}
+                            className="mt-2 text-xs font-bold text-[#e62b32] hover:underline"
                           >
-                            <Edit2 size={15} />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteProduct(prod.id)}
-                            className="p-1.5 text-gray-400 hover:text-[#e62b32] hover:bg-red-50 rounded transition-colors cursor-pointer"
-                            title="Delete Product"
-                          >
-                            <Trash2 size={15} />
+                            + Add a new fragrance now
                           </button>
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -632,7 +794,16 @@ export const AdminPortal: React.FC = () => {
         {/* TAB 3: COLLECTIONS MANAGER */}
         {activeTab === 'collections' && (
           <div className="space-y-6">
-            <div className="flex justify-end">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-base font-bold uppercase tracking-wider text-gray-900">
+                  Collections & Product Catalog Structure
+                </h2>
+                <p className="text-xs text-gray-500">
+                  Create collections, assign fragrances, and manage storefront presentation
+                </p>
+              </div>
+
               <button
                 onClick={() => {
                   setEditingCollection({
@@ -652,55 +823,120 @@ export const AdminPortal: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {collections.map((col) => (
-                <div key={col.id || col.slug} className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs flex flex-col justify-between">
-                  <div>
-                    <div className="relative aspect-[16/10] bg-gray-100">
-                      <img src={col.imageUrl} alt={col.name} className="w-full h-full object-cover" />
-                      {col.badge && (
-                        <span className="absolute top-2 left-2 bg-[#e62b32] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
-                          {col.badge}
-                        </span>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-gray-900 text-base mb-1">{col.name}</h3>
-                      <p className="text-xs text-[#e62b32] font-bold mb-2">{col.subtitle || 'Category'}</p>
-                      <p className="text-xs text-gray-600 line-clamp-2">{col.description}</p>
-                    </div>
-                  </div>
+              {collections.map((col) => {
+                const assignedProducts = products.filter(
+                  (p) => p.collectionId === col.id || p.collection?.id === col.id
+                );
 
-                  <div className="p-4 border-t border-gray-100 flex items-center justify-between">
-                    <a
-                      href={`/collections/${col.slug}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs font-semibold text-gray-600 hover:text-black flex items-center gap-1"
-                    >
-                      View Live <ExternalLink size={12} />
-                    </a>
-                    <div className="space-x-2">
-                      <button
-                        onClick={() => {
-                          setEditingCollection(col);
-                          setIsCollectionModalOpen(true);
-                        }}
-                        className="p-1.5 text-gray-600 hover:text-black cursor-pointer"
-                        title="Edit"
-                      >
-                        <Edit2 size={15} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteCollection(col.id)}
-                        className="p-1.5 text-gray-400 hover:text-[#e62b32] cursor-pointer"
-                        title="Delete"
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                return (
+                  <div key={col.id || col.slug} className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs flex flex-col justify-between">
+                    <div>
+                      {/* Image & Badge */}
+                      <div className="relative aspect-[16/9] bg-gray-100">
+                        <img src={col.imageUrl} alt={col.name} className="w-full h-full object-cover" />
+                        {col.badge && (
+                          <span className="absolute top-2 left-2 bg-[#e62b32] text-white text-[10px] font-bold px-2.5 py-0.5 rounded shadow-xs uppercase tracking-wider">
+                            {col.badge}
+                          </span>
+                        )}
+                        <span className="absolute bottom-2 right-2 bg-black/80 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-0.5 rounded">
+                          {assignedProducts.length} {assignedProducts.length === 1 ? 'Product' : 'Products'}
+                        </span>
+                      </div>
+
+                      {/* Header Info */}
+                      <div className="p-4 pb-2">
+                        <h3 className="font-bold text-gray-900 text-base mb-0.5">{col.name}</h3>
+                        <p className="text-xs text-[#e62b32] font-bold mb-2">{col.subtitle || 'Collection'}</p>
+                        <p className="text-xs text-gray-600 line-clamp-2 mb-3">{col.description}</p>
+                      </div>
+
+                      {/* Assigned Products Mini-List */}
+                      <div className="px-4 pb-3">
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-2 flex items-center justify-between">
+                          <span>Assigned Products ({assignedProducts.length})</span>
+                          <button
+                            onClick={() => handleOpenAddProduct(col.id)}
+                            className="text-[#e62b32] hover:underline font-bold text-[10px] flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <Plus size={11} /> Add to Collection
+                          </button>
+                        </div>
+
+                        {assignedProducts.length > 0 ? (
+                          <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                            {assignedProducts.map((p) => (
+                              <div
+                                key={p.id || p.slug}
+                                className="flex items-center justify-between p-1.5 bg-gray-50 rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors"
+                              >
+                                <div className="flex items-center gap-2 truncate">
+                                  <img src={p.imageUrl} alt={p.name} className="w-6 h-6 object-cover rounded shrink-0" />
+                                  <span className="text-xs font-semibold text-gray-900 truncate">{p.name}</span>
+                                </div>
+                                <span className="text-xs font-bold text-gray-700 shrink-0 ml-2">£{p.price.toFixed(2)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-3 px-2 bg-amber-50/60 border border-amber-200/80 rounded-lg">
+                            <p className="text-[11px] text-amber-800 font-semibold mb-1.5">No products assigned yet</p>
+                            <button
+                              onClick={() => handleOpenAddProduct(col.id)}
+                              className="bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold text-[10px] uppercase px-3 py-1 rounded transition-colors"
+                            >
+                              + Add Fragrance Now
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Footer Actions */}
+                    <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <a
+                          href={`/collections/${col.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-xs font-bold text-gray-700 hover:text-black flex items-center gap-1"
+                        >
+                          Live Page <ExternalLink size={12} />
+                        </a>
+                        <button
+                          onClick={() => {
+                            setSelectedCollectionFilter(String(col.id));
+                            setActiveTab('products');
+                          }}
+                          className="text-xs font-bold text-[#e62b32] hover:underline"
+                        >
+                          Filter Table
+                        </button>
+                      </div>
+
+                      <div className="space-x-2">
+                        <button
+                          onClick={() => {
+                            setEditingCollection(col);
+                            setIsCollectionModalOpen(true);
+                          }}
+                          className="p-1.5 text-gray-600 hover:text-black hover:bg-gray-200 rounded transition-colors cursor-pointer"
+                          title="Edit Collection"
+                        >
+                          <Edit2 size={15} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteCollection(col.id)}
+                          className="p-1.5 text-gray-400 hover:text-[#e62b32] hover:bg-red-50 rounded transition-colors cursor-pointer"
+                          title="Delete Collection"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -791,6 +1027,28 @@ export const AdminPortal: React.FC = () => {
             </h2>
 
             <form onSubmit={handleSaveProduct} className="space-y-4 text-xs">
+              {/* Product Collection Selector */}
+              <div>
+                <label className="block text-gray-700 font-bold uppercase mb-1">
+                  Assigned Collection / Category *
+                </label>
+                <select
+                  value={editingProduct.collectionId || collections[0]?.id || 1}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, collectionId: Number(e.target.value) })}
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 font-medium text-sm"
+                  required
+                >
+                  {collections.map((col) => (
+                    <option key={col.id} value={col.id}>
+                      {col.name} — {col.subtitle || 'Category'}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[11px] text-gray-500 mt-1">
+                  Choose which collection page and category showcase this product belongs to.
+                </p>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 font-bold uppercase mb-1">Product Name *</label>
@@ -799,6 +1057,7 @@ export const AdminPortal: React.FC = () => {
                     value={editingProduct.name || ''}
                     onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
                     required
+                    placeholder="e.g. Royal Cambodian Oud"
                     className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   />
                 </div>
@@ -808,6 +1067,7 @@ export const AdminPortal: React.FC = () => {
                     type="text"
                     value={editingProduct.subtitle || ''}
                     onChange={(e) => setEditingProduct({ ...editingProduct, subtitle: e.target.value })}
+                    placeholder="e.g. Aged Wild Agarwood & Sweet Resins"
                     className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   />
                 </div>
@@ -852,6 +1112,7 @@ export const AdminPortal: React.FC = () => {
                     <option value="Floral">Floral</option>
                     <option value="Oriental">Oriental</option>
                     <option value="Gourmand">Gourmand</option>
+                    <option value="Fresh Spicy">Fresh Spicy</option>
                   </select>
                 </div>
                 <div>
@@ -871,8 +1132,8 @@ export const AdminPortal: React.FC = () => {
                     className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                   >
                     <option value="Unisex">Unisex</option>
-                    <option value="Men">Men</option>
-                    <option value="Women">Women</option>
+                    <option value="For Him">For Him</option>
+                    <option value="For Her">For Her</option>
                   </select>
                 </div>
               </div>
@@ -942,7 +1203,7 @@ export const AdminPortal: React.FC = () => {
                   type="submit"
                   className="px-6 py-2.5 rounded-lg bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold uppercase tracking-wider cursor-pointer shadow-xs"
                 >
-                  Save Product
+                  Save Fragrance
                 </button>
               </div>
             </form>
@@ -962,7 +1223,7 @@ export const AdminPortal: React.FC = () => {
             </button>
 
             <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wider mb-6">
-              {editingCollection.id ? 'Edit Collection' : 'Add Collection Category'}
+              {editingCollection.id ? 'Edit Collection' : 'Add New Collection Category'}
             </h2>
 
             <form onSubmit={handleSaveCollection} className="space-y-4 text-xs">
@@ -972,6 +1233,7 @@ export const AdminPortal: React.FC = () => {
                   type="text"
                   value={editingCollection.name || ''}
                   onChange={(e) => setEditingCollection({ ...editingCollection, name: e.target.value })}
+                  placeholder="e.g. Discovery Sets, Oud Perfume Oils"
                   required
                   className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
@@ -983,6 +1245,18 @@ export const AdminPortal: React.FC = () => {
                   type="text"
                   value={editingCollection.subtitle || ''}
                   onChange={(e) => setEditingCollection({ ...editingCollection, subtitle: e.target.value })}
+                  placeholder="e.g. Pure Concentrated Essence"
+                  className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold uppercase mb-1">Badge (Optional)</label>
+                <input
+                  type="text"
+                  value={editingCollection.badge || ''}
+                  onChange={(e) => setEditingCollection({ ...editingCollection, badge: e.target.value })}
+                  placeholder="e.g. Signature Range, Gift Ready"
                   className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>
@@ -993,6 +1267,7 @@ export const AdminPortal: React.FC = () => {
                   type="url"
                   value={editingCollection.imageUrl || ''}
                   onChange={(e) => setEditingCollection({ ...editingCollection, imageUrl: e.target.value })}
+                  placeholder="https://images.unsplash.com/..."
                   className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>
@@ -1003,6 +1278,7 @@ export const AdminPortal: React.FC = () => {
                   rows={3}
                   value={editingCollection.description || ''}
                   onChange={(e) => setEditingCollection({ ...editingCollection, description: e.target.value })}
+                  placeholder="Curated olfactory collection description..."
                   className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
                 />
               </div>

@@ -118,12 +118,13 @@ func (c *AdminController) UpdateProduct(ctx fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid product ID"})
 	}
 
-	var updates map[string]interface{}
-	if err := ctx.Bind().Body(&updates); err != nil {
+	var product models.Product
+	if err := ctx.Bind().Body(&product); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid updates payload"})
 	}
+	product.ID = uint(id)
 
-	if err := c.productRepo.Update(uint(id), updates); err != nil {
+	if err := c.productRepo.Save(&product); err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update product"})
 	}
 
@@ -169,12 +170,13 @@ func (c *AdminController) UpdateCollection(ctx fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid collection ID"})
 	}
 
-	var updates map[string]interface{}
-	if err := ctx.Bind().Body(&updates); err != nil {
+	var collection models.Collection
+	if err := ctx.Bind().Body(&collection); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid updates payload"})
 	}
+	collection.ID = uint(id)
 
-	if err := c.collectionRepo.Update(uint(id), updates); err != nil {
+	if err := c.collectionRepo.Save(&collection); err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to update collection"})
 	}
 
