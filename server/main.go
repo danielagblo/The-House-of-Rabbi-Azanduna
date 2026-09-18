@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/fireheart071/config"
 	"github.com/fireheart071/routes"
@@ -16,9 +18,8 @@ import (
 
 func main() {
 	// Load environment variables from .env file
-	if err := godotenv.Load(); err != nil {
-		_ = godotenv.Load("../.env") // fallback if started from root
-	}
+	_ = godotenv.Load()
+	_ = godotenv.Load("../.env")
 
 	// Initialize Database (MySQL with SQLite fallback)
 	db := config.InitDB()
@@ -26,7 +27,7 @@ func main() {
 	// Seed catalog if empty
 	seeds.SeedDatabase(db)
 
-	//  Initialize Fiber App
+	// Initialize Fiber App
 	app := fiber.New(fiber.Config{
 		AppName: "Rabbi Azanduna Ltd Luxury API",
 	})
@@ -43,12 +44,14 @@ func main() {
 	// Register Routes
 	routes.SetupRoutes(app, db)
 
-	// Port
+	// Port handling for cloud hosting platforms
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8085"
 	}
+	port = strings.TrimSpace(port)
 
-	log.Printf("[Server] Starting Rabbi Azanduna Ltd Luxury API on port :%s ...", port)
-	log.Fatal(app.Listen(":" + port))
+	listenAddr := fmt.Sprintf("0.0.0.0:%s", port)
+	log.Printf("[Server] Starting Rabbi Azanduna Ltd Luxury API on %s ...", listenAddr)
+	log.Fatal(app.Listen(listenAddr))
 }

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/fireheart071/config"
 	"github.com/fireheart071/routes"
@@ -15,9 +17,8 @@ import (
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		_ = godotenv.Load("../../.env")
-	}
+	_ = godotenv.Load()
+	_ = godotenv.Load("../../.env")
 
 	db := config.InitDB()
 	seeds.SeedDatabase(db)
@@ -40,7 +41,9 @@ func main() {
 	if port == "" {
 		port = "8085"
 	}
+	port = strings.TrimSpace(port)
 
-	log.Printf("[Server] Starting Rabbi Azanduna Ltd Luxury API on port :%s ...", port)
-	log.Fatal(app.Listen(":" + port))
+	listenAddr := fmt.Sprintf("0.0.0.0:%s", port)
+	log.Printf("[Server] Starting Rabbi Azanduna Ltd Luxury API on %s ...", listenAddr)
+	log.Fatal(app.Listen(listenAddr))
 }

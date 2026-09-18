@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/fireheart071/models"
 	_ "github.com/go-sql-driver/mysql"
@@ -17,9 +18,26 @@ import (
 
 var DB *gorm.DB
 
-// ensureMySQLDatabase tries to create the database on the MySQL instance if it doesn't already exist.
+func cleanEnv(key, fallback string) string {
+	val := os.Getenv(key)
+	if val == "" {
+		return fallback
+	}
+	// Strip inline comments if any
+	if idx := strings.Index(val, "#"); idx != -1 {
+		val = val[:idx]
+	}
+	val = strings.TrimSpace(val)
+	val = strings.Trim(val, `"'`)
+	if val == "" {
+		return fallback
+	}
+	return val
+}
+
+// ensureMySQLDatabase is only for local MySQL instances to create the DB if missing
 func ensureMySQLDatabase(user, pass, host, port, dbName string) error {
-	rootDSN := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local",
+	rootDSN := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local&timeout=5s",
 		user, pass, host, port)
 	sqlDB, err := sql.Open("mysql", rootDSN)
 	if err != nil {
@@ -38,33 +56,18 @@ func ensureMySQLDatabase(user, pass, host, port, dbName string) error {
 
 func InitDB() *gorm.DB {
 	_ = godotenv.Load()
+	_ = godotenv.Load("../.env")
 
-	dbType := os.Getenv("DB_TYPE")
-	if dbType == "" {
-		dbType = "mysql"
-	}
+	dbType := cleanEnv("DB_TYPE", "mysql")
+	dbUser := cleanEnv("DB_USER", "root")
+	dbPass := cleanEnv("DB_PASS", "")
+	dbHost := cleanEnv("DB_HOST", "127.0.0.1")
+	dbPort := cleanEnv("DB_PORT", "3306")
+	dbName := cleanEnv("DB_NAME", "rabbi")
 
-	dbUser := os.Getenv("DB_USER")
-	if dbUser == "" {
-		dbUser = "root"
-	}
-	dbPass := os.Getenv("DB_PASS")
-	dbHost := os.Getenv("DB_HOST")
-	if dbHost == "" {
-		dbHost = "127.0.0.1"
-	}
-	dbPort := os.Getenv("DB_PORT")
-	if dbPort == "" {
-		dbPort = "3306"
-	}
-	dbName := os.Getenv("DB_NAME")
-	if dbName == "" {
-		dbName = "rabbi_azanduna_db"
-	}
-
-	dsn := os.Getenv("MYSQL_DSN")
+	dsn := cleanEnv("MYSQL_DSN", "")
 	if dsn == "" {
-		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=10s",
 			dbUser, dbPass, dbHost, dbPort, dbName)
 	}
 
@@ -72,24 +75,25 @@ func InitDB() *gorm.DB {
 	var err error
 
 	gormConfig := &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Warn), // LogMode Warn keeps logs fast and clean
 	}
 
 	if dbType == "mysql" {
 		log.Printf("[DB] Connecting to MySQL database '%s' on %s:%s (User: %s)...", dbName, dbHost, dbPort, dbUser)
 
-		// Ensure the database exists on the MySQL instance
-		if createErr := ensureMySQLDatabase(dbUser, dbPass, dbHost, dbPort, dbName); createErr != nil {
-			log.Printf("[DB Notice] Automated database creation check: %v", createErr)
+		// Only attempt root database creation on local development hosts
+		isLocal := dbHost == "127.0.0.1" || dbHost == "localhost" || dbHost == "::1"
+		if isLocal {
+			_ = ensureMySQLDatabase(dbUser, dbPass, dbHost, dbPort, dbName)
 		}
 
 		db, err = gorm.Open(mysql.Open(dsn), gormConfig)
 		if err != nil {
 			log.Printf("[DB Warning] Failed to connect to MySQL database: %v", err)
-			log.Printf("[DB Notice] Falling back to local SQLite database ('oud_attar.db') so the application remains operable.")
+			log.Printf("[DB Notice] Falling back to local SQLite database ('oud_attar.db') so the server stays online.")
 			db, err = gorm.Open(sqlite.Open("oud_attar.db"), gormConfig)
 		} else {
-			log.Printf("[DB] Successfully connected to MySQL database: %s", dbName)
+			log.Printf("[DB] Successfully connected to MySQL database '%s'!", dbName)
 		}
 	} else {
 		log.Printf("[DB] DB_TYPE is set to sqlite. Using SQLite database ('oud_attar.db').")
@@ -114,7 +118,9 @@ func InitDB() *gorm.DB {
 		&models.FAQ{},
 	)
 	if err != nil {
-		log.Fatalf("[DB] AutoMigration failed: %v", err)
+		log.Printf("[DB Warning] AutoMigration encountered notice: %v", err)
+	} else {
+		log.Printf("[DB] AutoMigrations completed successfully.")
 	}
 
 	DB = db
