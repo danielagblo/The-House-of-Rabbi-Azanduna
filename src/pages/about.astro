@@ -1,7 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Award, ShieldCheck, HeartHandshake, ZoomIn, X } from 'lucide-react';
+import { Award, ShieldCheck, HeartHandshake } from 'lucide-react';
 import certImg from '../assets/cert.png';
+import { CertificateViewer } from '../components/CertificateViewer';
 ---
 
 <Layout title="About Us | The House of Rabbi Azanduna Ltd">
@@ -41,33 +42,45 @@ import certImg from '../assets/cert.png';
     </div>
 
     {/* Official Registration & Certificate Section */}
-    <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl p-6 sm:p-10 mb-16 shadow-xs text-center">
-      <div class="max-w-2xl mx-auto mb-8">
-        <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight mb-2">
-          Certificate of Incorporation
-        </h2>
-        <div class="w-12 h-1 bg-[#ff2d3b] mx-auto mb-3"></div>
-        <p class="text-xs sm:text-sm text-gray-600">
-          Official registration under the Registrar of Companies, Republic of Ghana.
-        </p>
-      </div>
+    <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl p-6 sm:p-10 mb-16 shadow-xs">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
+        {/* Certificate Image Preview with React interactive modal */}
+        <div class="md:col-span-5 flex flex-col items-center justify-center">
+          <CertificateViewer client:load imageSrc={certImg.src} />
+        </div>
 
-      <div class="flex flex-col items-center justify-center">
-        <div class="relative group cursor-pointer max-w-sm sm:max-w-md bg-white p-3 rounded-2xl shadow-xl border border-gray-200 hover:shadow-2xl transition-all duration-300">
-          <img
-            src={certImg.src}
-            alt="Official Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
-            class="w-full h-auto rounded-xl object-contain shadow-xs"
-            id="certThumbnail"
-          />
-          <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-2xs">
-            <ZoomIn size={22} />
-            <span>Click to view full certificate</span>
+        {/* Meaningful Brand Trust & Authenticity Writing */}
+        <div class="md:col-span-7 space-y-4">
+          <div>
+            <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight mb-2">
+              A Certified & Trusted Fragrance House
+            </h2>
+            <div class="w-12 h-1 bg-[#ff2d3b] mb-4"></div>
+          </div>
+
+          <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
+            At The House of Rabbi Azanduna, authenticity and integrity guide everything we do. Operating as an officially registered limited liability company in Ghana is a reflection of our dedication to transparency, product safety, and customer satisfaction.
+          </p>
+
+          <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
+            We know finding genuine, long-lasting fragrances can be challenging. That is why every perfume oil, artisanal attar, and aged Oud batch we formulate is crafted with uncompromised care, clean non-alcoholic ingredients, and strict attention to detail.
+          </p>
+
+          <div class="pt-2 space-y-2.5 text-xs text-gray-800">
+            <div class="flex items-start gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#ff2d3b] mt-1.5 shrink-0"></span>
+              <span><strong>100% Concentrated Pure Oils:</strong> Non-alcoholic, skin-friendly, and formulated for extraordinary 16+ hour longevity.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#ff2d3b] mt-1.5 shrink-0"></span>
+              <span><strong>Ethically Sourced Ingredients:</strong> Genuine aged Oud resins, rare botanicals, and hand-selected floral distillates.</span>
+            </div>
+            <div class="flex items-start gap-2.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#ff2d3b] mt-1.5 shrink-0"></span>
+              <span><strong>Verified Customer Confidence:</strong> Safe transactions, premium packaging, and reliable delivery across Ghana and beyond.</span>
+            </div>
           </div>
         </div>
-        <span class="text-[11px] text-gray-500 mt-3 font-medium flex items-center gap-1.5">
-          <ZoomIn size={13} /> Click to expand high-resolution certificate
-        </span>
       </div>
     </div>
 
@@ -124,48 +137,6 @@ import certImg from '../assets/cert.png';
       </a>
     </div>
   </div>
-
-  {/* Fullscreen Certificate Lightbox Modal */}
-  <div id="certModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="relative max-w-2xl max-h-[90vh] bg-white rounded-2xl p-4 shadow-2xl flex flex-col items-center">
-      <button
-        id="closeCertModal"
-        type="button"
-        class="absolute -top-3 -right-3 bg-black text-white hover:bg-[#ff2d3b] rounded-full p-2 shadow-lg cursor-pointer transition-colors"
-      >
-        <X size={20} />
-      </button>
-      <img
-        src={certImg.src}
-        alt="Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
-        class="max-h-[82vh] w-auto rounded-lg object-contain"
-      />
-    </div>
-  </div>
 </Layout>
 
-<script>
-  const certThumb = document.getElementById('certThumbnail');
-  const certModal = document.getElementById('certModal');
-  const closeBtn = document.getElementById('closeCertModal');
-
-  if (certThumb && certModal && closeBtn) {
-    certThumb.addEventListener('click', () => {
-      certModal.classList.remove('hidden');
-      certModal.classList.add('flex');
-    });
-
-    closeBtn.addEventListener('click', () => {
-      certModal.classList.add('hidden');
-      certModal.classList.remove('flex');
-    });
-
-    certModal.addEventListener('click', (e) => {
-      if (e.target === certModal) {
-        certModal.classList.add('hidden');
-        certModal.classList.remove('flex');
-      }
-    });
-  }
-</script>
 
