@@ -93,13 +93,13 @@ export const Navbar: React.FC = () => {
           >
             SALE
           </a>
-          <a href="/blog" className="hover:text-[#e62b32] transition-colors">
+          <a href="/blog" className="hover:underline transition-all">
             BLOG
           </a>
-          <a href="/faqs" className="hover:text-[#e62b32] transition-colors">
+          <a href="/faqs" className="hover:underline transition-all">
             FAQS
           </a>
-          <a href="/about" className="hover:text-[#e62b32] transition-colors">
+          <a href="/about" className="hover:underline transition-all">
             ABOUT US
           </a>
         </div>

@@ -105,3 +105,18 @@ type Order struct {
 	CreatedAt      time.Time   `json:"createdAt"`
 	UpdatedAt      time.Time   `json:"updatedAt"`
 }
+
+type BlogPost struct {
+	ID        uint      `gorm:"primaryKey" json:"id"`
+	Title     string    `gorm:"size:255;not null" json:"title"`
+	Slug      string    `gorm:"size:255;uniqueIndex;not null" json:"slug"`
+	Excerpt   string    `gorm:"type:text" json:"excerpt"`
+	Content   string    `gorm:"type:text" json:"content"`
+	ImageUrl  string    `gorm:"size:500" json:"imageUrl"`
+	Category  string    `gorm:"size:100" json:"category"`
+	ReadTime  string    `gorm:"size:50" json:"readTime"`
+	Published bool      `gorm:"default:true" json:"published"`
+	SortOrder int       `gorm:"default:0" json:"sortOrder"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}

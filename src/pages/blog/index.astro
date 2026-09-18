@@ -1,83 +1,66 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { BookOpen, Calendar, ArrowRight } from 'lucide-react';
+import type { BlogPost } from '../../types';
 
-const articles = [
-  {
-    slug: "how-to-apply-pure-oud-perfume-oils",
-    title: "The Art of Applying Pure Perfume Oils for 24-Hour Longevity",
-    excerpt: "Learn the traditional warming pulse-point technique that allows concentrated botanical oils to project gracefully throughout the day.",
-    date: "March 12, 2026",
-    category: "Rituals & Guide",
-    imageUrl: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80",
-    readTime: "4 min read"
-  },
-  {
-    slug: "difference-between-cambodian-and-assam-oud",
-    title: "Cambodian vs. Indian Assam Oud: Decoding Scent Profiles",
-    excerpt: "From the sweet dried-fruit nuances of Koh Kong Agarwood to the deep, smoky balsamic depths of Assam wild trees.",
-    date: "February 24, 2026",
-    category: "Master Perfumer Notes",
-    imageUrl: "https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?auto=format&fit=crop&w=800&q=80",
-    readTime: "6 min read"
-  },
-  {
-    slug: "why-non-alcoholic-perfumes-last-longer",
-    title: "Why Alcohol-Free Perfume Oils Outperform Commercial Sprays",
-    excerpt: "Commercial fragrances evaporate quickly due to 80% alcohol carriers. Discover why pure oils meld with skin heat for an intimate aroma.",
-    date: "January 18, 2026",
-    category: "Science & Craft",
-    imageUrl: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80",
-    readTime: "5 min read"
+let articles: BlogPost[] = [];
+
+try {
+  const res = await fetch('http://localhost:8080/api/blogs');
+  if (res.ok) {
+    const data = await res.json();
+    if (data && data.length > 0) {
+      articles = data;
+    }
   }
-];
+} catch (e) {
+  // fallback if offline
+}
 ---
 
 <Layout title="Blog | Rabbi Azanduna Ltd">
-  <div class="pt-4 sm:pt-5 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
-    {/* Clean Centered Header matching site layout */}
-    <div class="text-center pt-1 pb-6 sm:pb-8">
-      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
+  <div class="pt-5 sm:pt-6 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+    {/* Left-Aligned Heading matching exact reference screenshot */}
+    <div class="mb-6 sm:mb-8">
+      <h1 class="font-['Barlow',sans-serif] text-[32px] sm:text-[38px] font-extrabold text-black tracking-tight">
         Blog
       </h1>
-      <p class="text-xs text-gray-500 font-normal">
-        Guides, artisan rituals, and perfume care
-      </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    {/* 3-Column Grid without any shadows or borders matching exact screenshot */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 sm:gap-x-7 sm:gap-y-12">
       {articles.map((art) => (
-        <article class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
-          <div>
-            <div class="aspect-[16/10] overflow-hidden bg-neutral-100">
-              <img
-                src={art.imageUrl}
-                alt={art.title}
-                class="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div class="p-6">
-              <div class="flex items-center justify-between text-[11px] text-gray-400 mb-2 font-medium">
-                <span class="text-[#ff2d3b] font-bold uppercase">{art.category}</span>
-                <span class="flex items-center gap-1"><Calendar size={11} /> {art.date}</span>
-              </div>
-              <h2 class="font-['Barlow',sans-serif] text-xl font-bold text-gray-900 leading-snug mb-2 hover:text-[#ff2d3b] transition-colors">
-                <a href={`/blog/${art.slug}`}>{art.title}</a>
-              </h2>
-              <p class="text-xs text-gray-600 font-light leading-relaxed">
-                {art.excerpt}
-              </p>
-            </div>
-          </div>
-          <div class="p-6 pt-0">
-            <a
-              href={`/blog/${art.slug}`}
-              class="inline-flex items-center gap-1.5 text-xs font-bold text-black uppercase tracking-wider hover:text-[#ff2d3b] transition-colors"
-            >
-              <span>Read Story</span>
-              <ArrowRight size={13} />
+        <article class="flex flex-col group bg-transparent">
+          {/* Card Image: Rounded-xl, No border, No shadow */}
+          <a
+            href={`/blog/${art.slug}`}
+            class="block relative aspect-[16/11] w-full overflow-hidden rounded-xl bg-neutral-100 mb-3.5"
+          >
+            <img
+              src={art.imageUrl}
+              alt={art.title}
+              class="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+            />
+          </a>
+
+          {/* Article Title: Underline only on hover, no color change */}
+          <h2 class="font-['Barlow',sans-serif] text-[17px] sm:text-[18px] font-bold text-black leading-snug mb-1.5">
+            <a href={`/blog/${art.slug}`} class="hover:underline text-black">
+              {art.title}
             </a>
-          </div>
+          </h2>
+
+          {/* Excerpt */}
+          <p class="text-[13px] text-gray-700 leading-relaxed mb-2.5 font-normal line-clamp-3">
+            {art.excerpt}
+          </p>
+
+          {/* Red Read More Link */}
+          <a
+            href={`/blog/${art.slug}`}
+            class="text-[#e62b32] hover:underline text-[13px] font-medium inline-flex items-center gap-1 self-start"
+          >
+            Read more &gt;
+          </a>
         </article>
       ))}
     </div>

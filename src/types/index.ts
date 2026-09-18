@@ -70,3 +70,17 @@ export interface CartItem {
   selectedVariant: ProductVariant;
   quantity: number;
 }
+
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  imageUrl: string;
+  category: string;
+  readTime: string;
+  published: boolean;
+  sortOrder: number;
+  createdAt: string;
+}

@@ -13,6 +13,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	collectionRepo := repositories.NewCollectionRepository(db)
 	productRepo := repositories.NewProductRepository(db)
 	orderRepo := repositories.NewOrderRepository(db)
+	blogRepo := repositories.NewBlogRepository(db)
 
 	// Services
 	paystackService := services.NewPaystackService()
@@ -22,6 +23,7 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	productCtrl := controllers.NewProductController(productRepo)
 	paymentCtrl := controllers.NewPaymentController(paystackService, orderRepo)
 	adminCtrl := controllers.NewAdminController(productRepo, collectionRepo, orderRepo)
+	blogCtrl := controllers.NewBlogController(blogRepo)
 
 	// API Group
 	api := app.Group("/api")
@@ -42,6 +44,10 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	// Products (Public)
 	api.Get("/products", productCtrl.GetAll)
 	api.Get("/products/:slug", productCtrl.GetBySlug)
+
+	// Blogs (Public)
+	api.Get("/blogs", blogCtrl.GetAll)
+	api.Get("/blogs/:slug", blogCtrl.GetBySlug)
 
 	// Payments & Checkout (Paystack)
 	api.Post("/payments/initialize", paymentCtrl.InitializeCheckout)
