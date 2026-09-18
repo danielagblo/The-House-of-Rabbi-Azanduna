@@ -1180,15 +1180,6 @@ export const AdminPortal: React.FC = () => {
                   />
                   <span className="text-gray-800 font-bold">Best Seller Badge</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={editingProduct.isNew || false}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, isNew: e.target.checked })}
-                    className="rounded text-[#e62b32]"
-                  />
-                  <span className="text-gray-800 font-bold">New Arrival</span>
-                </label>
               </div>
 
               <div className="pt-4 flex justify-end gap-3">
