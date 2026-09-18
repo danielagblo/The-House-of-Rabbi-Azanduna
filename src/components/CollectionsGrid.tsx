@@ -154,15 +154,34 @@ export const CollectionsGrid: React.FC<Props> = ({
         ))}
       </div>
 
-      {/* 4. Full-Width Bottom Hero Banner matching reference screenshot */}
-      <div className="relative aspect-[16/7] sm:aspect-[21/9] w-full overflow-hidden rounded-xl bg-neutral-200 shadow-2xs group">
-        <a href="/collections/home-scents" className="block w-full h-full">
-          <img
-            src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1800&q=80"
-            alt="Artisanal Hand & Body Fragrance Care"
-            className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
-          />
-        </a>
+      {/* 4. Full-Width Bottom Hero Banner for Home Scents matching reference screenshot with VIEW NOW button */}
+      <div className="relative aspect-[16/8] sm:aspect-[21/9] w-full overflow-hidden rounded-xl bg-neutral-900 shadow-2xs group flex items-center justify-center text-center">
+        <img
+          src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1800&q=80"
+          alt="Home Fragrance & Bakhoor"
+          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105 opacity-80"
+        />
+        {/* Dark Gradient Overlay for optimal contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/25"></div>
+
+        {/* Centered Content with Title, Subtitle, and Red VIEW NOW Button */}
+        <div className="relative z-10 p-6 sm:p-10 max-w-2xl mx-auto flex flex-col items-center">
+          <span className="text-white text-[11px] sm:text-xs uppercase font-extrabold tracking-[0.2em] mb-2 bg-[#e62b32] px-3 py-0.5 rounded-[3px] shadow-xs">
+            Sacred Living
+          </span>
+          <h2 className="font-['Barlow_Condensed',sans-serif] text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white uppercase tracking-tight mb-2">
+            Home Fragrance & Bakhoor
+          </h2>
+          <p className="text-xs sm:text-sm text-gray-200 font-light mb-5 max-w-lg line-clamp-2">
+            Infuse your sanctuary with slow-burning aged Agarwood chips, rare incense, and luxury room essences.
+          </p>
+          <a
+            href="/collections/home-scents"
+            className="inline-block bg-[#e62b32] hover:bg-[#cf2229] text-white px-8 py-2.5 rounded-[4px] text-[12px] sm:text-[13px] font-extrabold uppercase tracking-widest shadow-md transition-all active:scale-[0.98]"
+          >
+            VIEW NOW
+          </a>
+        </div>
       </div>
     </section>
   );
