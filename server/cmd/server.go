@@ -11,9 +11,15 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	"github.com/gofiber/fiber/v3/middleware/recover"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
+		_ = godotenv.Load("../.env") // fallback if started from root
+	}
+
 	// Initialize Database (MySQL with SQLite fallback)
 	db := config.InitDB()
 
