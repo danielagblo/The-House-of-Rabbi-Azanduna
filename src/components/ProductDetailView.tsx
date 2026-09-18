@@ -202,8 +202,8 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
           {/* Guarantees */}
           <div className="grid grid-cols-3 gap-3 pt-6 border-t border-gray-200 text-xs text-gray-600 font-medium">
             <div className="flex items-center gap-2">
-              <Truck size={18} className="text-[#ff2d3b] shrink-0" />
-              <span>Free Delivery &gt; GH₵350</span>
+              <Sparkles size={18} className="text-[#ff2d3b] shrink-0" />
+              <span>Authentic Aged Oud</span>
             </div>
             <div className="flex items-center gap-2">
               <ShieldCheck size={18} className="text-[#ff2d3b] shrink-0" />

@@ -50,7 +50,7 @@ export const OrderConfirmationView: React.FC = () => {
       </h1>
 
       <p className="text-zinc-300 text-sm font-light max-w-lg mx-auto leading-relaxed mb-8">
-        Your order of artisanal fragrances has been received and is being prepared with extreme care by our master blenders in London.
+        Your order has been received and is being prepared with extreme care by our team.
       </p>
 
       {/* Order Reference Card */}
@@ -69,8 +69,8 @@ export const OrderConfirmationView: React.FC = () => {
         </div>
 
         <div className="flex justify-between items-center pt-4 text-xs">
-          <span className="text-zinc-400 uppercase tracking-wider">Estimated Dispatch</span>
-          <span className="text-white font-medium">Within 24 Hours (Tracked 48)</span>
+          <span className="text-zinc-400 uppercase tracking-wider">Processing Time</span>
+          <span className="text-white font-medium">Within 24 Hours</span>
         </div>
       </div>
 
