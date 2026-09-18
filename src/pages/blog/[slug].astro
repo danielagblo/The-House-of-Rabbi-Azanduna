@@ -13,7 +13,7 @@ export async function getStaticPaths() {
   ];
 
   try {
-    const res = await fetch('http://localhost:8080/api/blogs');
+    const res = await fetch('http://localhost:8085/api/blogs');
     if (res.ok) {
       const data: BlogPost[] = await res.json();
       if (data && data.length > 0) {
@@ -44,7 +44,7 @@ let post: BlogPost = {
 };
 
 try {
-  const res = await fetch(`http://localhost:8080/api/blogs/${slug}`);
+  const res = await fetch(`http://localhost:8085/api/blogs/${slug}`);
   if (res.ok) {
     const data = await res.json();
     if (data && data.title) {

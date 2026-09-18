@@ -40,7 +40,7 @@ func main() {
 	// Port
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "8085"
 	}
 
 	log.Printf("[Server] Starting Rabbi Azanduna Ltd Luxury API on port :%s ...", port)

@@ -76,7 +76,7 @@ func (c *AdminController) GetStats(ctx fiber.Ctx) error {
 	paidOrdersCount := 0
 	for _, o := range orders {
 		if o.Status == "paid" || o.Status == "successful" {
-			totalRevenue += o.Total
+			totalRevenue += o.TotalAmount
 			paidOrdersCount++
 		}
 	}

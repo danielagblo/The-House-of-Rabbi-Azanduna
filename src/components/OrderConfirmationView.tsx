@@ -19,7 +19,7 @@ export const OrderConfirmationView: React.FC = () => {
     }
 
     // Verify payment with Go backend
-    fetch(`http://localhost:8080/api/payments/verify/${ref}`)
+    fetch(`http://localhost:8085/api/payments/verify/${ref}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && data.paystack?.status === 'success') {

@@ -5,7 +5,7 @@ import type { FAQ } from '../types';
 let faqs: FAQ[] = [];
 
 try {
-  const res = await fetch('http://localhost:8080/api/faqs');
+  const res = await fetch('http://localhost:8085/api/faqs');
   if (res.ok) {
     const data = await res.json();
     if (data && data.length > 0) {

@@ -71,7 +71,7 @@ export const CartDrawer: React.FC = () => {
         })),
       };
 
-      const response = await fetch('http://localhost:8080/api/payments/initialize', {
+      const response = await fetch('http://localhost:8085/api/payments/initialize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

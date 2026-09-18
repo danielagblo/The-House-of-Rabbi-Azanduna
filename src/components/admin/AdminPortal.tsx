@@ -69,7 +69,7 @@ export const AdminPortal: React.FC = () => {
     setIsLoggingIn(true);
 
     try {
-      const res = await fetch('http://localhost:8080/api/admin/login', {
+      const res = await fetch('http://localhost:8085/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
@@ -113,7 +113,7 @@ export const AdminPortal: React.FC = () => {
     try {
       // Collections first so products can reference them
       let loadedCollections = FALLBACK_COLLECTIONS;
-      const colRes = await fetch('http://localhost:8080/api/collections');
+      const colRes = await fetch('http://localhost:8085/api/collections');
       if (colRes.ok) {
         const colData = await colRes.json();
         if (colData && colData.length > 0) {
@@ -124,7 +124,7 @@ export const AdminPortal: React.FC = () => {
 
       // Products
       let loadedProducts = FALLBACK_PRODUCTS;
-      const prodRes = await fetch('http://localhost:8080/api/products');
+      const prodRes = await fetch('http://localhost:8085/api/products');
       if (prodRes.ok) {
         const prodData = await prodRes.json();
         if (prodData && prodData.length > 0) {
@@ -134,7 +134,7 @@ export const AdminPortal: React.FC = () => {
       setProducts(loadedProducts);
 
       // Stats
-      const statsRes = await fetch('http://localhost:8080/api/admin/stats');
+      const statsRes = await fetch('http://localhost:8085/api/admin/stats');
       if (statsRes.ok) {
         const statsData = await statsRes.json();
         setStats(statsData);
@@ -148,21 +148,21 @@ export const AdminPortal: React.FC = () => {
       }
 
       // Orders
-      const orderRes = await fetch('http://localhost:8080/api/admin/orders');
+      const orderRes = await fetch('http://localhost:8085/api/admin/orders');
       if (orderRes.ok) {
         const orderData = await orderRes.json();
         setOrders(orderData || []);
       }
 
       // Blogs
-      const blogRes = await fetch('http://localhost:8080/api/blogs');
+      const blogRes = await fetch('http://localhost:8085/api/blogs');
       if (blogRes.ok) {
         const blogData = await blogRes.json();
         setBlogs(blogData || []);
       }
 
       // FAQs
-      const faqRes = await fetch('http://localhost:8080/api/faqs');
+      const faqRes = await fetch('http://localhost:8085/api/faqs');
       if (faqRes.ok) {
         const faqData = await faqRes.json();
         setFaqs(faqData || []);
@@ -235,7 +235,7 @@ export const AdminPortal: React.FC = () => {
 
     try {
       if (editingProduct.id) {
-        const res = await fetch(`http://localhost:8080/api/admin/products/${editingProduct.id}`, {
+        const res = await fetch(`http://localhost:8085/api/admin/products/${editingProduct.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(productPayload),
@@ -247,7 +247,7 @@ export const AdminPortal: React.FC = () => {
           showToast('Product updated (Local Session)!');
         }
       } else {
-        const res = await fetch('http://localhost:8080/api/admin/products', {
+        const res = await fetch('http://localhost:8085/api/admin/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(productPayload),
@@ -271,7 +271,7 @@ export const AdminPortal: React.FC = () => {
   const handleDeleteProduct = async (id: number) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
     try {
-      await fetch(`http://localhost:8080/api/admin/products/${id}`, { method: 'DELETE' });
+      await fetch(`http://localhost:8085/api/admin/products/${id}`, { method: 'DELETE' });
       setProducts((prev) => prev.filter((p) => p.id !== id));
       showToast('Product removed.');
     } catch (err) {
@@ -287,7 +287,7 @@ export const AdminPortal: React.FC = () => {
 
     try {
       if (editingCollection.id) {
-        await fetch(`http://localhost:8080/api/admin/collections/${editingCollection.id}`, {
+        await fetch(`http://localhost:8085/api/admin/collections/${editingCollection.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(editingCollection),
@@ -300,7 +300,7 @@ export const AdminPortal: React.FC = () => {
           featured: editingCollection.featured ?? true,
           sortOrder: collections.length + 1,
         };
-        await fetch('http://localhost:8080/api/admin/collections', {
+        await fetch('http://localhost:8085/api/admin/collections', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newCol),
@@ -326,7 +326,7 @@ export const AdminPortal: React.FC = () => {
     }
 
     try {
-      await fetch(`http://localhost:8080/api/admin/collections/${id}`, { method: 'DELETE' });
+      await fetch(`http://localhost:8085/api/admin/collections/${id}`, { method: 'DELETE' });
       setCollections((prev) => prev.filter((c) => c.id !== id));
       showToast('Collection deleted.');
     } catch (err) {
@@ -370,14 +370,14 @@ export const AdminPortal: React.FC = () => {
 
     try {
       if (editingBlog.id) {
-        await fetch(`http://localhost:8080/api/admin/blogs/${editingBlog.id}`, {
+        await fetch(`http://localhost:8085/api/admin/blogs/${editingBlog.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
         showToast('Blog article updated!');
       } else {
-        await fetch('http://localhost:8080/api/admin/blogs', {
+        await fetch('http://localhost:8085/api/admin/blogs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -395,7 +395,7 @@ export const AdminPortal: React.FC = () => {
   const handleDeleteBlog = async (id: number) => {
     if (!confirm('Are you sure you want to delete this blog article?')) return;
     try {
-      await fetch(`http://localhost:8080/api/admin/blogs/${id}`, { method: 'DELETE' });
+      await fetch(`http://localhost:8085/api/admin/blogs/${id}`, { method: 'DELETE' });
       setBlogs((prev) => prev.filter((b) => b.id !== id));
       showToast('Blog article deleted.');
     } catch (err) {
@@ -432,14 +432,14 @@ export const AdminPortal: React.FC = () => {
 
     try {
       if (editingFAQ.id) {
-        await fetch(`http://localhost:8080/api/admin/faqs/${editingFAQ.id}`, {
+        await fetch(`http://localhost:8085/api/admin/faqs/${editingFAQ.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
         showToast('FAQ updated!');
       } else {
-        await fetch('http://localhost:8080/api/admin/faqs', {
+        await fetch('http://localhost:8085/api/admin/faqs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -457,7 +457,7 @@ export const AdminPortal: React.FC = () => {
   const handleDeleteFAQ = async (id: number) => {
     if (!confirm('Are you sure you want to delete this FAQ?')) return;
     try {
-      await fetch(`http://localhost:8080/api/admin/faqs/${id}`, { method: 'DELETE' });
+      await fetch(`http://localhost:8085/api/admin/faqs/${id}`, { method: 'DELETE' });
       setFaqs((prev) => prev.filter((f) => f.id !== id));
       showToast('FAQ deleted.');
     } catch (err) {
