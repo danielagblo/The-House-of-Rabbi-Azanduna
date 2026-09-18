@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import AnnouncementBar from '../components/AnnouncementBar.astro';
+import { AnnouncementBar } from '../components/AnnouncementBar';
 import { Navbar } from '../components/Navbar';
 import { CartDrawer } from '../components/CartDrawer';
 import { QuickViewModal } from '../components/QuickViewModal';
@@ -39,7 +39,7 @@ const {
   </head>
   <body class="min-h-screen flex flex-col antialiased bg-white text-gray-900 selection:bg-[#ff2d3b] selection:text-white font-['Poppins',sans-serif]">
     <!-- Red Top Announcement Bar -->
-    <AnnouncementBar />
+    <AnnouncementBar client:load />
 
     <!-- Clean White Navbar matching screenshot -->
     <Navbar client:load />
