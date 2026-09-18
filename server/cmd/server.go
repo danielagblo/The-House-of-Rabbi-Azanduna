@@ -41,6 +41,7 @@ func main() {
 	if port == "" {
 		port = "8085"
 	}
+
 	port = strings.TrimSpace(port)
 
 	listenAddr := fmt.Sprintf("0.0.0.0:%s", port)
