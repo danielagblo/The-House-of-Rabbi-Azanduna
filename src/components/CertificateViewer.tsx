@@ -28,29 +28,29 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
   }, [isOpen]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-full">
       {/* Interactive Certificate Card Button */}
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="relative group cursor-pointer max-w-[280px] sm:max-w-[320px] bg-white p-2.5 rounded-2xl shadow-xl border border-gray-200 hover:shadow-2xl transition-all duration-300 text-left outline-hidden focus-visible:ring-2 focus-visible:ring-black"
+        className="relative group cursor-pointer w-full max-w-[340px] sm:max-w-[400px] rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 text-left outline-hidden overflow-hidden block border border-gray-200/60"
         title="Click to view full Certificate of Incorporation"
       >
         <img
           src={imageSrc}
           alt="Official Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
-          className="w-full h-auto rounded-xl object-contain shadow-xs block"
+          className="w-full h-auto rounded-2xl object-contain block group-hover:scale-[1.02] transition-transform duration-300"
         />
         {/* Hover / Touch Overlay */}
-        <div className="absolute inset-0 bg-black/45 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 text-white p-4 text-center backdrop-blur-2xs pointer-events-none">
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shadow-md">
-            <ZoomIn size={22} className="text-white" />
+        <div className="absolute inset-0 bg-black/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2.5 text-white p-4 text-center backdrop-blur-2xs pointer-events-none">
+          <div className="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center shadow-lg">
+            <ZoomIn size={26} className="text-white" />
           </div>
-          <span className="text-xs font-bold uppercase tracking-wider">
+          <span className="text-sm font-bold uppercase tracking-wider">
             Click to Expand Certificate
           </span>
-          <span className="text-[10px] text-gray-200">
-            View high-resolution official document
+          <span className="text-xs text-gray-200">
+            View full-size high-resolution document
           </span>
         </div>
       </button>
@@ -59,42 +59,38 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="text-[11px] text-gray-500 hover:text-black mt-3 font-medium flex items-center gap-1.5 cursor-pointer transition-colors"
+        className="text-xs text-gray-600 hover:text-black mt-3.5 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
       >
-        <ZoomIn size={13} /> Click to expand high-resolution certificate
+        <ZoomIn size={14} className="text-[#ff2d3b]" /> Click to open large full-screen certificate
       </button>
 
       {/* Lightbox Modal */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200 cursor-zoom-out"
+          className="fixed inset-0 z-50 bg-black/92 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-200 cursor-zoom-out"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-2xl max-h-[92vh] bg-white rounded-2xl p-3 sm:p-5 shadow-2xl flex flex-col items-center cursor-default animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-4xl max-h-[96vh] flex flex-col items-center justify-center cursor-default animate-in zoom-in-95 duration-200"
           >
             {/* Close Button */}
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute -top-3 -right-3 bg-black text-white hover:bg-[#ff2d3b] rounded-full p-2.5 shadow-xl cursor-pointer transition-colors z-10"
+              className="absolute top-2 right-2 sm:-top-4 sm:-right-4 md:-right-8 bg-black/80 hover:bg-[#ff2d3b] text-white rounded-full p-2.5 sm:p-3 shadow-2xl cursor-pointer transition-colors z-20 border border-white/30 backdrop-blur-md"
               aria-label="Close certificate modal"
             >
-              <X size={20} />
+              <X size={22} />
             </button>
 
-            {/* Certificate High-Res Image */}
-            <div className="overflow-auto max-h-[82vh] rounded-xl flex items-center justify-center">
+            {/* Certificate High-Res Image - Extra Large */}
+            <div className="overflow-auto max-h-[94vh] max-w-full rounded-2xl flex items-center justify-center p-1">
               <img
                 src={imageSrc}
                 alt="Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
-                className="max-h-[82vh] w-auto rounded-lg object-contain shadow-md"
+                className="max-h-[92vh] w-auto max-w-[92vw] sm:max-w-[85vw] md:max-w-3xl rounded-xl object-contain shadow-2xl border border-white/10"
               />
-            </div>
-
-            <div className="mt-2 text-center text-[11px] text-gray-500 font-medium">
-              The House of Rabbi Azanduna Ltd • Registered under Companies Act, 2019 (Act 992)
             </div>
           </div>
         </div>
