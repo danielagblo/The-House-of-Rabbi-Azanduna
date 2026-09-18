@@ -12,25 +12,27 @@ export const CollectionsGrid: React.FC<Props> = ({
   collections,
   title = "Discovery Collections",
 }) => {
-  // Discovery sets matching top 2 cards in reference screenshot
+  // Discovery sets matching top 2 cards in reference screenshot (complete boxed bundle products)
   const discoverySets = [
     {
-      name: "Discovery Collection",
-      slug: "discovery-sets",
+      name: "The Royal Discovery Collection (Full Set)",
+      slug: "royal-quintet-discovery-set",
       imageUrl: "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=80",
       saveBadge: "SAVE GH₵190.00",
       reviewCount: 5159,
       originalPrice: "GH₵480.00",
       salePrice: "GH₵290.00",
+      isProduct: true,
     },
     {
-      name: "Best Seller Collection",
-      slug: "discovery-sets",
+      name: "The Best Seller Extrait Collection (Full Set)",
+      slug: "extrait-grand-discovery-wardrobe",
       imageUrl: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=1200&q=80",
       saveBadge: "SAVE GH₵180.00",
       reviewCount: 1151,
       originalPrice: "GH₵450.00",
       salePrice: "GH₵270.00",
+      isProduct: true,
     },
   ];
 
@@ -67,7 +69,7 @@ export const CollectionsGrid: React.FC<Props> = ({
         {discoverySets.map((set, idx) => (
           <div key={idx} className="flex flex-col group">
             <a
-              href={`/collections/${set.slug}`}
+              href={`/product/${set.slug}`}
               className="relative aspect-[16/11] sm:aspect-[16/10] overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
             >
               <img
@@ -86,7 +88,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
             {/* Below Image: Centered Title, Stars, and Price */}
             <div className="pt-3 text-center">
-              <a href={`/collections/${set.slug}`}>
+              <a href={`/product/${set.slug}`}>
                 <h3 className="font-['Barlow',sans-serif] text-[15px] sm:text-[16px] font-bold text-black group-hover:text-[#e62b32] transition-colors">
                   {set.name}
                 </h3>
