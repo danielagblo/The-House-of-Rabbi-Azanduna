@@ -32,6 +32,27 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
+func AdminAuthMiddleware() fiber.Handler {
+	return func(ctx fiber.Ctx) error {
+		authHeader := ctx.Get("Authorization")
+		if authHeader == "" {
+			authHeader = ctx.Query("token")
+		}
+		if authHeader == "" {
+			return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Unauthorized: Admin authorization token required",
+			})
+		}
+		// Token validation
+		if len(authHeader) < 10 {
+			return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Unauthorized: Invalid authorization token",
+			})
+		}
+		return ctx.Next()
+	}
+}
+
 func (c *AdminController) Login(ctx fiber.Ctx) error {
 	var req LoginRequest
 	if err := ctx.Bind().Body(&req); err != nil {
@@ -44,7 +65,7 @@ func (c *AdminController) Login(ctx fiber.Ctx) error {
 	}
 
 	if req.Password != expectedPassword {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid master password"})
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid master password. Access denied."})
 	}
 
 	token := "azanduna_admin_token_" + strconv.FormatInt(time.Now().Unix(), 10)

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Product, Collection, Order, BlogPost, FAQ } from '../../types';
 import { FALLBACK_PRODUCTS, FALLBACK_COLLECTIONS } from '../../data/fallbackData';
+import { API_BASE_URL } from '../../config/api';
 import { 
   Lock, KeyRound, Eye, EyeOff, LogOut, Package, Layers, 
   ShoppingBag, Plus, Edit2, Trash2, CheckCircle2, AlertCircle, 
@@ -239,6 +240,17 @@ export const AdminPortal: React.FC = () => {
   const [isFAQModalOpen, setIsFAQModalOpen] = useState<boolean>(false);
   const [editingFAQ, setEditingFAQ] = useState<Partial<FAQ> | null>(null);
 
+  const getAuthHeaders = (includeJson: boolean = true) => {
+    const token = sessionStorage.getItem('rabbi_admin_auth_token') || '';
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${token}`,
+    };
+    if (includeJson) {
+      headers['Content-Type'] = 'application/json';
+    }
+    return headers;
+  };
+
   // Check existing session on mount
   useEffect(() => {
     const token = sessionStorage.getItem('rabbi_admin_auth_token');
@@ -259,34 +271,23 @@ export const AdminPortal: React.FC = () => {
     setIsLoggingIn(true);
 
     try {
-      const res = await fetch('http://localhost:8085/api/admin/login', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        sessionStorage.setItem('rabbi_admin_auth_token', data.token || 'auth_valid');
+      const data = await res.json().catch(() => null);
+
+      if (res.ok && data?.token) {
+        sessionStorage.setItem('rabbi_admin_auth_token', data.token);
         setIsAuthenticated(true);
         fetchData();
       } else {
-        if (password === 'RabbiAzanduna2026!' || password === 'admin123') {
-          sessionStorage.setItem('rabbi_admin_auth_token', 'auth_fallback_valid');
-          setIsAuthenticated(true);
-          fetchData();
-        } else {
-          setLoginError('Invalid authorization key. Access denied.');
-        }
+        setLoginError(data?.error || 'Invalid authorization key. Access denied.');
       }
     } catch (err) {
-      if (password === 'RabbiAzanduna2026!' || password === 'admin123') {
-        sessionStorage.setItem('rabbi_admin_auth_token', 'auth_fallback_valid');
-        setIsAuthenticated(true);
-        fetchData();
-      } else {
-        setLoginError('Invalid authorization key. Access denied.');
-      }
+      setLoginError('Unable to connect to the backend server. Please verify your connection.');
     } finally {
       setIsLoggingIn(false);
     }
@@ -303,7 +304,7 @@ export const AdminPortal: React.FC = () => {
     try {
       // Collections first so products can reference them
       let loadedCollections = FALLBACK_COLLECTIONS;
-      const colRes = await fetch('http://localhost:8085/api/collections');
+      const colRes = await fetch(`${API_BASE_URL}/api/collections`);
       if (colRes.ok) {
         const colData = await colRes.json();
         if (colData && colData.length > 0) {
@@ -314,7 +315,7 @@ export const AdminPortal: React.FC = () => {
 
       // Products
       let loadedProducts = FALLBACK_PRODUCTS;
-      const prodRes = await fetch('http://localhost:8085/api/products');
+      const prodRes = await fetch(`${API_BASE_URL}/api/products`);
       if (prodRes.ok) {
         const prodData = await prodRes.json();
         if (prodData && prodData.length > 0) {
@@ -323,8 +324,10 @@ export const AdminPortal: React.FC = () => {
       }
       setProducts(loadedProducts);
 
-      // Stats
-      const statsRes = await fetch('http://localhost:8085/api/admin/stats');
+      // Stats (Protected)
+      const statsRes = await fetch(`${API_BASE_URL}/api/admin/stats`, {
+        headers: getAuthHeaders(),
+      });
       if (statsRes.ok) {
         const statsData = await statsRes.json();
         setStats(statsData);
@@ -332,27 +335,29 @@ export const AdminPortal: React.FC = () => {
         setStats({
           products_count: loadedProducts.length,
           collections_count: loadedCollections.length,
-          orders_count: 8,
-          total_revenue: 1420.0,
+          orders_count: 0,
+          total_revenue: 0,
         });
       }
 
-      // Orders
-      const orderRes = await fetch('http://localhost:8085/api/admin/orders');
+      // Orders (Protected)
+      const orderRes = await fetch(`${API_BASE_URL}/api/admin/orders`, {
+        headers: getAuthHeaders(),
+      });
       if (orderRes.ok) {
         const orderData = await orderRes.json();
         setOrders(orderData || []);
       }
 
       // Blogs
-      const blogRes = await fetch('http://localhost:8085/api/blogs');
+      const blogRes = await fetch(`${API_BASE_URL}/api/blogs`);
       if (blogRes.ok) {
         const blogData = await blogRes.json();
         setBlogs(blogData || []);
       }
 
       // FAQs
-      const faqRes = await fetch('http://localhost:8085/api/faqs');
+      const faqRes = await fetch(`${API_BASE_URL}/api/faqs`);
       if (faqRes.ok) {
         const faqData = await faqRes.json();
         setFaqs(faqData || []);
@@ -360,12 +365,6 @@ export const AdminPortal: React.FC = () => {
     } catch (e) {
       setProducts(FALLBACK_PRODUCTS);
       setCollections(FALLBACK_COLLECTIONS);
-      setStats({
-        products_count: FALLBACK_PRODUCTS.length,
-        collections_count: FALLBACK_COLLECTIONS.length,
-        orders_count: 8,
-        total_revenue: 1420.0,
-      });
     } finally {
       setLoading(false);
     }
@@ -425,35 +424,32 @@ export const AdminPortal: React.FC = () => {
 
     try {
       if (editingProduct.id) {
-        const res = await fetch(`http://localhost:8085/api/admin/products/${editingProduct.id}`, {
+        const res = await fetch(`${API_BASE_URL}/api/admin/products/${editingProduct.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(productPayload),
         });
         if (res.ok) {
           showToast('Product updated successfully!');
         } else {
-          setProducts((prev) => prev.map((p) => (p.id === editingProduct.id ? { ...p, ...productPayload } as Product : p)));
-          showToast('Product updated (Local Session)!');
+          showToast('Failed to update product on server', 'error');
         }
       } else {
-        const res = await fetch('http://localhost:8085/api/admin/products', {
+        const res = await fetch(`${API_BASE_URL}/api/admin/products`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(productPayload),
         });
         if (res.ok) {
           showToast('New fragrance created and linked to collection!');
         } else {
-          setProducts((prev) => [{ ...productPayload, id: Date.now() } as Product, ...prev]);
-          showToast('New fragrance created (Local Session)!');
+          showToast('Failed to create product on server', 'error');
         }
       }
       setIsProductModalOpen(false);
       fetchData();
     } catch (err) {
-      setProducts((prev) => [{ ...productPayload, id: Date.now() } as Product, ...prev]);
-      showToast('Action saved in local session', 'success');
+      showToast('Error communicating with database', 'error');
       setIsProductModalOpen(false);
     }
   };
@@ -461,12 +457,18 @@ export const AdminPortal: React.FC = () => {
   const handleDeleteProduct = async (id: number) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
     try {
-      await fetch(`http://localhost:8085/api/admin/products/${id}`, { method: 'DELETE' });
-      setProducts((prev) => prev.filter((p) => p.id !== id));
-      showToast('Product removed.');
+      const res = await fetch(`${API_BASE_URL}/api/admin/products/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(false),
+      });
+      if (res.ok) {
+        setProducts((prev) => prev.filter((p) => p.id !== id));
+        showToast('Product removed.');
+      } else {
+        showToast('Failed to delete product', 'error');
+      }
     } catch (err) {
-      setProducts((prev) => prev.filter((p) => p.id !== id));
-      showToast('Product removed (Local Session).');
+      showToast('Error communicating with database', 'error');
     }
   };
 
@@ -477,9 +479,9 @@ export const AdminPortal: React.FC = () => {
 
     try {
       if (editingCollection.id) {
-        await fetch(`http://localhost:8085/api/admin/collections/${editingCollection.id}`, {
+        await fetch(`${API_BASE_URL}/api/admin/collections/${editingCollection.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(editingCollection),
         });
         showToast('Collection updated!');
@@ -490,9 +492,9 @@ export const AdminPortal: React.FC = () => {
           featured: editingCollection.featured ?? true,
           sortOrder: collections.length + 1,
         };
-        await fetch('http://localhost:8085/api/admin/collections', {
+        await fetch(`${API_BASE_URL}/api/admin/collections`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(newCol),
         });
         showToast('New collection category created!');
@@ -500,7 +502,7 @@ export const AdminPortal: React.FC = () => {
       setIsCollectionModalOpen(false);
       fetchData();
     } catch (err) {
-      showToast('Saved to session');
+      showToast('Error saving collection', 'error');
       setIsCollectionModalOpen(false);
     }
   };
@@ -516,12 +518,18 @@ export const AdminPortal: React.FC = () => {
     }
 
     try {
-      await fetch(`http://localhost:8085/api/admin/collections/${id}`, { method: 'DELETE' });
-      setCollections((prev) => prev.filter((c) => c.id !== id));
-      showToast('Collection deleted.');
+      const res = await fetch(`${API_BASE_URL}/api/admin/collections/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(false),
+      });
+      if (res.ok) {
+        setCollections((prev) => prev.filter((c) => c.id !== id));
+        showToast('Collection deleted.');
+      } else {
+        showToast('Failed to delete collection', 'error');
+      }
     } catch (err) {
-      setCollections((prev) => prev.filter((c) => c.id !== id));
-      showToast('Collection deleted (Local Session).');
+      showToast('Error communicating with database', 'error');
     }
   };
 
@@ -560,16 +568,16 @@ export const AdminPortal: React.FC = () => {
 
     try {
       if (editingBlog.id) {
-        await fetch(`http://localhost:8085/api/admin/blogs/${editingBlog.id}`, {
+        await fetch(`${API_BASE_URL}/api/admin/blogs/${editingBlog.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(payload),
         });
         showToast('Blog article updated!');
       } else {
-        await fetch('http://localhost:8085/api/admin/blogs', {
+        await fetch(`${API_BASE_URL}/api/admin/blogs`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(payload),
         });
         showToast('New blog article published!');
@@ -577,7 +585,7 @@ export const AdminPortal: React.FC = () => {
       setIsBlogModalOpen(false);
       fetchData();
     } catch (err) {
-      showToast('Saved to session (Local)');
+      showToast('Error saving blog article', 'error');
       setIsBlogModalOpen(false);
     }
   };
@@ -585,12 +593,18 @@ export const AdminPortal: React.FC = () => {
   const handleDeleteBlog = async (id: number) => {
     if (!confirm('Are you sure you want to delete this blog article?')) return;
     try {
-      await fetch(`http://localhost:8085/api/admin/blogs/${id}`, { method: 'DELETE' });
-      setBlogs((prev) => prev.filter((b) => b.id !== id));
-      showToast('Blog article deleted.');
+      const res = await fetch(`${API_BASE_URL}/api/admin/blogs/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(false),
+      });
+      if (res.ok) {
+        setBlogs((prev) => prev.filter((b) => b.id !== id));
+        showToast('Blog article deleted.');
+      } else {
+        showToast('Failed to delete blog article', 'error');
+      }
     } catch (err) {
-      setBlogs((prev) => prev.filter((b) => b.id !== id));
-      showToast('Blog article deleted (Local Session).');
+      showToast('Error communicating with database', 'error');
     }
   };
 
@@ -622,16 +636,16 @@ export const AdminPortal: React.FC = () => {
 
     try {
       if (editingFAQ.id) {
-        await fetch(`http://localhost:8085/api/admin/faqs/${editingFAQ.id}`, {
+        await fetch(`${API_BASE_URL}/api/admin/faqs/${editingFAQ.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(payload),
         });
         showToast('FAQ updated!');
       } else {
-        await fetch('http://localhost:8085/api/admin/faqs', {
+        await fetch(`${API_BASE_URL}/api/admin/faqs`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(payload),
         });
         showToast('New FAQ added!');
@@ -639,7 +653,7 @@ export const AdminPortal: React.FC = () => {
       setIsFAQModalOpen(false);
       fetchData();
     } catch (err) {
-      showToast('Saved to session (Local)');
+      showToast('Error saving FAQ', 'error');
       setIsFAQModalOpen(false);
     }
   };
@@ -647,12 +661,18 @@ export const AdminPortal: React.FC = () => {
   const handleDeleteFAQ = async (id: number) => {
     if (!confirm('Are you sure you want to delete this FAQ?')) return;
     try {
-      await fetch(`http://localhost:8085/api/admin/faqs/${id}`, { method: 'DELETE' });
-      setFaqs((prev) => prev.filter((f) => f.id !== id));
-      showToast('FAQ deleted.');
+      const res = await fetch(`${API_BASE_URL}/api/admin/faqs/${id}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(false),
+      });
+      if (res.ok) {
+        setFaqs((prev) => prev.filter((f) => f.id !== id));
+        showToast('FAQ deleted.');
+      } else {
+        showToast('Failed to delete FAQ', 'error');
+      }
     } catch (err) {
-      setFaqs((prev) => prev.filter((f) => f.id !== id));
-      showToast('FAQ deleted (Local Session).');
+      showToast('Error communicating with database', 'error');
     }
   };
 

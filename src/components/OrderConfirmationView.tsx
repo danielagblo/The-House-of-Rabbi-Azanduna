@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle2, ShieldCheck, ArrowRight, ShoppingBag, Home } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 export const OrderConfirmationView: React.FC = () => {
   const [reference, setReference] = useState<string>('');
@@ -19,7 +20,7 @@ export const OrderConfirmationView: React.FC = () => {
     }
 
     // Verify payment with Go backend
-    fetch(`http://localhost:8085/api/payments/verify/${ref}`)
+    fetch(`${API_BASE_URL}/api/payments/verify/${ref}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && data.paystack?.status === 'success') {

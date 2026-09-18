@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import type { BlogPost } from '../../types';
+import { API_BASE_URL } from '../../config/api';
 
 export async function getStaticPaths() {
   const defaultSlugs = [
@@ -13,7 +14,7 @@ export async function getStaticPaths() {
   ];
 
   try {
-    const res = await fetch('http://localhost:8085/api/blogs');
+    const res = await fetch(`${API_BASE_URL}/api/blogs`);
     if (res.ok) {
       const data: BlogPost[] = await res.json();
       if (data && data.length > 0) {
@@ -44,7 +45,7 @@ let post: BlogPost = {
 };
 
 try {
-  const res = await fetch(`http://localhost:8085/api/blogs/${slug}`);
+  const res = await fetch(`${API_BASE_URL}/api/blogs/${slug}`);
   if (res.ok) {
     const data = await res.json();
     if (data && data.title) {

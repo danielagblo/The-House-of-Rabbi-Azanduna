@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { cartStore } from '../store/cartStore';
 import type { CartItem } from '../types';
+import { API_BASE_URL } from '../config/api';
 import { X, Trash2, ShieldCheck, CreditCard, ArrowRight } from 'lucide-react';
 
 export const CartDrawer: React.FC = () => {
@@ -62,7 +63,7 @@ export const CartDrawer: React.FC = () => {
         })),
       };
 
-      const response = await fetch('http://localhost:8085/api/payments/initialize', {
+      const response = await fetch(`${API_BASE_URL}/api/payments/initialize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

@@ -1,11 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import type { BlogPost } from '../../types';
+import { API_BASE_URL } from '../../config/api';
 
 let articles: BlogPost[] = [];
 
 try {
-  const res = await fetch('http://localhost:8085/api/blogs');
+  const res = await fetch(`${API_BASE_URL}/api/blogs`);
   if (res.ok) {
     const data = await res.json();
     if (data && data.length > 0) {

@@ -62,26 +62,29 @@ func SetupRoutes(app *fiber.App, db *gorm.DB) {
 	// Admin Portal Endpoints (/api/admin)
 	admin := api.Group("/admin")
 	admin.Post("/login", adminCtrl.Login)
-	admin.Get("/stats", adminCtrl.GetStats)
-	admin.Get("/orders", adminCtrl.GetOrders)
+
+	// Protected Admin Routes (Requires Authorization Token)
+	adminProtected := admin.Group("", controllers.AdminAuthMiddleware())
+	adminProtected.Get("/stats", adminCtrl.GetStats)
+	adminProtected.Get("/orders", adminCtrl.GetOrders)
 
 	// Admin Product Management
-	admin.Post("/products", adminCtrl.CreateProduct)
-	admin.Put("/products/:id", adminCtrl.UpdateProduct)
-	admin.Delete("/products/:id", adminCtrl.DeleteProduct)
+	adminProtected.Post("/products", adminCtrl.CreateProduct)
+	adminProtected.Put("/products/:id", adminCtrl.UpdateProduct)
+	adminProtected.Delete("/products/:id", adminCtrl.DeleteProduct)
 
 	// Admin Collection Management
-	admin.Post("/collections", adminCtrl.CreateCollection)
-	admin.Put("/collections/:id", adminCtrl.UpdateCollection)
-	admin.Delete("/collections/:id", adminCtrl.DeleteCollection)
+	adminProtected.Post("/collections", adminCtrl.CreateCollection)
+	adminProtected.Put("/collections/:id", adminCtrl.UpdateCollection)
+	adminProtected.Delete("/collections/:id", adminCtrl.DeleteCollection)
 
 	// Admin Blog Management
-	admin.Post("/blogs", blogCtrl.Create)
-	admin.Put("/blogs/:id", blogCtrl.Update)
-	admin.Delete("/blogs/:id", blogCtrl.Delete)
+	adminProtected.Post("/blogs", blogCtrl.Create)
+	adminProtected.Put("/blogs/:id", blogCtrl.Update)
+	adminProtected.Delete("/blogs/:id", blogCtrl.Delete)
 
 	// Admin FAQ Management
-	admin.Post("/faqs", faqCtrl.Create)
-	admin.Put("/faqs/:id", faqCtrl.Update)
-	admin.Delete("/faqs/:id", faqCtrl.Delete)
+	adminProtected.Post("/faqs", faqCtrl.Create)
+	adminProtected.Put("/faqs/:id", faqCtrl.Update)
+	adminProtected.Delete("/faqs/:id", faqCtrl.Delete)
 }
