@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Award, ShieldCheck, HeartHandshake, CheckCircle2, Building, FileCheck, ZoomIn, X } from 'lucide-react';
+import { Award, ShieldCheck, HeartHandshake, CheckCircle2, Building, FileCheck, ZoomIn, X, ExternalLink } from 'lucide-react';
+import certImg from '../assets/cert.png';
 ---
 
 <Layout title="About Us | The House of Rabbi Azanduna Ltd">
@@ -62,9 +63,9 @@ import { Award, ShieldCheck, HeartHandshake, CheckCircle2, Building, FileCheck, 
         <div class="md:col-span-5 flex flex-col items-center">
           <div class="relative group cursor-pointer max-w-[280px] sm:max-w-[320px] bg-white p-2.5 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
             <img
-              src="/cert.png"
+              src={certImg.src}
               alt="Official Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
-              class="w-full h-auto rounded-lg object-contain"
+              class="w-full h-auto rounded-lg object-contain shadow-xs"
               id="certThumbnail"
             />
             <div class="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-2xs">
@@ -189,7 +190,7 @@ import { Award, ShieldCheck, HeartHandshake, CheckCircle2, Building, FileCheck, 
         <X size={20} />
       </button>
       <img
-        src="/cert.png"
+        src={certImg.src}
         alt="Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
         class="max-h-[82vh] w-auto rounded-lg object-contain"
       />
