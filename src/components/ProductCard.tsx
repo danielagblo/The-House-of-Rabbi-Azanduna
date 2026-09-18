@@ -39,10 +39,10 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       const minPrice = Math.min(...prices);
       const maxPrice = Math.max(...prices);
       if (minPrice !== maxPrice) {
-        return `£${minPrice.toFixed(2)} - £${maxPrice.toFixed(2)}`;
+        return `GH₵${minPrice.toFixed(2)} - GH₵${maxPrice.toFixed(2)}`;
       }
     }
-    return `£${product.price.toFixed(2)}`;
+    return `GH₵${product.price.toFixed(2)}`;
   })();
 
   return (
@@ -76,7 +76,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         {savings && (
           <div className="absolute top-3 left-3 z-10">
             <span className="bg-[#e62b32] text-white font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-[3px] shadow-xs tracking-wider">
-              SAVE £{savings}
+              SAVE GH₵{savings}
             </span>
           </div>
         )}
@@ -126,7 +126,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
           <span>{priceDisplay}</span>
           {product.compareAtPrice && product.compareAtPrice > product.price && (
             <span className="text-gray-400 line-through text-xs font-normal">
-              £{product.compareAtPrice.toFixed(2)}
+              GH₵{product.compareAtPrice.toFixed(2)}
             </span>
           )}
         </div>

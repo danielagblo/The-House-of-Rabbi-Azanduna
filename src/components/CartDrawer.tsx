@@ -14,7 +14,7 @@ export const CartDrawer: React.FC = () => {
   const [customerEmail, setCustomerEmail] = useState('');
   const [shippingStreet, setShippingStreet] = useState('');
   const [shippingCity, setShippingCity] = useState('');
-  const [shippingCountry, setShippingCountry] = useState('United Kingdom');
+  const [shippingCountry, setShippingCountry] = useState('Ghana');
 
   useEffect(() => {
     const update = () => {
@@ -27,9 +27,9 @@ export const CartDrawer: React.FC = () => {
 
   const subtotal = cartStore.getSubtotal();
   const discountAmount = discountApplied ? subtotal * 0.1 : 0;
-  const freeShippingThreshold = 50.0;
+  const freeShippingThreshold = 350.0;
   const isFreeShipping = subtotal >= freeShippingThreshold;
-  const shippingFee = isFreeShipping || subtotal === 0 ? 0 : 4.95;
+  const shippingFee = isFreeShipping || subtotal === 0 ? 0 : 35.0;
   const finalTotal = Math.max(0, subtotal - discountAmount + shippingFee);
   const progressPercent = Math.min(100, (subtotal / freeShippingThreshold) * 100);
 
@@ -59,7 +59,7 @@ export const CartDrawer: React.FC = () => {
         shippingStreet,
         shippingCity,
         shippingCountry,
-        currency: 'GBP',
+        currency: 'GHS',
         callbackUrl: window.location.origin + '/order/confirmation',
         items: items.map((item) => ({
           productId: item.product.id,
@@ -138,11 +138,11 @@ export const CartDrawer: React.FC = () => {
             <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
               {isFreeShipping ? (
                 <span className="text-emerald-600 font-bold flex items-center gap-1">
-                  <Check size={14} /> Free UK Shipping Unlocked!
+                  <Check size={14} /> Free Delivery in Ghana Unlocked!
                 </span>
               ) : (
                 <span className="text-gray-700">
-                  Add <strong className="text-[#ff2d3b]">£{(freeShippingThreshold - subtotal).toFixed(2)}</strong> more for <strong>FREE Delivery</strong>
+                  Add <strong className="text-[#ff2d3b]">GH₵{(freeShippingThreshold - subtotal).toFixed(2)}</strong> more for <strong>FREE Delivery</strong>
                 </span>
               )}
             </div>
@@ -214,7 +214,7 @@ export const CartDrawer: React.FC = () => {
                         </div>
 
                         <span className="font-['Barlow',sans-serif] font-bold text-black text-sm">
-                          £{(item.selectedVariant.price * item.quantity).toFixed(2)}
+                          GH₵{(item.selectedVariant.price * item.quantity).toFixed(2)}
                         </span>
                       </div>
                     </div>
@@ -260,7 +260,7 @@ export const CartDrawer: React.FC = () => {
                     required
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="e.g. John Doe"
+                    placeholder="e.g. Kwame Mensah"
                     className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-900 focus:border-black focus:outline-none"
                   />
                 </div>
@@ -272,18 +272,18 @@ export const CartDrawer: React.FC = () => {
                     required
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
-                    placeholder="john@example.com"
+                    placeholder="kwame@example.com"
                     className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-900 focus:border-black focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs uppercase font-bold text-gray-700 mb-1">Shipping Address</label>
+                  <label className="block text-xs uppercase font-bold text-gray-700 mb-1">Delivery Address</label>
                   <input
                     type="text"
                     value={shippingStreet}
                     onChange={(e) => setShippingStreet(e.target.value)}
-                    placeholder="Street Address"
+                    placeholder="Street Address / Area (e.g. Airport Residential)"
                     className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-900 focus:border-black focus:outline-none mb-2"
                   />
                   <div className="grid grid-cols-2 gap-2">
@@ -291,7 +291,7 @@ export const CartDrawer: React.FC = () => {
                       type="text"
                       value={shippingCity}
                       onChange={(e) => setShippingCity(e.target.value)}
-                      placeholder="City"
+                      placeholder="City (e.g. Accra, Kumasi)"
                       className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-900 focus:border-black focus:outline-none"
                     />
                     <input
@@ -306,7 +306,7 @@ export const CartDrawer: React.FC = () => {
 
                 <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-xs text-gray-700">
                   <ShieldCheck size={20} className="text-[#ff2d3b] shrink-0" />
-                  <span>Secure checkout processed by <strong>Paystack</strong>.</span>
+                  <span>Secure checkout processed in Ghana Cedis by <strong>Paystack</strong>.</span>
                 </div>
               </form>
             )}
@@ -318,22 +318,22 @@ export const CartDrawer: React.FC = () => {
               <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>
-                  <span className="font-bold text-black">£{subtotal.toFixed(2)}</span>
+                  <span className="font-bold text-black">GH₵{subtotal.toFixed(2)}</span>
                 </div>
                 {discountApplied && (
                   <div className="flex justify-between text-emerald-600 font-bold">
                     <span>Discount (10%)</span>
-                    <span>-£{discountAmount.toFixed(2)}</span>
+                    <span>-GH₵{discountAmount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
-                  <span>{isFreeShipping ? <strong className="text-emerald-600 uppercase text-[10px]">Free</strong> : `£${shippingFee.toFixed(2)}`}</span>
+                  <span>{isFreeShipping ? <strong className="text-emerald-600 uppercase text-[10px]">Free</strong> : `GH₵${shippingFee.toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between text-sm font-bold text-black pt-2 border-t border-gray-200">
                   <span className="font-['Barlow',sans-serif] uppercase">Total</span>
                   <span className="font-['Barlow',sans-serif] text-base text-[#ff2d3b]">
-                    £{finalTotal.toFixed(2)}
+                    GH₵{finalTotal.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -354,7 +354,7 @@ export const CartDrawer: React.FC = () => {
                   className="w-full py-3.5 bg-[#ff2d3b] hover:bg-[#e0202d] text-white font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   <CreditCard size={16} />
-                  <span>{isLoading ? 'Connecting...' : `Pay £${finalTotal.toFixed(2)} with Paystack`}</span>
+                  <span>{isLoading ? 'Connecting...' : `Pay GH₵${finalTotal.toFixed(2)} with Paystack`}</span>
                 </button>
               )}
             </div>

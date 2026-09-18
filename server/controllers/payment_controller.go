@@ -60,7 +60,7 @@ func (c *PaymentController) InitializeCheckout(ctx fiber.Ctx) error {
 	}
 
 	if req.Currency == "" {
-		req.Currency = "GBP"
+		req.Currency = "GHS"
 	}
 
 	// Calculate total amount
@@ -79,9 +79,9 @@ func (c *PaymentController) InitializeCheckout(ctx fiber.Ctx) error {
 		})
 	}
 
-	// Add shipping if under £50
-	if total < 50.0 && req.Currency == "GBP" {
-		total += 4.95
+	// Add delivery fee if under GH₵350
+	if total < 350.0 {
+		total += 35.0
 	}
 
 	reference := fmt.Sprintf("OUD-%d-%d", time.Now().Unix(), time.Now().Nanosecond()%1000)

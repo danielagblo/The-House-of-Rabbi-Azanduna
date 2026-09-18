@@ -9,12 +9,12 @@ class CartStore {
   private quickViewListeners: Set<QuickViewListener> = new Set();
   private isDrawerOpen: boolean = false;
   private activeQuickViewProduct: Product | null = null;
-  private currency: string = 'GBP';
+  private currency: string = 'GHS';
   private currencyRates: Record<string, { symbol: string; rate: number }> = {
-    GBP: { symbol: '£', rate: 1.0 },
-    USD: { symbol: '$', rate: 1.28 },
-    EUR: { symbol: '€', rate: 1.18 },
-    GHS: { symbol: 'GH₵', rate: 19.5 },
+    GHS: { symbol: 'GH₵', rate: 1.0 },
+    USD: { symbol: '$', rate: 0.065 },
+    GBP: { symbol: '£', rate: 0.051 },
+    EUR: { symbol: '€', rate: 0.060 },
   };
 
   constructor() {
@@ -51,12 +51,12 @@ class CartStore {
   }
 
   getCurrencySymbol(): string {
-    return this.currencyRates[this.currency]?.symbol || '£';
+    return this.currencyRates[this.currency]?.symbol || 'GH₵';
   }
 
-  formatPrice(amountGBP: number): string {
-    const rateInfo = this.currencyRates[this.currency] || this.currencyRates.GBP;
-    const converted = amountGBP * rateInfo.rate;
+  formatPrice(amount: number): string {
+    const rateInfo = this.currencyRates[this.currency] || this.currencyRates.GHS;
+    const converted = amount * rateInfo.rate;
     return `${rateInfo.symbol}${converted.toFixed(2)}`;
   }
 

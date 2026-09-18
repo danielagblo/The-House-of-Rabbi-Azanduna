@@ -97,9 +97,9 @@ type Order struct {
 	ShippingCity   string      `gorm:"size:100" json:"shippingCity"`
 	ShippingState  string      `gorm:"size:100" json:"shippingState"`
 	ShippingZip    string      `gorm:"size:50" json:"shippingZip"`
-	ShippingCountry string     `gorm:"size:100;default:'United Kingdom'" json:"shippingCountry"`
+	ShippingCountry string     `gorm:"size:100;default:'Ghana'" json:"shippingCountry"`
 	TotalAmount    float64     `gorm:"type:decimal(10,2);not null" json:"totalAmount"`
-	Currency       string      `gorm:"size:10;default:'GBP'" json:"currency"`
+	Currency       string      `gorm:"size:10;default:'GHS'" json:"currency"`
 	Status         string      `gorm:"size:50;default:'pending'" json:"status"` // "pending", "paid", "shipped", "failed"
 	Items          []OrderItem `gorm:"foreignKey:OrderID" json:"items"`
 	CreatedAt      time.Time   `json:"createdAt"`

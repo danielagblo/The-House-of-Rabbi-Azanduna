@@ -56,7 +56,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
             />
             {savings && (
               <span className="absolute top-4 left-4 bg-[#ff2d3b] text-white font-extrabold text-xs uppercase px-3 py-1 rounded shadow">
-                SAVE £{savings}
+                SAVE GH₵{savings}
               </span>
             )}
           </div>
@@ -103,11 +103,11 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
           {/* Price Strip */}
           <div className="flex items-baseline gap-3 pb-6 border-b border-gray-200">
             <span className="font-['Barlow',sans-serif] text-3xl font-extrabold text-black">
-              £{selectedVariant.price.toFixed(2)}
+              GH₵{selectedVariant.price.toFixed(2)}
             </span>
             {product.compareAtPrice && product.compareAtPrice > selectedVariant.price && (
               <span className="text-base text-gray-400 line-through">
-                £{product.compareAtPrice.toFixed(2)}
+                GH₵{product.compareAtPrice.toFixed(2)}
               </span>
             )}
             <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded">
@@ -138,7 +138,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                   >
                     <span className="text-xs block">{v.size}</span>
                     <span className="font-['Barlow',sans-serif] font-bold text-sm block mt-0.5">
-                      £{v.price.toFixed(2)}
+                      GH₵{v.price.toFixed(2)}
                     </span>
                   </button>
                 ))}
@@ -181,7 +181,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 ) : (
                   <>
                     <ShoppingBag size={16} />
-                    <span>Add to Bag • £{(selectedVariant.price * quantity).toFixed(2)}</span>
+                    <span>Add to Bag • GH₵{(selectedVariant.price * quantity).toFixed(2)}</span>
                   </>
                 )}
               </button>
@@ -203,7 +203,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
           <div className="grid grid-cols-3 gap-3 pt-6 border-t border-gray-200 text-xs text-gray-600 font-medium">
             <div className="flex items-center gap-2">
               <Truck size={18} className="text-[#ff2d3b] shrink-0" />
-              <span>Free UK Shipping &gt; £50</span>
+              <span>Free Delivery &gt; GH₵350</span>
             </div>
             <div className="flex items-center gap-2">
               <ShieldCheck size={18} className="text-[#ff2d3b] shrink-0" />

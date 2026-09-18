@@ -539,7 +539,7 @@ export const AdminPortal: React.FC = () => {
                   <span className="text-xs uppercase font-bold tracking-wider">Est. Revenue</span>
                   <DollarSign size={18} className="text-emerald-600" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900">£{stats.total_revenue.toFixed(2)}</div>
+                <div className="text-2xl font-bold text-gray-900">GH₵{stats.total_revenue.toFixed(2)}</div>
                 <p className="text-[11px] text-gray-500 mt-1">Paystack sales</p>
               </div>
             </div>
@@ -738,12 +738,12 @@ export const AdminPortal: React.FC = () => {
                               </span>
                             </td>
                             <td className="py-3.5 px-4 font-bold text-gray-900 text-sm">
-                              £{prod.price.toFixed(2)}
+                              GH₵{prod.price.toFixed(2)}
                             </td>
                             <td className="py-3.5 px-4">
                               {prod.compareAtPrice && prod.compareAtPrice > prod.price ? (
                                 <span className="text-[#e62b32] font-bold">
-                                  £{prod.compareAtPrice.toFixed(2)} (SAVE £{(prod.compareAtPrice - prod.price).toFixed(2)})
+                                  GH₵{prod.compareAtPrice.toFixed(2)} (SAVE GH₵{(prod.compareAtPrice - prod.price).toFixed(2)})
                                 </span>
                               ) : (
                                 <span className="text-gray-400">—</span>
@@ -874,7 +874,7 @@ export const AdminPortal: React.FC = () => {
                                   <img src={p.imageUrl} alt={p.name} className="w-6 h-6 object-cover rounded shrink-0" />
                                   <span className="text-xs font-semibold text-gray-900 truncate">{p.name}</span>
                                 </div>
-                                <span className="text-xs font-bold text-gray-700 shrink-0 ml-2">£{p.price.toFixed(2)}</span>
+                                <span className="text-xs font-bold text-gray-700 shrink-0 ml-2">GH₵{p.price.toFixed(2)}</span>
                               </div>
                             ))}
                           </div>
@@ -980,7 +980,7 @@ export const AdminPortal: React.FC = () => {
                             <span className="text-[10px] text-gray-500">{ord.customerEmail}</span>
                           </td>
                           <td className="py-3.5 px-4 font-bold text-gray-900 text-sm">
-                            £{ord.total.toFixed(2)}
+                            GH₵{ord.total.toFixed(2)}
                           </td>
                           <td className="py-3.5 px-4">
                             <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase ${
@@ -1075,7 +1075,7 @@ export const AdminPortal: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Price (£) *</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Price (GH₵) *</label>
                   <input
                     type="number"
                     step="0.01"
@@ -1086,7 +1086,7 @@ export const AdminPortal: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Compare-At / Regular Price (£)</label>
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Compare-At / Regular Price (GH₵)</label>
                   <input
                     type="number"
                     step="0.01"
