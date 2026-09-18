@@ -10,7 +10,7 @@ interface Props {
 
 export const CollectionsGrid: React.FC<Props> = ({
   collections,
-  title = "Discovery Collections",
+  title = "Collections",
 }) => {
   // Discovery sets matching top 2 cards in reference screenshot (complete boxed bundle products)
   const discoverySets = [
