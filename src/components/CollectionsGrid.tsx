@@ -70,7 +70,7 @@ export const CollectionsGrid: React.FC<Props> = ({
           <div key={idx} className="flex flex-col group">
             <a
               href={`/product/${set.slug}`}
-              className="relative aspect-[16/11] sm:aspect-[16/10] overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
+              className="relative aspect-[3/4] overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
             >
               <img
                 src={set.imageUrl}
