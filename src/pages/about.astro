@@ -1,18 +1,21 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Award, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { Award, ShieldCheck, HeartHandshake, CheckCircle2, Building, FileCheck, ZoomIn, X } from 'lucide-react';
 ---
 
-<Layout title="About Us | Rabbi Azanduna Ltd">
+<Layout title="About Us | The House of Rabbi Azanduna Ltd">
   <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto bg-white font-['Poppins',sans-serif]">
     {/* Hero Header */}
-    <div class="text-center max-w-3xl mx-auto mb-16">
+    <div class="text-center max-w-3xl mx-auto mb-14">
+      <span class="text-[11px] font-bold uppercase tracking-widest text-[#ff2d3b] bg-red-50 border border-red-200 px-3 py-1 rounded-full inline-block mb-3">
+        Authentic Artisanal Fragrance House
+      </span>
       <h1 class="font-['Barlow',sans-serif] text-4xl sm:text-6xl font-extrabold text-black uppercase tracking-tight mb-4">
-        Rabbi Azanduna Ltd
+        The House of Rabbi Azanduna
       </h1>
-      <div class="w-16 h-1 bg-[#ff2d3b] mx-auto mb-6"></div>
+      <div class="w-16 h-1 bg-[#ff2d3b] mx-auto mb-5"></div>
       <p class="text-gray-600 text-sm sm:text-base font-normal leading-relaxed">
-        Specialists in 100% pure, long-lasting perfume oils and authentic aged Oud.
+        Specialists in 100% pure, non-alcoholic perfume oils, rare aged Oud, and luxury bespoke scents.
       </p>
     </div>
 
@@ -31,11 +34,93 @@ import { Award, ShieldCheck, HeartHandshake } from 'lucide-react';
           Our Philosophy
         </h2>
         <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
-          At Rabbi Azanduna Ltd, we believe true luxury in perfumery is measured in purity, patience, and longevity. Most commercial designer fragrances contain up to 90% alcohol that flashes off within minutes.
+          At The House of Rabbi Azanduna, we believe true luxury in perfumery is measured in purity, patience, and longevity. Most commercial designer fragrances contain up to 90% alcohol that flashes off within minutes.
         </p>
         <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
-          We reject dilution. Every bottle of our Oud Perfume Oils and Royal Attars is formulated with 100% concentrated botanical extracts, aged Aquilaria wood resins, and pure rose and amber distillates.
+          We reject dilution. Every bottle of our Oud Perfume Oils and Royal Attars is formulated with 100% concentrated botanical extracts, aged Aquilaria wood resins, and pure distillates for a rich, intimate sillage that lasts all day.
         </p>
+      </div>
+    </div>
+
+    {/* Official Registration & Certificate Section */}
+    <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl p-6 sm:p-10 mb-16 shadow-xs">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <div class="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+          <CheckCircle2 size={13} className="text-emerald-600" />
+          Officially Registered & Verified Company
+        </div>
+        <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight">
+          Certificate of Incorporation
+        </h2>
+        <p class="text-xs sm:text-sm text-gray-600 mt-1">
+          Registered and licensed under the Registrar of Companies, Republic of Ghana.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        {/* Certificate Image Preview */}
+        <div class="md:col-span-5 flex flex-col items-center">
+          <div class="relative group cursor-pointer max-w-[280px] sm:max-w-[320px] bg-white p-2.5 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+            <img
+              src="/cert.png"
+              alt="Official Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
+              class="w-full h-auto rounded-lg object-contain"
+              id="certThumbnail"
+            />
+            <div class="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-2xs">
+              <ZoomIn size={20} />
+              <span>Click to view</span>
+            </div>
+          </div>
+          <span class="text-[11px] text-gray-500 mt-2.5 font-medium flex items-center gap-1">
+            <ZoomIn size={12} /> Tap image to view full high-res certificate
+          </span>
+        </div>
+
+        {/* Certificate Details */}
+        <div class="md:col-span-7 space-y-4 text-xs sm:text-sm">
+          <div class="bg-white p-5 rounded-xl border border-gray-200 space-y-3">
+            <div class="flex items-start gap-3 border-b border-gray-100 pb-3">
+              <Building className="text-[#ff2d3b] shrink-0 mt-0.5" size={18} />
+              <div>
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Registered Entity Name</span>
+                <span class="font-bold text-gray-900 text-sm sm:text-base">THE HOUSE OF RABBI AZANDUNA LTD</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 border-b border-gray-100 pb-3">
+              <div>
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Registration Number</span>
+                <span class="font-bold font-mono text-gray-900 text-xs sm:text-sm">CS182810926</span>
+              </div>
+              <div>
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Tax Identification No (TIN)</span>
+                <span class="font-bold font-mono text-gray-900 text-xs sm:text-sm">C0067838006</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 border-b border-gray-100 pb-3">
+              <FileCheck className="text-emerald-600 shrink-0 mt-0.5" size={18} />
+              <div>
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Issuing Authority</span>
+                <span class="font-semibold text-gray-800 text-xs sm:text-sm">Office of the Registrar of Companies, Republic of Ghana</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <ShieldCheck className="text-[#ff2d3b] shrink-0 mt-0.5" size={18} />
+              <div>
+                <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Statutory Act</span>
+                <span class="text-xs text-gray-600">Incorporated under the Companies Act, 2019 (Act 992) as a limited liability entity.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 p-3 bg-emerald-50/70 border border-emerald-200/80 rounded-xl text-emerald-900 text-xs font-medium">
+            <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+            <span>Guaranteed 100% legitimate, authentic artisanal operations and customer security.</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -49,7 +134,7 @@ import { Award, ShieldCheck, HeartHandshake } from 'lucide-react';
           Aged Wild Oud
         </h3>
         <p class="text-xs text-gray-600 font-light">
-          Sourced ethically from mature Aquilaria trees in Koh Kong and Assam, aged for unparalleled smoothness.
+          Sourced ethically from mature Aquilaria trees, aged to perfection for deep, resinous richness.
         </p>
       </div>
 
@@ -61,7 +146,7 @@ import { Award, ShieldCheck, HeartHandshake } from 'lucide-react';
           Zero Alcohol
         </h3>
         <p class="text-xs text-gray-600 font-light">
-          Non-drying and completely alcohol-free for an intimate, long-lasting scent trail that lasts 16+ hours.
+          Pure concentrated oils that are non-drying on skin, ensuring an intimate, long-lasting scent trail.
         </p>
       </div>
 
@@ -70,10 +155,10 @@ import { Award, ShieldCheck, HeartHandshake } from 'lucide-react';
           <HeartHandshake size={24} />
         </div>
         <h3 class="font-['Barlow',sans-serif] text-lg font-bold text-black uppercase mb-1">
-          London Atelier
+          Bespoke Craftsmanship
         </h3>
         <p class="text-xs text-gray-600 font-light">
-          Hand-blended, bottled, and carefully inspected in England with fast worldwide dispatch.
+          Carefully blended and hand-packaged with uncompromised attention to luxury quality.
         </p>
       </div>
     </div>
@@ -86,10 +171,54 @@ import { Award, ShieldCheck, HeartHandshake } from 'lucide-react';
       <p class="text-xs text-gray-600 mb-6">Explore our curated collections of pure Oud perfume oils and discovery sets.</p>
       <a
         href="/collections"
-        class="inline-block px-8 py-3.5 bg-black hover:bg-[#ff2d3b] text-white font-bold text-xs uppercase tracking-widest rounded-lg transition-colors"
+        class="inline-block px-8 py-3.5 bg-black hover:bg-[#ff2d3b] text-white font-bold text-xs uppercase tracking-widest rounded-lg transition-colors cursor-pointer"
       >
         Explore The Collections
       </a>
     </div>
   </div>
+
+  {/* Fullscreen Certificate Lightbox Modal */}
+  <div id="certModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="relative max-w-2xl max-h-[90vh] bg-white rounded-2xl p-4 shadow-2xl flex flex-col items-center">
+      <button
+        id="closeCertModal"
+        type="button"
+        class="absolute -top-3 -right-3 bg-black text-white hover:bg-[#ff2d3b] rounded-full p-2 shadow-lg cursor-pointer transition-colors"
+      >
+        <X size={20} />
+      </button>
+      <img
+        src="/cert.png"
+        alt="Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
+        class="max-h-[82vh] w-auto rounded-lg object-contain"
+      />
+    </div>
+  </div>
 </Layout>
+
+<script>
+  const certThumb = document.getElementById('certThumbnail');
+  const certModal = document.getElementById('certModal');
+  const closeBtn = document.getElementById('closeCertModal');
+
+  if (certThumb && certModal && closeBtn) {
+    certThumb.addEventListener('click', () => {
+      certModal.classList.remove('hidden');
+      certModal.classList.add('flex');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      certModal.classList.add('hidden');
+      certModal.classList.remove('flex');
+    });
+
+    certModal.addEventListener('click', (e) => {
+      if (e.target === certModal) {
+        certModal.classList.add('hidden');
+        certModal.classList.remove('flex');
+      }
+    });
+  }
+</script>
+
