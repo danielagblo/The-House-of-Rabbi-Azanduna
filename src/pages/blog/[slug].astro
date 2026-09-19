@@ -73,15 +73,15 @@ const shareText = encodeURIComponent(post.title);
     <div class="absolute inset-0 bg-black/45"></div>
 
     {/* Centered Large Bold Title */}
-    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
-      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
+    <div class="relative z-10 max-w-5xl mx-auto px-3.5 sm:px-6 text-center">
+      <h1 class="font-['Barlow',sans-serif] text-2xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight">
         {post.title}
       </h1>
     </div>
   </section>
 
   {/* 2. Article Content Body */}
-  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 bg-white">
+  <article class="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 py-8 sm:py-14 bg-white">
     <div class="space-y-6 text-[14.5px] sm:text-[15.5px] text-[#2c2c2c] leading-relaxed font-normal">
       {paragraphs.map((p) => (
         <p>{p}</p>

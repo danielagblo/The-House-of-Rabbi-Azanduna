@@ -1,19 +1,36 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { ProductCard } from '../../components/ProductCard';
-import { FALLBACK_COLLECTIONS, FALLBACK_PRODUCTS } from '../../data/fallbackData';
 import { API_BASE_URL } from '../../config/api';
 
 export async function getStaticPaths() {
-  return FALLBACK_COLLECTIONS.map((c) => ({
-    params: { slug: c.slug },
-  }));
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/collections`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length > 0) {
+        return data.map((c: any) => ({
+          params: { slug: c.slug },
+        }));
+      }
+    }
+  } catch (e) {
+    // fallback build paths
+  }
+
+  return [
+    { params: { slug: 'oud-perfume-oils' } },
+    { params: { slug: 'royal-attars' } },
+    { params: { slug: 'extrait-de-parfum' } },
+    { params: { slug: 'home-scents' } },
+    { params: { slug: 'discovery-sets' } },
+  ];
 }
 
 const { slug } = Astro.params;
 
-let collections = FALLBACK_COLLECTIONS;
-let products = FALLBACK_PRODUCTS;
+let collections: any[] = [];
+let products: any[] = [];
 
 try {
   const colRes = await fetch(`${API_BASE_URL}/api/collections`);
@@ -28,10 +45,15 @@ try {
     if (data && data.length > 0) products = data;
   }
 } catch (e) {
-  // Use fallback data
+  // backend offline
 }
 
-const currentCollection = collections.find((c) => c.slug === slug) || collections[0];
+const currentCollection = collections.find((c) => c.slug === slug) || {
+  id: 0,
+  name: slug ? slug.replace(/-/g, ' ').toUpperCase() : 'Collection',
+  slug: slug || '',
+  subtitle: 'Curated Artisanal Fragrances'
+};
 
 const collectionProducts = products.filter(
   (p) => p.collectionId === currentCollection.id || p.collection?.slug === slug || p.collection?.id === currentCollection.id
@@ -39,13 +61,13 @@ const collectionProducts = products.filter(
 ---
 
 <Layout title={`${currentCollection.name} | Rabbi Azanduna Ltd`}>
-  <div class="pt-4 sm:pt-5 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+  <div class="pt-4 sm:pt-5 pb-12 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
     {/* Clean Centered Header matching Oud Attar reference */}
     <div class="text-center pt-1 pb-5 sm:pb-6">
-      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
+      <h1 class="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
         {currentCollection.name}
       </h1>
-      <p class="font-['Barlow',sans-serif] text-xl sm:text-2xl font-bold text-[#e62b32] mb-1">
+      <p class="font-['Barlow',sans-serif] text-lg sm:text-2xl font-bold text-[#e62b32] mb-1">
         {currentCollection.subtitle || "Curated Artisanal Fragrances"}
       </p>
       <p class="text-xs text-gray-500 font-normal">
@@ -53,9 +75,9 @@ const collectionProducts = products.filter(
       </p>
     </div>
 
-    {/* Products 3-Column Grid matching Sale page */}
+    {/* Products 2-Column Mobile, 3-Column Desktop Grid */}
     {collectionProducts.length > 0 ? (
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
         {collectionProducts.map((product) => (
           <ProductCard client:load product={product} />
         ))}

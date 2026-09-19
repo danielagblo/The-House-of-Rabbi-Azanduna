@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Product, Collection, Order, BlogPost, FAQ } from '../../types';
-import { FALLBACK_PRODUCTS, FALLBACK_COLLECTIONS } from '../../data/fallbackData';
 import { API_BASE_URL } from '../../config/api';
 import { 
   Lock, KeyRound, Eye, EyeOff, LogOut, Package, Layers, 
@@ -303,7 +302,7 @@ export const AdminPortal: React.FC = () => {
     setLoading(true);
     try {
       // Collections first so products can reference them
-      let loadedCollections = FALLBACK_COLLECTIONS;
+      let loadedCollections: Collection[] = [];
       const colRes = await fetch(`${API_BASE_URL}/api/collections`);
       if (colRes.ok) {
         const colData = await colRes.json();
@@ -314,7 +313,7 @@ export const AdminPortal: React.FC = () => {
       setCollections(loadedCollections);
 
       // Products
-      let loadedProducts = FALLBACK_PRODUCTS;
+      let loadedProducts: Product[] = [];
       const prodRes = await fetch(`${API_BASE_URL}/api/products`);
       if (prodRes.ok) {
         const prodData = await prodRes.json();

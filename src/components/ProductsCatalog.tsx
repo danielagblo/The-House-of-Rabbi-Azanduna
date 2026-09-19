@@ -60,11 +60,11 @@ export const ProductsCatalog: React.FC<Props> = ({
   return (
     <div className="w-full bg-white">
       {/* Category Tabs */}
-      <div className="border-b border-gray-200 pb-5 mb-8 overflow-x-auto no-scrollbar">
-        <div className="flex items-center gap-2 min-w-max">
+      <div className="border-b border-gray-200 pb-3 sm:pb-5 mb-6 sm:mb-8 -mx-3.5 px-3.5 sm:mx-0 sm:px-0 overflow-x-auto no-scrollbar scroll-smooth">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-max">
           <button
             onClick={() => setSelectedCollection('all')}
-            className={`px-4 py-2 text-xs uppercase tracking-wider rounded-lg font-bold transition-all ${
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs uppercase tracking-wider rounded-lg font-bold transition-all ${
               selectedCollection === 'all'
                 ? 'bg-black text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -76,7 +76,7 @@ export const ProductsCatalog: React.FC<Props> = ({
             <button
               key={col.slug}
               onClick={() => setSelectedCollection(col.slug)}
-              className={`px-4 py-2 text-xs uppercase tracking-wider rounded-lg font-bold transition-all ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs uppercase tracking-wider rounded-lg font-bold transition-all ${
                 selectedCollection === col.slug
                   ? 'bg-black text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -89,17 +89,17 @@ export const ProductsCatalog: React.FC<Props> = ({
       </div>
 
       {/* Filter and Control Bar */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-200">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8 bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-200">
         {/* Scent Family Pills */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs uppercase text-gray-600 font-bold mr-1">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <span className="text-[11px] sm:text-xs uppercase text-gray-600 font-bold mr-1">
             Notes:
           </span>
           {scentFamilies.map((fam) => (
             <button
               key={fam}
               onClick={() => setSelectedFamily(fam)}
-              className={`px-3 py-1 text-xs rounded-md font-semibold transition-all ${
+              className={`px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs rounded-md font-semibold transition-all ${
                 selectedFamily === fam
                   ? 'bg-[#ff2d3b] text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
@@ -111,7 +111,7 @@ export const ProductsCatalog: React.FC<Props> = ({
         </div>
 
         {/* Right Sort */}
-        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end pt-2 md:pt-0 border-t md:border-t-0 border-gray-200">
           <span className="text-xs text-gray-500 font-medium">
             Showing <strong className="text-black">{filteredProducts.length}</strong> fragrances
           </span>
@@ -158,8 +158,8 @@ export const ProductsCatalog: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {/* Product Grid: 2 columns on mobile, 3 columns on desktop */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
         {filteredProducts.slice(0, visibleLimit).map((product) => (
           <ProductCard key={product.id || product.slug} product={product} />
         ))}

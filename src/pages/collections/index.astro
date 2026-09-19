@@ -1,12 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { CollectionsGrid } from '../../components/CollectionsGrid';
-import { ProductsCatalog } from '../../components/ProductsCatalog';
-import { FALLBACK_COLLECTIONS, FALLBACK_PRODUCTS } from '../../data/fallbackData';
 import { API_BASE_URL } from '../../config/api';
 
-let collections = FALLBACK_COLLECTIONS;
-let products = FALLBACK_PRODUCTS;
+let collections = [];
 
 try {
   const colRes = await fetch(`${API_BASE_URL}/api/collections`);
@@ -14,14 +11,8 @@ try {
     const data = await colRes.json();
     if (data && data.length > 0) collections = data;
   }
-
-  const prodRes = await fetch(`${API_BASE_URL}/api/products`);
-  if (prodRes.ok) {
-    const data = await prodRes.json();
-    if (data && data.length > 0) products = data;
-  }
 } catch (e) {
-  // fallback
+  // backend offline or empty
 }
 
 const search = Astro.url.searchParams.get('search') || '';

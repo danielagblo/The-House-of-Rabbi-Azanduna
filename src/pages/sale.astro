@@ -1,10 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { ProductCard } from '../components/ProductCard';
-import { FALLBACK_PRODUCTS } from '../data/fallbackData';
 import { API_BASE_URL } from '../config/api';
 
-let products = FALLBACK_PRODUCTS;
+let products: any[] = [];
 
 try {
   const prodRes = await fetch(`${API_BASE_URL}/api/products`);
@@ -13,7 +12,7 @@ try {
     if (data && data.length > 0) products = data;
   }
 } catch (e) {
-  // fallback
+  // backend offline
 }
 
 // STRICTLY ONLY DISCOUNTED PRODUCTS
@@ -23,13 +22,13 @@ const saleProducts = products.filter(
 ---
 
 <Layout title="Sale | Rabbi Azanduna Ltd">
-  <div class="pt-4 sm:pt-5 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+  <div class="pt-4 sm:pt-5 pb-12 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
     {/* Clean Header matching Oud Attar reference screenshot */}
     <div class="text-center pt-1 pb-5 sm:pb-6">
-      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
+      <h1 class="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
         Bank Holiday Sale
       </h1>
-      <p class="font-['Barlow',sans-serif] text-xl sm:text-2xl font-bold text-[#e62b32] mb-1">
+      <p class="font-['Barlow',sans-serif] text-lg sm:text-2xl font-bold text-[#e62b32] mb-1">
         Minimum 20% Off!
       </p>
       <p class="text-xs text-gray-500 font-normal">
@@ -37,8 +36,8 @@ const saleProducts = products.filter(
       </p>
     </div>
 
-    {/* Sale Products 3-Column Grid */}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+    {/* Sale Products 2-Column Mobile, 3-Column Desktop Grid */}
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
       {saleProducts.map((product) => (
         <ProductCard client:load product={product} />
       ))}

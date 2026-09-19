@@ -31,7 +31,7 @@ export const AnnouncementBar: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#e62b32] text-white py-1.5 sm:py-2 px-4 sm:px-6 sticky top-0 z-50 flex items-center justify-between shadow-xs select-none overflow-hidden">
+    <div className="bg-[#e62b32] text-white py-1.5 sm:py-2 px-2.5 sm:px-6 sticky top-0 z-50 flex items-center justify-between shadow-xs select-none overflow-hidden">
       <button
         onClick={handlePrev}
         className="text-white hover:opacity-80 transition-opacity p-1 cursor-pointer flex items-center z-10 shrink-0"
@@ -42,16 +42,16 @@ export const AnnouncementBar: React.FC = () => {
         </svg>
       </button>
 
-      <div className="text-center flex-1 overflow-hidden px-2 relative h-6 flex items-center">
+      <div className="text-center flex-1 overflow-hidden px-1 sm:px-2 relative h-6 flex items-center justify-center">
         <div
           className="flex w-full transition-transform duration-500 ease-out items-center"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
           {announcements.map((item, idx) => (
-            <div key={idx} className="w-full shrink-0 flex items-center justify-center">
+            <div key={idx} className="w-full shrink-0 flex items-center justify-center px-1">
               <a
                 href={item.href}
-                className="font-['Barlow_Condensed',sans-serif] text-[15px] sm:text-[16px] font-semibold tracking-[0.06em] uppercase underline underline-offset-0 decoration-1 hover:opacity-90 whitespace-nowrap block"
+                className="font-['Barlow_Condensed',sans-serif] text-[13px] min-[380px]:text-[15px] sm:text-[16px] font-semibold tracking-[0.04em] sm:tracking-[0.06em] uppercase underline underline-offset-0 decoration-1 hover:opacity-90 whitespace-nowrap block truncate"
               >
                 {item.text}
               </a>

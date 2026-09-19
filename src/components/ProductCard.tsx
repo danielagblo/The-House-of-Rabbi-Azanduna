@@ -74,8 +74,8 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
 
         {/* Red Save Badge in Top Left */}
         {savings && (
-          <div className="absolute top-3 left-3 z-10">
-            <span className="bg-[#e62b32] text-white font-extrabold text-[11px] uppercase px-2.5 py-1 rounded-[3px] shadow-xs tracking-wider">
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
+            <span className="bg-[#e62b32] text-white font-extrabold text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
               SAVE GH₵{savings}
             </span>
           </div>
@@ -85,7 +85,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       {/* Full-width Red Add to Cart Button (Exact match to Oud Attar reference) */}
       <button
         onClick={handleAddToCart}
-        className={`w-full mt-3 py-2.5 sm:py-3 px-4 rounded-[6px] font-bold text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-2 shadow-xs cursor-pointer ${
+        className={`w-full mt-2.5 sm:mt-3 py-2 sm:py-3 px-2 sm:px-4 rounded-[6px] font-bold text-xs sm:text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs cursor-pointer ${
           isAdded
             ? 'bg-emerald-600 hover:bg-emerald-700'
             : 'bg-[#e62b32] hover:bg-[#cf2229] active:scale-[0.99]'
@@ -93,7 +93,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       >
         {isAdded ? (
           <>
-            <Check size={16} />
+            <Check size={15} />
             <span>Added To Cart</span>
           </>
         ) : (
@@ -104,7 +104,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       {/* Product Info (Centered below button) */}
       <div className="pt-2 text-center">
         <a href={`/product/${product.slug}`} className="block">
-          <h3 className="font-['Barlow',sans-serif] text-[16px] sm:text-[17px] font-bold text-gray-900 hover:text-[#e62b32] transition-colors leading-snug">
+          <h3 className="font-['Barlow',sans-serif] text-[14px] sm:text-[17px] font-bold text-gray-900 hover:text-[#e62b32] transition-colors leading-tight sm:leading-snug line-clamp-2">
             {product.name}
           </h3>
         </a>
@@ -113,19 +113,19 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         <div className="flex items-center justify-center gap-1 my-1">
           <div className="flex text-[#e62b32]">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} size={12} fill="currentColor" />
+              <Star key={i} size={11} fill="currentColor" />
             ))}
           </div>
-          <span className="text-[12px] text-gray-500 font-normal ml-0.5">
+          <span className="text-[11px] sm:text-[12px] text-gray-500 font-normal ml-0.5">
             {product.reviewCount || 48} reviews
           </span>
         </div>
 
         {/* Price & Strikethrough Discount Price */}
-        <div className="font-['Barlow',sans-serif] text-[15px] sm:text-[16px] font-bold text-gray-900 flex items-center justify-center gap-2">
+        <div className="font-['Barlow',sans-serif] text-[14px] sm:text-[16px] font-bold text-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
           <span>{priceDisplay}</span>
           {product.compareAtPrice && product.compareAtPrice > product.price && (
-            <span className="text-gray-400 line-through text-xs font-normal">
+            <span className="text-gray-400 line-through text-[11px] sm:text-xs font-normal">
               GH₵{product.compareAtPrice.toFixed(2)}
             </span>
           )}

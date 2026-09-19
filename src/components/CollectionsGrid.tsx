@@ -56,21 +56,21 @@ export const CollectionsGrid: React.FC<Props> = ({
   ];
 
   return (
-    <section className="pt-5 sm:pt-6 pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
+    <section className="pt-4 sm:pt-6 pb-12 sm:pb-14 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
       {/* 1. Tall Condensed Heading matching reference screenshot */}
-      <div className="text-center mb-4 sm:mb-5">
-        <h1 className="font-['Barlow_Condensed',sans-serif] text-[38px] sm:text-[44px] lg:text-[48px] font-bold text-black tracking-normal leading-tight">
+      <div className="text-center mb-3 sm:mb-5">
+        <h1 className="font-['Barlow_Condensed',sans-serif] text-[30px] sm:text-[44px] lg:text-[48px] font-bold text-black tracking-normal leading-tight">
           {title}
         </h1>
       </div>
 
       {/* 2. Top 2-Column Discovery Collections Grid with review stars and prices */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-10 sm:mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
         {discoverySets.map((set, idx) => (
           <div key={idx} className="flex flex-col group">
             <a
               href={`/product/${set.slug}`}
-              className="relative aspect-[3/4] overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
+              className="relative aspect-[4/3] sm:aspect-[3/4] overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
             >
               <img
                 src={set.imageUrl}
@@ -79,8 +79,8 @@ export const CollectionsGrid: React.FC<Props> = ({
               />
 
               {/* Red Save Badge in Top Left */}
-              <div className="absolute top-3 left-3 z-10">
-                <span className="bg-[#e62b32] text-white font-extrabold text-[11px] sm:text-[12px] uppercase px-2.5 py-1 rounded-[3px] shadow-xs tracking-wider">
+              <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 z-10">
+                <span className="bg-[#e62b32] text-white font-extrabold text-[10px] sm:text-[12px] uppercase px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
                   {set.saveBadge}
                 </span>
               </div>
@@ -121,12 +121,12 @@ export const CollectionsGrid: React.FC<Props> = ({
       </div>
 
       {/* 3. 3-Column Category Showcase Cards (Oud Perfume Oils, Oud Elixirs, Limited Edition) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mb-10 sm:mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mb-8 sm:mb-12">
         {showcaseCategories.map((cat, idx) => (
           <div key={idx} className="flex flex-col items-center group">
             <a
               href={`/collections/${cat.slug}`}
-              className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
+              className="relative aspect-[4/3] sm:aspect-[3/4] w-full overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
             >
               <img
                 src={cat.imageUrl}
@@ -135,9 +135,9 @@ export const CollectionsGrid: React.FC<Props> = ({
               />
             </a>
 
-            <div className="pt-3.5 pb-2 text-center flex flex-col items-center w-full">
+            <div className="pt-3 pb-2 text-center flex flex-col items-center w-full">
               <a href={`/collections/${cat.slug}`}>
-                <h3 className="font-['Barlow_Condensed',sans-serif] text-2xl sm:text-[26px] font-bold text-black group-hover:text-[#e62b32] transition-colors mb-2.5">
+                <h3 className="font-['Barlow_Condensed',sans-serif] text-2xl sm:text-[26px] font-bold text-black group-hover:text-[#e62b32] transition-colors mb-2">
                   {cat.title}
                 </h3>
               </a>
@@ -158,7 +158,7 @@ export const CollectionsGrid: React.FC<Props> = ({
       <div className="flex flex-col items-center group">
         <a
           href="/collections/home-scents"
-          className="relative aspect-[16/8] sm:aspect-[21/9] w-full overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
+          className="relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
         >
           <img
             src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1800&q=80"

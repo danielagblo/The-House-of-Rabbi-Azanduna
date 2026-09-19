@@ -36,31 +36,31 @@ export const OrderConfirmationView: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-16 sm:py-24 text-center font-['Poppins',sans-serif]">
+    <div className="max-w-2xl mx-auto px-3.5 sm:px-4 py-10 sm:py-24 text-center font-['Poppins',sans-serif]">
       {/* Success Icon */}
-      <div className="w-20 h-20 rounded-full bg-emerald-50 border-2 border-emerald-500/30 flex items-center justify-center mx-auto mb-6 text-emerald-600 shadow-lg shadow-emerald-100">
-        <CheckCircle2 size={44} strokeWidth={2.2} />
+      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-50 border-2 border-emerald-500/30 flex items-center justify-center mx-auto mb-5 sm:mb-6 text-emerald-600 shadow-lg shadow-emerald-100">
+        <CheckCircle2 size={38} strokeWidth={2.2} />
       </div>
 
-      <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 text-[11px] font-bold uppercase tracking-wider mb-4">
+      <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 text-[11px] font-bold uppercase tracking-wider mb-3 sm:mb-4">
         ✓ Order Confirmed
       </div>
 
-      <h1 className="font-['Barlow',sans-serif] text-3xl sm:text-5xl font-extrabold text-black uppercase tracking-tight mb-3">
+      <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-5xl font-extrabold text-black uppercase tracking-tight mb-3">
         Thank You for Your Patronage
       </h1>
 
       <div className="w-14 h-1 bg-[#ff2d3b] mx-auto mb-4"></div>
 
-      <p className="text-gray-600 text-sm sm:text-base font-normal max-w-lg mx-auto leading-relaxed mb-8">
+      <p className="text-gray-600 text-xs sm:text-base font-normal max-w-lg mx-auto leading-relaxed mb-6 sm:mb-8">
         Your order has been received and is being prepared with extreme care by our team.
       </p>
 
       {/* Order Reference Card */}
-      <div className="bg-neutral-50 border border-gray-200 rounded-2xl p-6 sm:p-8 mb-10 text-left shadow-xs space-y-4">
-        <div className="flex justify-between items-center pb-3.5 border-b border-gray-200/80 text-xs sm:text-sm">
-          <span className="text-gray-500 uppercase font-bold text-[11px] tracking-wider">Order Reference</span>
-          <span className="font-mono font-bold text-gray-900 bg-white px-2.5 py-1 rounded border border-gray-200 text-xs sm:text-sm">
+      <div className="bg-neutral-50 border border-gray-200 rounded-2xl p-4 sm:p-8 mb-8 sm:mb-10 text-left shadow-xs space-y-3.5 sm:space-y-4">
+        <div className="flex justify-between items-center gap-2 pb-3.5 border-b border-gray-200/80 text-xs sm:text-sm">
+          <span className="text-gray-500 uppercase font-bold text-[10px] sm:text-[11px] tracking-wider shrink-0">Order Reference</span>
+          <span className="font-mono font-bold text-gray-900 bg-white px-2 sm:px-2.5 py-1 rounded border border-gray-200 text-xs sm:text-sm break-all text-right">
             {reference}
           </span>
         </div>

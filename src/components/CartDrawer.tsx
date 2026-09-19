@@ -104,12 +104,12 @@ export const CartDrawer: React.FC = () => {
         className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
       ></div>
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white text-gray-900 flex flex-col shadow-2xl">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
+        <div className="w-screen max-w-full sm:max-w-md bg-white text-gray-900 flex flex-col shadow-2xl">
           {/* Header */}
-          <div className="p-5 border-b border-gray-200 flex items-center justify-between bg-white">
+          <div className="p-4 sm:p-5 border-b border-gray-200 flex items-center justify-between bg-white">
             <div className="flex items-center gap-2">
-              <span className="font-['Barlow',sans-serif] text-xl font-bold uppercase tracking-wider text-black">
+              <span className="font-['Barlow',sans-serif] text-lg sm:text-xl font-bold uppercase tracking-wider text-black">
                 Your Shopping Bag
               </span>
               <span className="text-xs bg-black text-white font-bold px-2 py-0.5 rounded-full">
@@ -126,7 +126,7 @@ export const CartDrawer: React.FC = () => {
           </div>
 
           {/* Cart Items */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             {items.length === 0 ? (
               <div className="text-center py-16">
                 <p className="font-bold text-gray-900 text-lg mb-2">Your Bag is Empty</p>
@@ -198,11 +198,11 @@ export const CartDrawer: React.FC = () => {
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
                     placeholder="Discount code (e.g. DISCOUNT)"
-                    className="flex-1 bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-black"
+                    className="flex-1 bg-white border border-gray-300 rounded-lg px-3 py-2 text-base sm:text-xs text-gray-900 focus:outline-none focus:border-black"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-black font-bold text-xs uppercase rounded-lg border border-gray-300"
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-black font-bold text-xs uppercase rounded-lg border border-gray-300 shrink-0"
                   >
                     Apply
                   </button>
@@ -232,7 +232,7 @@ export const CartDrawer: React.FC = () => {
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder="e.g. Kwame Mensah"
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-900 focus:border-black focus:outline-none"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-base sm:text-xs text-gray-900 focus:border-black focus:outline-none"
                   />
                 </div>
 
@@ -244,7 +244,7 @@ export const CartDrawer: React.FC = () => {
                     value={customerEmail}
                     onChange={(e) => setCustomerEmail(e.target.value)}
                     placeholder="kwame@example.com"
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-900 focus:border-black focus:outline-none"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-base sm:text-xs text-gray-900 focus:border-black focus:outline-none"
                   />
                 </div>
 
@@ -255,7 +255,7 @@ export const CartDrawer: React.FC = () => {
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
                     placeholder="e.g. 024 123 4567"
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-900 focus:border-black focus:outline-none"
+                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-base sm:text-xs text-gray-900 focus:border-black focus:outline-none"
                   />
                 </div>
 
@@ -269,7 +269,7 @@ export const CartDrawer: React.FC = () => {
 
           {/* Footer */}
           {items.length > 0 && (
-            <div className="p-6 border-t border-gray-200 bg-white space-y-4">
+            <div className="p-4 sm:p-6 border-t border-gray-200 bg-white space-y-4">
               <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal</span>

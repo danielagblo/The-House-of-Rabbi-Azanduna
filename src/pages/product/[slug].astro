@@ -1,18 +1,39 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { ProductDetailView } from '../../components/ProductDetailView';
-import { FALLBACK_PRODUCTS } from '../../data/fallbackData';
 import { API_BASE_URL } from '../../config/api';
 
 export async function getStaticPaths() {
-  return FALLBACK_PRODUCTS.map((p) => ({
-    params: { slug: p.slug },
-  }));
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/products`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length > 0) {
+        return data.map((p: any) => ({
+          params: { slug: p.slug },
+        }));
+      }
+    }
+  } catch (e) {
+    // fallback build paths
+  }
+
+  return [
+    { params: { slug: 'royal-quintet-discovery-set' } },
+    { params: { slug: 'extrait-grand-discovery-wardrobe' } },
+    { params: { slug: 'royal-cambodian-oud-oil' } },
+    { params: { slug: 'imperial-amber-musk-oil' } },
+    { params: { slug: 'damascus-rose-taif-elixir' } },
+    { params: { slug: 'black-afgano-pure-attar' } },
+    { params: { slug: 'santal-creme-de-bois' } },
+    { params: { slug: 'vetiver-fumee-celeste' } },
+    { params: { slug: 'dehn-al-oud-malaki' } },
+  ];
 }
 
 const { slug } = Astro.params;
 
-let products = FALLBACK_PRODUCTS;
+let products: any[] = [];
 
 try {
   const prodRes = await fetch(`${API_BASE_URL}/api/products`);
@@ -21,10 +42,17 @@ try {
     if (data && data.length > 0) products = data;
   }
 } catch (e) {
-  // Use fallback data
+  // backend offline
 }
 
-const product = products.find((p) => p.slug === slug) || products[0];
+const product = products.find((p) => p.slug === slug) || products[0] || {
+  id: 0,
+  name: slug ? slug.replace(/-/g, ' ').toUpperCase() : 'Fragrance',
+  slug: slug || '',
+  price: 0,
+  imageUrl: '',
+  description: '',
+};
 const related = products.filter((p) => p.id !== product.id && (p.scentFamily === product.scentFamily || p.collectionId === product.collectionId));
 ---
 
