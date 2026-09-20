@@ -58,6 +58,10 @@ const currentCollection = collections.find((c) => c.slug === slug) || {
 const collectionProducts = products.filter(
   (p) => p.collectionId === currentCollection.id || p.collection?.slug === slug || p.collection?.id === currentCollection.id
 );
+
+const hasDiscounts = collectionProducts.some(
+  (p) => p.compareAtPrice && Number(p.compareAtPrice) > Number(p.price)
+);
 ---
 
 <Layout title={`${currentCollection.name} | Rabbi Azanduna Ltd`}>
@@ -70,9 +74,11 @@ const collectionProducts = products.filter(
       <p class="font-['Barlow',sans-serif] text-lg sm:text-2xl font-bold text-[#e62b32] mb-1">
         {currentCollection.subtitle || "Curated Artisanal Fragrances"}
       </p>
-      <p class="text-xs text-gray-500 font-normal">
-        Discount applied at checkout
-      </p>
+      {hasDiscounts && (
+        <p class="text-xs text-gray-500 font-normal">
+          Discount applied at checkout
+        </p>
+      )}
     </div>
 
     {/* Products 2-Column Mobile, 3-Column Desktop Grid */}

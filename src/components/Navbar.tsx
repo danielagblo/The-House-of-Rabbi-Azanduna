@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 import { cartStore } from '../store/cartStore';
+import { discountStore } from '../store/discountStore';
 
 export const Navbar: React.FC = () => {
   const [itemCount, setItemCount] = useState(0);
+  const [hasDiscounts, setHasDiscounts] = useState<boolean>(discountStore.getHasDiscounts() === true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPath, setCurrentPath] = useState('');
@@ -16,7 +18,15 @@ export const Navbar: React.FC = () => {
       setItemCount(cartStore.getItemCount());
     };
     update();
-    return cartStore.subscribe(update);
+    const unsubCart = cartStore.subscribe(update);
+
+    discountStore.checkDiscounts().then(setHasDiscounts);
+    const unsubDiscount = discountStore.subscribe(setHasDiscounts);
+
+    return () => {
+      unsubCart();
+      unsubDiscount();
+    };
   }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -100,14 +110,23 @@ export const Navbar: React.FC = () => {
           >
             SHOP
           </a>
-          <a
-            href="/sale"
-            className={`px-3.5 py-1 rounded-[4px] text-[15px] font-extrabold transition-colors shadow-2xs tracking-[0.04em] leading-tight inline-flex items-center justify-center ${
-              isSaleActive ? 'bg-[#cf2229] text-white ring-2 ring-[#e62b32]/50' : 'bg-[#e62b32] text-white hover:bg-[#cf2229]'
-            }`}
-          >
-            SALE
-          </a>
+          {hasDiscounts ? (
+            <a
+              href="/sale"
+              className={`px-3.5 py-1 rounded-[4px] text-[15px] font-extrabold transition-colors shadow-2xs tracking-[0.04em] leading-tight inline-flex items-center justify-center ${
+                isSaleActive ? 'bg-[#cf2229] text-white ring-2 ring-[#e62b32]/50' : 'bg-[#e62b32] text-white hover:bg-[#cf2229]'
+              }`}
+            >
+              SALE
+            </a>
+          ) : (
+            <a
+              href="/sale"
+              className={`${isSaleActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+            >
+              SALE
+            </a>
+          )}
           <a
             href="/blog"
             className={`${isBlogActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
@@ -157,10 +176,14 @@ export const Navbar: React.FC = () => {
             <a
               href="/sale"
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2.5 px-2 border-b border-gray-100 flex items-center justify-between text-[#e62b32]"
+              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isSaleActive ? 'text-[#e62b32]' : 'hover:text-[#e62b32]'}`}
             >
               <span>SALE</span>
-              <span className="bg-[#e62b32] text-white text-[11px] font-extrabold px-2 py-0.5 rounded">20% OFF</span>
+              {hasDiscounts ? (
+                <span className="bg-[#e62b32] text-white text-[11px] font-extrabold px-2 py-0.5 rounded">20% OFF</span>
+              ) : (
+                <span className="text-xs text-gray-400 font-normal">→</span>
+              )}
             </a>
             <a
               href="/blog"

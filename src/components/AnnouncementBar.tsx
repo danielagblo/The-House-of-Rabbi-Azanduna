@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { discountStore } from '../store/discountStore';
 
 const announcements = [
   {
@@ -12,15 +13,33 @@ const announcements = [
 ];
 
 export const AnnouncementBar: React.FC = () => {
+  const [hasDiscounts, setHasDiscounts] = useState<boolean>(discountStore.getHasDiscounts() === true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    discountStore.checkDiscounts().then((hasDisc) => {
+      setHasDiscounts(hasDisc);
+    });
+    const unsub = discountStore.subscribe((hasDisc) => {
+      setHasDiscounts(hasDisc);
+    });
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    if (!hasDiscounts) return;
+
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % announcements.length);
     }, 4500);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [hasDiscounts]);
+
+  // If there are no discount prices, remove the discount red announcement completely
+  if (!hasDiscounts) {
+    return null;
+  }
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev - 1 + announcements.length) % announcements.length);
@@ -72,4 +91,3 @@ export const AnnouncementBar: React.FC = () => {
     </div>
   );
 };
-

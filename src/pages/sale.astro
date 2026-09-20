@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { ProductCard } from '../components/ProductCard';
+import { SaleView } from '../components/SaleView';
 import { API_BASE_URL } from '../config/api';
 
 let products: any[] = [];
@@ -15,51 +15,11 @@ try {
   // backend offline
 }
 
-// STRICTLY ONLY DISCOUNTED PRODUCTS
-const saleProducts = products.filter(
-  (p) => p.compareAtPrice && p.compareAtPrice > p.price
+const hasDiscounts = products.some(
+  (p) => p.compareAtPrice && Number(p.compareAtPrice) > Number(p.price)
 );
 ---
 
-<Layout title="Sale | Rabbi Azanduna Ltd">
-  <div class="pt-4 sm:pt-5 pb-12 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
-    {/* Clean Header matching Oud Attar reference screenshot */}
-    <div class="text-center pt-1 pb-5 sm:pb-6">
-      <h1 class="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
-        Bank Holiday Sale
-      </h1>
-      <p class="font-['Barlow',sans-serif] text-lg sm:text-2xl font-bold text-[#e62b32] mb-1">
-        Minimum 20% Off!
-      </p>
-      <p class="text-xs text-gray-500 font-normal">
-        Discount applied at checkout
-      </p>
-    </div>
-
-    {/* Sale Products 2-Column Mobile, 3-Column Desktop Grid */}
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
-      {saleProducts.map((product) => (
-        <ProductCard client:load product={product} />
-      ))}
-    </div>
-
-    {/* Product Pagination Progress Section matching reference screenshot */}
-    <div class="mt-14 mb-4 text-center flex flex-col items-center justify-center">
-      <p class="text-xs sm:text-sm text-gray-600 mb-3 font-['Poppins',sans-serif]">
-        You have seen <strong class="text-black font-bold">{saleProducts.length}</strong> out of <strong class="text-black font-bold">{saleProducts.length}</strong> products
-      </p>
-
-      {/* Red Progress Bar */}
-      <div class="w-48 sm:w-64 h-1 bg-gray-200 rounded-full overflow-hidden mb-6">
-        <div class="bg-[#ff2d3b] h-full rounded-full" style="width: 100%;"></div>
-      </div>
-
-      <button
-        type="button"
-        class="bg-[#ff2d3b] hover:bg-[#e0202d] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
-      >
-        Show more products
-      </button>
-    </div>
-  </div>
+<Layout title={hasDiscounts ? "Sale | Rabbi Azanduna Ltd" : "All Products | Rabbi Azanduna Ltd"}>
+  <SaleView client:load initialProducts={products} />
 </Layout>
