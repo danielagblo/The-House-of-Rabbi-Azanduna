@@ -68,9 +68,9 @@ type Product struct {
 	IsBestSeller    bool             `gorm:"default:false" json:"isBestSeller"`
 	IsNew           bool             `gorm:"default:false" json:"isNew"`
 	InStock         bool             `gorm:"default:true" json:"inStock"`
-	Notes           []FragranceNote  `gorm:"foreignKey:ProductID" json:"notes"`
-	Variants        []ProductVariant `gorm:"foreignKey:ProductID" json:"variants"`
-	Reviews         []Review         `gorm:"foreignKey:ProductID" json:"reviews,omitempty"`
+	Notes           []FragranceNote  `gorm:"foreignKey:ProductID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"notes"`
+	Variants        []ProductVariant `gorm:"foreignKey:ProductID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"variants"`
+	Reviews         []Review         `gorm:"foreignKey:ProductID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"reviews,omitempty"`
 	CreatedAt       time.Time        `json:"createdAt"`
 	UpdatedAt       time.Time        `json:"updatedAt"`
 }

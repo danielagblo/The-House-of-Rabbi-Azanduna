@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -165,7 +166,11 @@ func (c *AdminController) DeleteProduct(ctx fiber.Ctx) error {
 	}
 
 	if err := c.productRepo.Delete(uint(id)); err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete product"})
+		log.Printf("[AdminController] DeleteProduct error for ID %d: %v", id, err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   "Failed to delete product",
+			"details": err.Error(),
+		})
 	}
 
 	return ctx.JSON(fiber.Map{"success": true, "deleted_id": id})
@@ -217,7 +222,11 @@ func (c *AdminController) DeleteCollection(ctx fiber.Ctx) error {
 	}
 
 	if err := c.collectionRepo.Delete(uint(id)); err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to delete collection"})
+		log.Printf("[AdminController] DeleteCollection error for ID %d: %v", id, err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error":   "Failed to delete collection",
+			"details": err.Error(),
+		})
 	}
 
 	return ctx.JSON(fiber.Map{"success": true, "deleted_id": id})

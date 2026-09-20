@@ -362,8 +362,8 @@ export const AdminPortal: React.FC = () => {
         setFaqs(faqData || []);
       }
     } catch (e) {
-      setProducts(FALLBACK_PRODUCTS);
-      setCollections(FALLBACK_COLLECTIONS);
+      console.error('Failed to load admin data:', e);
+      showToast('Unable to connect to database server', 'error');
     } finally {
       setLoading(false);
     }
@@ -464,7 +464,8 @@ export const AdminPortal: React.FC = () => {
         setProducts((prev) => prev.filter((p) => p.id !== id));
         showToast('Product removed.');
       } else {
-        showToast('Failed to delete product', 'error');
+        const data = await res.json().catch(() => null);
+        showToast(data?.details || data?.error || 'Failed to delete product', 'error');
       }
     } catch (err) {
       showToast('Error communicating with database', 'error');
@@ -525,7 +526,8 @@ export const AdminPortal: React.FC = () => {
         setCollections((prev) => prev.filter((c) => c.id !== id));
         showToast('Collection deleted.');
       } else {
-        showToast('Failed to delete collection', 'error');
+        const data = await res.json().catch(() => null);
+        showToast(data?.details || data?.error || 'Failed to delete collection', 'error');
       }
     } catch (err) {
       showToast('Error communicating with database', 'error');
@@ -600,7 +602,8 @@ export const AdminPortal: React.FC = () => {
         setBlogs((prev) => prev.filter((b) => b.id !== id));
         showToast('Blog article deleted.');
       } else {
-        showToast('Failed to delete blog article', 'error');
+        const data = await res.json().catch(() => null);
+        showToast(data?.details || data?.error || 'Failed to delete blog article', 'error');
       }
     } catch (err) {
       showToast('Error communicating with database', 'error');
@@ -668,7 +671,8 @@ export const AdminPortal: React.FC = () => {
         setFaqs((prev) => prev.filter((f) => f.id !== id));
         showToast('FAQ deleted.');
       } else {
-        showToast('Failed to delete FAQ', 'error');
+        const data = await res.json().catch(() => null);
+        showToast(data?.details || data?.error || 'Failed to delete FAQ', 'error');
       }
     } catch (err) {
       showToast('Error communicating with database', 'error');
@@ -1364,7 +1368,7 @@ export const AdminPortal: React.FC = () => {
                             <span className="text-[10px] text-gray-500">{ord.customerEmail}</span>
                           </td>
                           <td className="py-3.5 px-4 font-bold text-gray-900 text-sm">
-                            GH₵{ord.total.toFixed(2)}
+                            GH₵{(ord.totalAmount ?? ord.total ?? 0).toFixed(2)}
                           </td>
                           <td className="py-3.5 px-4">
                             <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase ${
@@ -1376,7 +1380,7 @@ export const AdminPortal: React.FC = () => {
                             </span>
                           </td>
                           <td className="py-3.5 px-4 text-gray-500 text-[11px]">
-                            {new Date().toLocaleDateString('en-GB')}
+                            {ord.createdAt ? new Date(ord.createdAt).toLocaleDateString('en-GB') : new Date().toLocaleDateString('en-GB')}
                           </td>
                         </tr>
                       ))

@@ -94,3 +94,36 @@ export interface FAQ {
   published: boolean;
   createdAt: string;
 }
+
+export interface OrderItem {
+  id?: number;
+  orderId?: number;
+  productId: number;
+  productName: string;
+  variantSize: string;
+  quantity: number;
+  unitPrice: number;
+  imageUrl?: string;
+}
+
+export interface Order {
+  id: number;
+  reference: string;
+  paystackRef?: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+  shippingStreet?: string;
+  shippingCity?: string;
+  shippingState?: string;
+  shippingZip?: string;
+  shippingCountry?: string;
+  total?: number;
+  totalAmount: number;
+  currency?: string;
+  status: string;
+  items?: OrderItem[];
+  createdAt: string;
+  updatedAt?: string;
+}
+

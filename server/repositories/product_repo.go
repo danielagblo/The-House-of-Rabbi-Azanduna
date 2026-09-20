@@ -123,6 +123,24 @@ func (r *ProductRepository) Update(id uint, updates map[string]interface{}) erro
 }
 
 func (r *ProductRepository) Delete(id uint) error {
-	return r.db.Delete(&models.Product{}, id).Error
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		// 1. Delete associated fragrance notes
+		if err := tx.Where("product_id = ?", id).Delete(&models.FragranceNote{}).Error; err != nil {
+			return err
+		}
+		// 2. Delete associated variants
+		if err := tx.Where("product_id = ?", id).Delete(&models.ProductVariant{}).Error; err != nil {
+			return err
+		}
+		// 3. Delete associated reviews
+		if err := tx.Where("product_id = ?", id).Delete(&models.Review{}).Error; err != nil {
+			return err
+		}
+		// 4. Delete the product itself
+		if err := tx.Delete(&models.Product{}, id).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
