@@ -129,6 +129,14 @@ func InitDB() *gorm.DB {
 		} else {
 			log.Printf("[DB] AutoMigrations completed successfully.")
 		}
+
+		if dbType == "mysql" {
+			_ = database.Exec("ALTER TABLE products MODIFY COLUMN image_url LONGTEXT").Error
+			_ = database.Exec("ALTER TABLE products MODIFY COLUMN hover_image_url LONGTEXT").Error
+			_ = database.Exec("ALTER TABLE collections MODIFY COLUMN image_url LONGTEXT").Error
+			_ = database.Exec("ALTER TABLE blog_posts MODIFY COLUMN image_url LONGTEXT").Error
+			_ = database.Exec("ALTER TABLE order_items MODIFY COLUMN image_url LONGTEXT").Error
+		}
 	}(db)
 
 	DB = db

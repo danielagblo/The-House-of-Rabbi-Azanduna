@@ -10,7 +10,7 @@ type Collection struct {
 	Slug        string    `gorm:"size:255;uniqueIndex;not null" json:"slug"`
 	Subtitle    string    `gorm:"size:255" json:"subtitle"`
 	Description string    `gorm:"type:text" json:"description"`
-	ImageUrl    string    `gorm:"type:text" json:"imageUrl"`
+	ImageUrl    string    `gorm:"type:longtext" json:"imageUrl"`
 	Badge       string    `gorm:"size:100" json:"badge"`
 	Featured    bool      `gorm:"default:false" json:"featured"`
 	SortOrder   int       `gorm:"default:0" json:"sortOrder"`
@@ -61,8 +61,8 @@ type Product struct {
 	Longevity       string           `gorm:"size:100;default:'12+ Hours'" json:"longevity"`
 	Price           float64          `gorm:"type:decimal(10,2);not null" json:"price"`
 	CompareAtPrice  float64          `gorm:"type:decimal(10,2)" json:"compareAtPrice"`
-	ImageUrl        string           `gorm:"type:text;not null" json:"imageUrl"`
-	HoverImageUrl   string           `gorm:"type:text" json:"hoverImageUrl"`
+	ImageUrl        string           `gorm:"type:longtext;not null" json:"imageUrl"`
+	HoverImageUrl   string           `gorm:"type:longtext" json:"hoverImageUrl"`
 	Rating          float64          `gorm:"type:decimal(3,2);default:5.0" json:"rating"`
 	ReviewCount     int              `gorm:"default:0" json:"reviewCount"`
 	IsBestSeller    bool             `gorm:"default:false" json:"isBestSeller"`
@@ -83,7 +83,7 @@ type OrderItem struct {
 	VariantSize string  `gorm:"size:50;not null" json:"variantSize"`
 	Quantity    int     `gorm:"not null" json:"quantity"`
 	UnitPrice   float64 `gorm:"type:decimal(10,2);not null" json:"unitPrice"`
-	ImageUrl    string  `gorm:"size:500" json:"imageUrl"`
+	ImageUrl    string  `gorm:"type:longtext" json:"imageUrl"`
 }
 
 type Order struct {
@@ -112,7 +112,7 @@ type BlogPost struct {
 	Slug      string    `gorm:"size:255;uniqueIndex;not null" json:"slug"`
 	Excerpt   string    `gorm:"type:text" json:"excerpt"`
 	Content   string    `gorm:"type:text" json:"content"`
-	ImageUrl  string    `gorm:"type:text" json:"imageUrl"`
+	ImageUrl  string    `gorm:"type:longtext" json:"imageUrl"`
 	Category  string    `gorm:"size:100" json:"category"`
 	ReadTime  string    `gorm:"size:50" json:"readTime"`
 	Published bool      `gorm:"default:true" json:"published"`

@@ -52,6 +52,9 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
             <img
               src={activeImage}
               alt={product.name}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80';
+              }}
               className="w-full h-full object-cover object-center"
             />
             {savings && (

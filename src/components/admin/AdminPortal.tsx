@@ -35,8 +35,8 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        // Optimize on canvas to produce crisp webp/jpeg data URL for clean database storage
-        const maxDim = 1200;
+        // Optimize on canvas to produce clean, fast-loading webp/jpeg data URL
+        const maxDim = 900;
         let width = img.width;
         let height = img.height;
         if (width > maxDim || height > maxDim) {
@@ -54,9 +54,9 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         const ctx = canvas.getContext('2d');
         if (ctx) {
           ctx.drawImage(img, 0, 0, width, height);
-          let dataUrl = canvas.toDataURL('image/webp', 0.85);
-          if (!dataUrl.startsWith('data:image/webp')) {
-            dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          let dataUrl = canvas.toDataURL('image/webp', 0.80);
+          if (!dataUrl.startsWith('data:image/webp') || dataUrl.length < 50) {
+            dataUrl = canvas.toDataURL('image/jpeg', 0.80);
           }
           onChange(dataUrl);
         } else {
@@ -77,6 +77,7 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     if (file) {
       processFile(file);
     }
+    e.target.value = '';
   };
 
   return (
@@ -1099,6 +1100,9 @@ export const AdminPortal: React.FC = () => {
                                 <img
                                   src={prod.imageUrl}
                                   alt={prod.name}
+                                  onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80';
+                                  }}
                                   className="w-11 h-11 object-cover rounded-md bg-gray-100 border border-gray-200"
                                 />
                                 <div>
@@ -1221,7 +1225,14 @@ export const AdminPortal: React.FC = () => {
                     <div>
                       {/* Image & Badge */}
                       <div className="relative aspect-[16/9] bg-gray-100">
-                        <img src={col.imageUrl} alt={col.name} className="w-full h-full object-cover" />
+                        <img
+                          src={col.imageUrl}
+                          alt={col.name}
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80';
+                          }}
+                          className="w-full h-full object-cover"
+                        />
                         {col.badge && (
                           <span className="absolute top-2 left-2 bg-[#e62b32] text-white text-[10px] font-bold px-2.5 py-0.5 rounded shadow-xs uppercase tracking-wider">
                             {col.badge}

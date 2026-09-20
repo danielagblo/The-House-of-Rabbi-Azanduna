@@ -24,7 +24,8 @@ func main() {
 	go seeds.SeedDatabase(db)
 
 	app := fiber.New(fiber.Config{
-		AppName: "Rabbi Azanduna Ltd Luxury API",
+		AppName:   "Rabbi Azanduna Ltd Luxury API",
+		BodyLimit: 20 * 1024 * 1024, // 20 MB for image uploads
 	})
 
 	app.Use(logger.New())
