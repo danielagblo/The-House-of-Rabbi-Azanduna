@@ -7,10 +7,10 @@ let pool: mysql.Pool | null = null;
 
 export function getPool(): mysql.Pool {
   if (!pool) {
-    const host = process.env.DB_HOST || '127.0.0.1';
-    const user = process.env.DB_USER || 'root';
-    const password = process.env.DB_PASS || '';
-    const database = process.env.DB_NAME || 'rabbi';
+    const host = process.env.DB_HOST || 'sql12.freesqldatabase.com';
+    const user = process.env.DB_USER || 'sql12837329';
+    const password = process.env.DB_PASS || 'gzJ4lKcQaF';
+    const database = process.env.DB_NAME || 'sql12837329';
     const port = Number(process.env.DB_PORT) || 3306;
 
     pool = mysql.createPool({
