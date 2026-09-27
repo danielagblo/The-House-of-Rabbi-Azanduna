@@ -75,6 +75,23 @@ export const CartDrawer: React.FC = () => {
 
       const data = await response.json();
 
+      const lastOrderInfo = {
+        reference: data.order?.reference || data.reference,
+        customerName,
+        customerEmail,
+        customerPhone,
+        totalAmount: finalTotal,
+        items: items.map((it) => ({
+          productName: it.product.name,
+          variantSize: it.selectedVariant.size,
+          quantity: it.quantity,
+          unitPrice: it.selectedVariant.price,
+        })),
+      };
+      try {
+        sessionStorage.setItem('azanduna_last_order', JSON.stringify(lastOrderInfo));
+      } catch (e) {}
+
       if (data.paystack?.authorization_url) {
         cartStore.clearCart();
         cartStore.closeDrawer();
@@ -86,6 +103,21 @@ export const CartDrawer: React.FC = () => {
       }
     } catch (err) {
       const testRef = 'OUD-' + Date.now();
+      try {
+        sessionStorage.setItem('azanduna_last_order', JSON.stringify({
+          reference: testRef,
+          customerName,
+          customerEmail,
+          customerPhone,
+          totalAmount: finalTotal,
+          items: items.map((it) => ({
+            productName: it.product.name,
+            variantSize: it.selectedVariant.size,
+            quantity: it.quantity,
+            unitPrice: it.selectedVariant.price,
+          })),
+        }));
+      } catch (e) {}
       cartStore.clearCart();
       cartStore.closeDrawer();
       window.location.href = `/order/confirmation?reference=${testRef}&simulated=true`;
