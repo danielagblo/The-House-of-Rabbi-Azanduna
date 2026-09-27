@@ -77,11 +77,11 @@ export const Navbar: React.FC = () => {
           </form>
         </div>
 
-        {/* Center: RABBI AZANDUNA LTD Brand Wordmark (Exact Bold Geometric Montserrat Style as OUD ATTAR) */}
+        {/* Center: RABBI AZANDUNA Brand Wordmark (Exact Bold Geometric Montserrat Style as OUD ATTAR) */}
         <div className="flex-1 lg:flex-initial text-center overflow-hidden">
           <a href="/" className="inline-block group">
             <span className="font-['Montserrat',sans-serif] text-[15px] min-[390px]:text-lg sm:text-[23px] font-bold tracking-[0.12em] min-[390px]:tracking-[0.18em] sm:tracking-[0.25em] text-black uppercase block truncate">
-              RABBI AZANDUNA LTD
+              RABBI AZANDUNA
             </span>
           </a>
         </div>

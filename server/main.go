@@ -29,7 +29,7 @@ func main() {
 
 	// Initialize Fiber App
 	app := fiber.New(fiber.Config{
-		AppName:   "Rabbi Azanduna Ltd Luxury API",
+		AppName:   "Rabbi Azanduna Luxury API",
 		BodyLimit: 20 * 1024 * 1024, // 20 MB for image uploads
 	})
 
@@ -53,6 +53,6 @@ func main() {
 	port = strings.TrimSpace(port)
 
 	listenAddr := fmt.Sprintf("0.0.0.0:%s", port)
-	log.Printf("[Server] Starting Rabbi Azanduna Ltd Luxury API on %s ...", listenAddr)
+	log.Printf("[Server] Starting Rabbi Azanduna Luxury API on %s ...", listenAddr)
 	log.Fatal(app.Listen(listenAddr))
 }

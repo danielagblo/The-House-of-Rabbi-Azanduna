@@ -38,7 +38,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
       >
         <img
           src={imageSrc}
-          alt="Official Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
+          alt="Official Certificate of Incorporation - The House of Rabbi Azanduna"
           className="w-full h-auto rounded-2xl object-contain block group-hover:scale-[1.02] transition-transform duration-300"
         />
         {/* Hover / Touch Overlay */}
@@ -88,7 +88,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
             <div className="overflow-auto max-h-[94vh] max-w-full rounded-2xl flex items-center justify-center p-1">
               <img
                 src={imageSrc}
-                alt="Certificate of Incorporation - The House of Rabbi Azanduna Ltd"
+                alt="Certificate of Incorporation - The House of Rabbi Azanduna"
                 className="max-h-[92vh] w-auto max-w-[92vw] sm:max-w-[85vw] md:max-w-3xl rounded-xl object-contain shadow-2xl border border-white/10"
               />
             </div>

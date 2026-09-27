@@ -24,7 +24,7 @@ func main() {
 	go seeds.SeedDatabase(db)
 
 	app := fiber.New(fiber.Config{
-		AppName: "Rabbi Azanduna Ltd Luxury API",
+		AppName: "Rabbi Azanduna Luxury API",
 	})
 
 	app.Use(logger.New())
@@ -45,6 +45,6 @@ func main() {
 	port = strings.TrimSpace(port)
 
 	listenAddr := fmt.Sprintf("0.0.0.0:%s", port)
-	log.Printf("[Server] Starting Rabbi Azanduna Ltd Luxury API on %s ...", listenAddr)
+	log.Printf("[Server] Starting Rabbi Azanduna Luxury API on %s ...", listenAddr)
 	log.Fatal(app.Listen(listenAddr))
 }

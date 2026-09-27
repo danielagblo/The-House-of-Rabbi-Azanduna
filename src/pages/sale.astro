@@ -20,6 +20,6 @@ const hasDiscounts = products.some(
 );
 ---
 
-<Layout title={hasDiscounts ? "Sale | Rabbi Azanduna Ltd" : "All Products | Rabbi Azanduna Ltd"}>
+<Layout title={hasDiscounts ? "Sale | Rabbi Azanduna" : "All Products | Rabbi Azanduna"}>
   <SaleView client:load initialProducts={products} />
 </Layout>
