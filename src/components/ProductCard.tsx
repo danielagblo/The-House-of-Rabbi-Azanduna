@@ -152,11 +152,11 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         {/* Price & Strikethrough Discount Price */}
         <div className="font-['Barlow',sans-serif] text-[14px] sm:text-[16px] font-bold text-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
           <span>{priceDisplay}</span>
-          {product.compareAtPrice && product.compareAtPrice > product.price && (
+          {product.compareAtPrice && Number(product.compareAtPrice) > product.price ? (
             <span className="text-gray-400 line-through text-[11px] sm:text-xs font-normal">
-              GH₵{product.compareAtPrice.toFixed(2)}
+              GH₵{Number(product.compareAtPrice).toFixed(2)}
             </span>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

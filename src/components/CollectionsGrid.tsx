@@ -118,11 +118,11 @@ export const CollectionsGrid: React.FC<Props> = ({
                   </div>
 
                   <div className="font-['Barlow',sans-serif] text-[13px] sm:text-[14px] font-bold flex items-center justify-center gap-1.5">
-                    {prod.compareAtPrice && prod.compareAtPrice > prod.price && (
+                    {prod.compareAtPrice && Number(prod.compareAtPrice) > prod.price ? (
                       <span className="line-through text-[#e62b32] font-semibold">
-                        GH₵{prod.compareAtPrice.toFixed(2)}
+                        GH₵{Number(prod.compareAtPrice).toFixed(2)}
                       </span>
-                    )}
+                    ) : null}
                     <span className="text-black font-bold">
                       GH₵{prod.price.toFixed(2)}
                     </span>

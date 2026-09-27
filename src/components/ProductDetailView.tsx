@@ -130,11 +130,11 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
             <span className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-extrabold text-black">
               GH₵{selectedVariant.price.toFixed(2)}
             </span>
-            {product.compareAtPrice && product.compareAtPrice > selectedVariant.price && (
+            {product.compareAtPrice && Number(product.compareAtPrice) > selectedVariant.price ? (
               <span className="text-sm sm:text-base text-gray-400 line-through">
-                GH₵{product.compareAtPrice.toFixed(2)}
+                GH₵{Number(product.compareAtPrice).toFixed(2)}
               </span>
-            )}
+            ) : null}
             {(() => {
               const currentStock = selectedVariant.stockQuantity !== undefined
                 ? Number(selectedVariant.stockQuantity)
