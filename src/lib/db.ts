@@ -178,7 +178,6 @@ export async function getCollections(): Promise<Collection[]> {
   const [rows] = await db.query<RowDataPacket[]>('SELECT * FROM collections ORDER BY sort_order ASC, id ASC');
   const collections = rows.map(mapCollection);
 
-  // Attach products summary for each collection
   const [prods] = await db.query<RowDataPacket[]>('SELECT * FROM products');
   const [variants] = await db.query<RowDataPacket[]>('SELECT * FROM product_variants');
 
@@ -299,7 +298,6 @@ export async function deleteCollection(id: number): Promise<void> {
     const fallbackId = otherCols[0].id;
     await db.query('UPDATE products SET collection_id = ? WHERE collection_id = ?', [fallbackId, id]);
   } else {
-    // Delete orphan products and associated notes, variants
     const [pRows] = await db.query<RowDataPacket[]>('SELECT id FROM products WHERE collection_id = ?', [id]);
     for (const p of pRows) {
       await deleteProduct(p.id);
@@ -528,7 +526,6 @@ export async function createProduct(prod: any): Promise<Product> {
 
   const productId = result.insertId;
 
-  // Insert fragrance notes if provided
   if (Array.isArray(prod.notes)) {
     for (const note of prod.notes) {
       await db.query(
@@ -538,7 +535,6 @@ export async function createProduct(prod: any): Promise<Product> {
     }
   }
 
-  // Insert variants if provided
   if (Array.isArray(prod.variants)) {
     for (const v of prod.variants) {
       await db.query(
@@ -603,7 +599,6 @@ export async function updateProduct(id: number, updates: any): Promise<Product |
     await db.query(`UPDATE products SET ${fields.join(', ')} WHERE id = ?`, values);
   }
 
-  // Update notes if provided
   if (Array.isArray(updates.notes)) {
     await db.query('DELETE FROM fragrance_notes WHERE product_id = ?', [id]);
     for (const note of updates.notes) {
@@ -614,7 +609,6 @@ export async function updateProduct(id: number, updates: any): Promise<Product |
     }
   }
 
-  // Update variants if provided
   if (Array.isArray(updates.variants)) {
     await db.query('DELETE FROM product_variants WHERE product_id = ?', [id]);
     for (const v of updates.variants) {
@@ -923,7 +917,6 @@ export function checkAdminAuth(authHeader: string | null | undefined, queryToken
   const token = authHeader || queryToken;
   if (!token) return false;
   const clean = token.replace(/^Bearer\s+/i, '').trim();
-  // Valid token check matching Go backend
   return clean.length >= 10 && clean.startsWith('azanduna_admin_token_');
 }
 

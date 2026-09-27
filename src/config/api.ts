@@ -6,5 +6,5 @@ export const API_BASE_URL = (
     ? envUrl
     : isBrowser
       ? ''
-      : `http://localhost:${process.env.PORT || 4321}`
+      : 'http://localhost:4321'
 ).replace(/\/+$/, '');
