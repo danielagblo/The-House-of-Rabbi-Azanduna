@@ -387,6 +387,11 @@ export const AdminPortal: React.FC = () => {
       isBestSeller: false,
       isNew: true,
       inStock: true,
+      stockQuantity: 50,
+      variants: [
+        { size: '6ml Crystal Flacon', price: 35.0, inStock: true, stockQuantity: 30 },
+        { size: '12ml Royal Flacon', price: 60.0, inStock: true, stockQuantity: 20 },
+      ],
     });
     setIsProductModalOpen(true);
   };
@@ -401,6 +406,8 @@ export const AdminPortal: React.FC = () => {
 
     const assignedCollectionId = Number(editingProduct.collectionId) || collections[0]?.id || 1;
     const assignedCollection = collections.find((c) => c.id === assignedCollectionId);
+    const stockQty = editingProduct.stockQuantity !== undefined ? Number(editingProduct.stockQuantity) : 50;
+    const inStockVal = editingProduct.inStock !== false && stockQty > 0;
 
     const productPayload = {
       ...editingProduct,
@@ -411,15 +418,27 @@ export const AdminPortal: React.FC = () => {
       slug: editingProduct.slug || editingProduct.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       rating: editingProduct.rating || 5,
       reviewCount: editingProduct.reviewCount || 1,
-      inStock: editingProduct.inStock !== false,
+      stockQuantity: stockQty,
+      inStock: inStockVal,
       notes: editingProduct.notes || [
         { layer: 'top', noteName: 'Sun-Dried Bergamot & Saffron', description: 'Opening' },
         { layer: 'heart', noteName: 'Artisanal Agarwood & Rose', description: 'Heart' },
         { layer: 'base', noteName: 'Smoked Ambergris & Sandalwood', description: 'Base' },
       ],
-      variants: editingProduct.variants || [
-        { size: '6ml Crystal Flacon', price: Number(editingProduct.price), inStock: true },
-      ]
+      variants: (editingProduct.variants && editingProduct.variants.length > 0
+        ? editingProduct.variants
+        : [
+            { size: '6ml Crystal Flacon', price: Number(editingProduct.price), inStock: true, stockQuantity: stockQty }
+          ]
+      ).map((v) => {
+        const vQty = v.stockQuantity !== undefined ? Number(v.stockQuantity) : stockQty;
+        return {
+          ...v,
+          price: Number(v.price) || 0,
+          stockQuantity: vQty,
+          inStock: v.inStock !== false && vQty > 0,
+        };
+      })
     };
 
     try {
@@ -473,17 +492,48 @@ export const AdminPortal: React.FC = () => {
     }
   };
 
-  const handleToggleStock = async (prod: Product) => {
-    const newStock = prod.inStock === false;
+  const handleAdjustStock = async (prod: Product, delta: number) => {
+    const curStock = prod.stockQuantity !== undefined ? prod.stockQuantity : 50;
+    const newStock = Math.max(0, curStock + delta);
+    const newInStock = newStock > 0;
     try {
       const res = await fetch(`${API_BASE_URL}/api/admin/products/${prod.id}`, {
         method: 'PUT',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ inStock: newStock }),
+        body: JSON.stringify({ stockQuantity: newStock, inStock: newInStock }),
       });
       if (res.ok) {
-        showToast(`${prod.name} is now ${newStock ? 'In Stock' : 'Out of Stock'}`);
-        setProducts((prev) => prev.map((p) => (p.id === prod.id ? { ...p, inStock: newStock } : p)));
+        showToast(`${prod.name} stock updated to ${newStock} units`);
+        setProducts((prev) =>
+          prev.map((p) =>
+            p.id === prod.id ? { ...p, stockQuantity: newStock, inStock: newInStock } : p
+          )
+        );
+      } else {
+        showToast('Failed to update stock count', 'error');
+      }
+    } catch (err) {
+      showToast('Network error updating stock', 'error');
+    }
+  };
+
+  const handleToggleStock = async (prod: Product) => {
+    const isCurrentlyIn = prod.inStock !== false && (prod.stockQuantity === undefined || prod.stockQuantity > 0);
+    const newInStock = !isCurrentlyIn;
+    const newStock = newInStock ? (prod.stockQuantity && prod.stockQuantity > 0 ? prod.stockQuantity : 50) : 0;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/products/${prod.id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ inStock: newInStock, stockQuantity: newStock }),
+      });
+      if (res.ok) {
+        showToast(`${prod.name} is now ${newInStock ? `In Stock (${newStock} units)` : 'Out of Stock (0 units)'}`);
+        setProducts((prev) =>
+          prev.map((p) =>
+            p.id === prod.id ? { ...p, inStock: newInStock, stockQuantity: newStock } : p
+          )
+        );
       } else {
         showToast('Failed to update stock status', 'error');
       }
@@ -1105,7 +1155,7 @@ export const AdminPortal: React.FC = () => {
                       <th className="py-3.5 px-4">Scent Family</th>
                       <th className="py-3.5 px-4">Price</th>
                       <th className="py-3.5 px-4">Sale / Compare</th>
-                      <th className="py-3.5 px-4">Stock Status</th>
+                      <th className="py-3.5 px-4">Stock &amp; Inventory</th>
                       <th className="py-3.5 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -1113,6 +1163,10 @@ export const AdminPortal: React.FC = () => {
                     {filteredProducts.length > 0 ? (
                       filteredProducts.map((prod) => {
                         const prodCol = getProductCollection(prod);
+                        const isOut = prod.inStock === false || (prod.stockQuantity !== undefined && prod.stockQuantity <= 0);
+                        const isLow = !isOut && (prod.stockQuantity ?? 50) <= 10;
+                        const stockCount = isOut ? 0 : (prod.stockQuantity ?? 50);
+
                         return (
                           <tr key={prod.id || prod.slug} className="hover:bg-gray-50/80 transition-colors">
                             <td className="py-3.5 px-4">
@@ -1162,19 +1216,68 @@ export const AdminPortal: React.FC = () => {
                               )}
                             </td>
                             <td className="py-3.5 px-4">
-                              <button
-                                type="button"
-                                onClick={() => handleToggleStock(prod)}
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all ${
-                                  prod.inStock !== false
-                                    ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300'
-                                    : 'bg-red-100 text-red-800 hover:bg-red-200 border border-red-300'
-                                }`}
-                                title="Click to toggle In Stock / Out of Stock"
-                              >
-                                <span className={`w-2 h-2 rounded-full ${prod.inStock !== false ? 'bg-emerald-600' : 'bg-red-600'}`} />
-                                <span>{prod.inStock !== false ? 'In Stock' : 'Out of Stock'}</span>
-                              </button>
+                              <div className="flex flex-col gap-1.5">
+                                <div className="flex items-center gap-1.5">
+                                  {/* Quick minus */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleAdjustStock(prod, -1)}
+                                    disabled={stockCount <= 0}
+                                    className="w-5 h-5 rounded flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-bold"
+                                    title="Decrease stock by 1"
+                                  >
+                                    -
+                                  </button>
+
+                                  {/* Stock Badge with exact numbers */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleToggleStock(prod)}
+                                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all ${
+                                      isOut
+                                        ? 'bg-red-100 text-red-800 hover:bg-red-200 border border-red-300'
+                                        : isLow
+                                        ? 'bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-300'
+                                        : 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300'
+                                    }`}
+                                    title="Click to toggle In Stock / Out of Stock"
+                                  >
+                                    <span
+                                      className={`w-1.5 h-1.5 rounded-full ${
+                                        isOut ? 'bg-red-600' : isLow ? 'bg-amber-600' : 'bg-emerald-600'
+                                      }`}
+                                    />
+                                    <span>
+                                      {isOut
+                                        ? '0 (Out of Stock)'
+                                        : isLow
+                                        ? `${stockCount} left (Low)`
+                                        : `${stockCount} in stock`}
+                                    </span>
+                                  </button>
+
+                                  {/* Quick plus */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleAdjustStock(prod, 5)}
+                                    className="w-5 h-5 rounded flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-bold"
+                                    title="Add 5 units to stock"
+                                  >
+                                    +
+                                  </button>
+                                </div>
+
+                                {/* Variant stock breakdown if variants exist */}
+                                {prod.variants && prod.variants.length > 1 && (
+                                  <div className="flex flex-wrap gap-1 text-[10px] text-gray-500">
+                                    {prod.variants.map((v, i) => (
+                                      <span key={i} className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-600 border border-gray-200">
+                                        {v.size.split(' ')[0]}: <strong className={v.stockQuantity === 0 || v.inStock === false ? 'text-red-600' : 'text-gray-900'}>{v.stockQuantity ?? prod.stockQuantity ?? 50}</strong>
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
                             </td>
                             <td className="py-3.5 px-4 text-right space-x-2">
                               <button
@@ -1824,39 +1927,86 @@ export const AdminPortal: React.FC = () => {
                 <div className="bg-gray-50/90 border border-gray-200 rounded-xl p-4 space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <label className="text-gray-900 font-bold uppercase text-xs block">Product Stock Availability</label>
-                      <p className="text-[11px] text-gray-500">Determine whether shoppers can order this fragrance.</p>
+                      <label className="text-gray-900 font-bold uppercase text-xs block">Inventory &amp; Stock Count</label>
+                      <p className="text-[11px] text-gray-500">Manage real-time available stock quantities for this fragrance.</p>
                     </div>
                     <button
                       type="button"
-                      onClick={() => setEditingProduct({ ...editingProduct, inStock: editingProduct.inStock === false })}
+                      onClick={() => {
+                        const newInStock = editingProduct.inStock === false;
+                        const newStock = newInStock ? (editingProduct.stockQuantity && editingProduct.stockQuantity > 0 ? editingProduct.stockQuantity : 50) : 0;
+                        setEditingProduct({
+                          ...editingProduct,
+                          inStock: newInStock,
+                          stockQuantity: newStock,
+                        });
+                      }}
                       className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        editingProduct.inStock !== false
+                        editingProduct.inStock !== false && (editingProduct.stockQuantity === undefined || editingProduct.stockQuantity > 0)
                           ? 'bg-emerald-600 text-white shadow-xs'
                           : 'bg-red-600 text-white shadow-xs'
                       }`}
                     >
-                      {editingProduct.inStock !== false ? '✓ In Stock' : '✗ Out of Stock'}
+                      {editingProduct.inStock !== false && (editingProduct.stockQuantity === undefined || editingProduct.stockQuantity > 0) ? '✓ In Stock' : '✗ Out of Stock'}
                     </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center pt-2 border-t border-gray-200">
+                    <div>
+                      <label className="text-gray-800 font-bold uppercase text-[11px] block mb-1">
+                        Total Stock Quantity (Bottles / Units) *
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={editingProduct.stockQuantity ?? 50}
+                          onChange={(e) => {
+                            const val = Math.max(0, parseInt(e.target.value) || 0);
+                            setEditingProduct({
+                              ...editingProduct,
+                              stockQuantity: val,
+                              inStock: val > 0,
+                            });
+                          }}
+                          className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2 text-xs font-bold text-gray-900"
+                          placeholder="50"
+                        />
+                        <span className="absolute right-3 top-2 text-xs text-gray-400 font-semibold">units</span>
+                      </div>
+                    </div>
+                    <div className="text-[11px] text-gray-500 pt-1 sm:pt-4">
+                      {(editingProduct.stockQuantity ?? 50) <= 0 ? (
+                        <span className="text-red-600 font-bold block">● Out of stock: Shoppers cannot add to cart.</span>
+                      ) : (editingProduct.stockQuantity ?? 50) <= 10 ? (
+                        <span className="text-amber-600 font-bold block">▲ Low stock alert: Shows urgency on product page.</span>
+                      ) : (
+                        <span className="text-emerald-700 font-bold block">✓ Healthy inventory: Product ready for orders.</span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Size Variants & Variant Stock */}
                   <div className="pt-3 border-t border-gray-200 space-y-3">
                     <div className="flex items-center justify-between">
-                      <label className="text-gray-900 font-bold uppercase text-xs">
-                        Flacon Sizes &amp; Variant Stock ({editingProduct.variants?.length || 1})
-                      </label>
+                      <div>
+                        <label className="text-gray-900 font-bold uppercase text-xs block">
+                          Flacon Sizes &amp; Variant Stock ({editingProduct.variants?.length || 1})
+                        </label>
+                        <p className="text-[10px] text-gray-500">Assign specific price and exact stock quantity per flacon size.</p>
+                      </div>
                       <button
                         type="button"
                         onClick={() => {
                           const curVariants = editingProduct.variants || [
-                            { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                            { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true, stockQuantity: 30 }
                           ];
                           setEditingProduct({
                             ...editingProduct,
                             variants: [
                               ...curVariants,
-                              { size: '12ml Royal Flacon', price: Number(editingProduct.price) ? Number(editingProduct.price) * 1.8 : 50, inStock: true }
+                              { size: '12ml Royal Flacon', price: Number(editingProduct.price) ? Number(editingProduct.price) * 1.8 : 50, inStock: true, stockQuantity: 20 }
                             ]
                           });
                         }}
@@ -1868,7 +2018,7 @@ export const AdminPortal: React.FC = () => {
 
                     <div className="space-y-2">
                       {(editingProduct.variants && editingProduct.variants.length > 0 ? editingProduct.variants : [
-                        { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                        { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true, stockQuantity: 50 }
                       ]).map((v, idx) => (
                         <div key={idx} className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-2.5 shadow-2xs">
                           <input
@@ -1877,15 +2027,15 @@ export const AdminPortal: React.FC = () => {
                             value={v.size}
                             onChange={(e) => {
                               const cur = editingProduct.variants || [
-                                { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                                { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true, stockQuantity: 50 }
                               ];
                               const updated = [...cur];
                               updated[idx] = { ...updated[idx], size: e.target.value };
                               setEditingProduct({ ...editingProduct, variants: updated });
                             }}
-                            className="flex-1 bg-white border border-gray-200 rounded px-2.5 py-1.5 text-xs text-gray-900"
+                            className="flex-1 min-w-[90px] bg-white border border-gray-200 rounded px-2.5 py-1.5 text-xs text-gray-900"
                           />
-                          <div className="flex items-center gap-1 w-28">
+                          <div className="flex items-center gap-1 w-24">
                             <span className="text-gray-500 font-bold text-[11px]">GH₵</span>
                             <input
                               type="number"
@@ -1894,7 +2044,7 @@ export const AdminPortal: React.FC = () => {
                               value={v.price}
                               onChange={(e) => {
                                 const cur = editingProduct.variants || [
-                                  { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                                  { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true, stockQuantity: 50 }
                                 ];
                                 const updated = [...cur];
                                 updated[idx] = { ...updated[idx], price: parseFloat(e.target.value) || 0 };
@@ -1903,24 +2053,50 @@ export const AdminPortal: React.FC = () => {
                               className="w-full bg-white border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-900 font-bold"
                             />
                           </div>
+                          <div className="flex items-center gap-1 w-20">
+                            <input
+                              type="number"
+                              min="0"
+                              step="1"
+                              placeholder="Stock"
+                              title="Stock Units for this variant"
+                              value={v.stockQuantity ?? 50}
+                              onChange={(e) => {
+                                const cur = editingProduct.variants || [
+                                  { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true, stockQuantity: 50 }
+                                ];
+                                const updated = [...cur];
+                                const qty = Math.max(0, parseInt(e.target.value) || 0);
+                                updated[idx] = { ...updated[idx], stockQuantity: qty, inStock: qty > 0 };
+                                setEditingProduct({ ...editingProduct, variants: updated });
+                              }}
+                              className="w-full bg-white border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-900 font-bold"
+                            />
+                            <span className="text-[10px] text-gray-400">pcs</span>
+                          </div>
                           <button
                             type="button"
                             onClick={() => {
                               const cur = editingProduct.variants || [
-                                { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                                { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true, stockQuantity: 50 }
                               ];
                               const updated = [...cur];
-                              updated[idx] = { ...updated[idx], inStock: updated[idx].inStock === false };
+                              const toggled = updated[idx].inStock === false;
+                              updated[idx] = {
+                                ...updated[idx],
+                                inStock: toggled,
+                                stockQuantity: toggled ? (updated[idx].stockQuantity && updated[idx].stockQuantity > 0 ? updated[idx].stockQuantity : 50) : 0,
+                              };
                               setEditingProduct({ ...editingProduct, variants: updated });
                             }}
                             className={`px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer shrink-0 ${
-                              v.inStock !== false
+                              v.inStock !== false && (v.stockQuantity === undefined || v.stockQuantity > 0)
                                 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                                 : 'bg-red-100 text-red-800 border border-red-300'
                             }`}
                             title="Click to toggle variant stock"
                           >
-                            {v.inStock !== false ? 'In Stock' : 'Out'}
+                            {v.inStock !== false && (v.stockQuantity === undefined || v.stockQuantity > 0) ? 'In Stock' : 'Out'}
                           </button>
                           {(editingProduct.variants?.length || 0) > 1 && (
                             <button
