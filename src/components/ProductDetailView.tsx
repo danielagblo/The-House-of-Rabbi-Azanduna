@@ -126,7 +126,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
           </div>
 
           {/* Price Strip */}
-          <div className="flex items-baseline gap-3 pb-5 sm:pb-6 border-b border-gray-200">
+          <div className="flex items-baseline gap-3 pb-5 sm:pb-6 border-b border-gray-200 flex-wrap">
             <span className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-extrabold text-black">
               GH₵{selectedVariant.price.toFixed(2)}
             </span>
@@ -135,15 +135,35 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 GH₵{product.compareAtPrice.toFixed(2)}
               </span>
             )}
-            {product.inStock !== false && selectedVariant.inStock !== false ? (
-              <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded">
-                In Stock
-              </span>
-            ) : (
-              <span className="text-xs bg-red-100 text-red-800 font-bold px-2.5 py-0.5 rounded">
-                Out of Stock
-              </span>
-            )}
+            {(() => {
+              const currentStock = selectedVariant.stockQuantity !== undefined
+                ? Number(selectedVariant.stockQuantity)
+                : (product.stockQuantity !== undefined ? Number(product.stockQuantity) : 50);
+              const isOutOfStock = product.inStock === false || selectedVariant.inStock === false || currentStock <= 0;
+              const isLowStock = !isOutOfStock && currentStock <= 10;
+
+              if (isOutOfStock) {
+                return (
+                  <span className="text-xs bg-red-100 text-red-800 font-bold px-2.5 py-0.5 rounded">
+                    Out of Stock
+                  </span>
+                );
+              }
+              if (isLowStock) {
+                return (
+                  <span className="text-xs bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded flex items-center gap-1.5 animate-pulse">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-600" />
+                    Only {currentStock} left in stock - order soon!
+                  </span>
+                );
+              }
+              return (
+                <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                  In Stock ({currentStock} available)
+                </span>
+              );
+            })()}
           </div>
 
           <p className="text-gray-700 text-sm leading-relaxed font-light">
@@ -158,21 +178,39 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
                 {product.variants.map((v) => {
-                  const isVarInStock = v.inStock !== false && product.inStock !== false;
+                  const vStock = v.stockQuantity !== undefined
+                    ? Number(v.stockQuantity)
+                    : (product.stockQuantity !== undefined ? Number(product.stockQuantity) : 50);
+                  const isVarInStock = v.inStock !== false && product.inStock !== false && vStock > 0;
+                  const isSelected = selectedVariant.size === v.size;
+
                   return (
                     <button
                       key={v.size}
-                      onClick={() => setSelectedVariant(v)}
+                      onClick={() => {
+                        setSelectedVariant(v);
+                        if (quantity > vStock && vStock > 0) {
+                          setQuantity(vStock);
+                        }
+                      }}
                       className={`p-2.5 sm:p-3 rounded-xl border text-left transition-all ${
-                        selectedVariant.size === v.size
+                        isSelected
                           ? 'bg-black text-white border-black font-bold shadow-sm'
                           : 'bg-white text-gray-800 border-gray-300 hover:border-gray-400'
                       }`}
                     >
                       <div className="flex items-center justify-between gap-1">
                         <span className="text-xs block truncate">{v.size}</span>
-                        {!isVarInStock && (
+                        {!isVarInStock ? (
                           <span className="text-[9px] font-bold text-red-500 uppercase shrink-0">Sold Out</span>
+                        ) : vStock <= 10 ? (
+                          <span className={`text-[9px] font-bold uppercase shrink-0 ${isSelected ? 'text-amber-300' : 'text-amber-600'}`}>
+                            Only {vStock} left
+                          </span>
+                        ) : (
+                          <span className={`text-[9px] font-medium shrink-0 ${isSelected ? 'text-emerald-300' : 'text-emerald-700'}`}>
+                            {vStock} units
+                          </span>
                         )}
                       </div>
                       <span className="font-['Barlow',sans-serif] font-bold text-xs sm:text-sm block mt-0.5">
@@ -186,68 +224,87 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
           )}
 
           {/* Quantity & Add to Cart */}
-          <div className="space-y-3 pt-3 sm:pt-4">
-            <div className="flex items-center gap-2.5 sm:gap-3">
-              <div className="flex items-center border border-gray-300 rounded-lg bg-gray-50 px-1.5 sm:px-2 py-1 shrink-0">
+          {(() => {
+            const currentStock = selectedVariant.stockQuantity !== undefined
+              ? Number(selectedVariant.stockQuantity)
+              : (product.stockQuantity !== undefined ? Number(product.stockQuantity) : 50);
+            const isOutOfStock = product.inStock === false || selectedVariant.inStock === false || currentStock <= 0;
+            const isLowStock = !isOutOfStock && currentStock <= 10;
+            const maxQty = Math.max(1, Math.min(currentStock, 20));
+
+            return (
+              <div className="space-y-3 pt-3 sm:pt-4">
+                {isLowStock && (
+                  <p className="text-[11px] text-amber-700 font-semibold flex items-center gap-1.5">
+                    <span>⚡</span> Only {currentStock} bottles left for this size — order now before it sells out.
+                  </p>
+                )}
+
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <div className="flex items-center border border-gray-300 rounded-lg bg-gray-50 px-1.5 sm:px-2 py-1 shrink-0">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1 || isOutOfStock}
+                      className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-black font-bold disabled:opacity-30"
+                    >
+                      -
+                    </button>
+                    <span className="px-2 sm:px-3 font-bold text-black text-sm">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(Math.min(maxQty, quantity + 1))}
+                      disabled={quantity >= maxQty || isOutOfStock}
+                      className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-black font-bold disabled:opacity-30"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={isOutOfStock}
+                    className={`flex-1 py-3.5 px-3 sm:px-6 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors ${
+                      isOutOfStock
+                        ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                        : isAdded
+                        ? 'bg-emerald-600 text-white cursor-pointer'
+                        : 'bg-black hover:bg-[#ff2d3b] text-white shadow-md cursor-pointer'
+                    }`}
+                  >
+                    {isOutOfStock ? (
+                      <span>Out of Stock</span>
+                    ) : isAdded ? (
+                      <>
+                        <Check size={16} />
+                        <span>Added to Bag</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag size={16} />
+                        <span className="truncate">Add to Bag • GH₵{(selectedVariant.price * quantity).toFixed(2)}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
                 <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-black font-bold"
+                  onClick={() => {
+                    if (isOutOfStock) return;
+                    cartStore.addItem(product, selectedVariant, quantity);
+                    cartStore.openDrawer();
+                  }}
+                  disabled={isOutOfStock}
+                  className={`w-full py-3 font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 ${
+                    isOutOfStock
+                      ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                      : 'bg-[#ff2d3b] hover:bg-[#e0202d] text-white cursor-pointer'
+                  }`}
                 >
-                  -
-                </button>
-                <span className="px-2 sm:px-3 font-bold text-black text-sm">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-black font-bold"
-                >
-                  +
+                  <Sparkles size={15} />
+                  <span>{!isOutOfStock ? 'Buy Now with Paystack' : 'Currently Out of Stock'}</span>
                 </button>
               </div>
-
-              <button
-                onClick={handleAddToCart}
-                disabled={product.inStock === false || selectedVariant.inStock === false}
-                className={`flex-1 py-3.5 px-3 sm:px-6 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors ${
-                  product.inStock === false || selectedVariant.inStock === false
-                    ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-                    : isAdded
-                    ? 'bg-emerald-600 text-white cursor-pointer'
-                    : 'bg-black hover:bg-[#ff2d3b] text-white shadow-md cursor-pointer'
-                }`}
-              >
-                {product.inStock === false || selectedVariant.inStock === false ? (
-                  <span>Out of Stock</span>
-                ) : isAdded ? (
-                  <>
-                    <Check size={16} />
-                    <span>Added to Bag</span>
-                  </>
-                ) : (
-                  <>
-                    <ShoppingBag size={16} />
-                    <span className="truncate">Add to Bag • GH₵{(selectedVariant.price * quantity).toFixed(2)}</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            <button
-              onClick={() => {
-                if (product.inStock === false || selectedVariant.inStock === false) return;
-                cartStore.addItem(product, selectedVariant, quantity);
-                cartStore.openDrawer();
-              }}
-              disabled={product.inStock === false || selectedVariant.inStock === false}
-              className={`w-full py-3 font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 ${
-                product.inStock === false || selectedVariant.inStock === false
-                  ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
-                  : 'bg-[#ff2d3b] hover:bg-[#e0202d] text-white cursor-pointer'
-              }`}
-            >
-              <Sparkles size={15} />
-              <span>{product.inStock !== false && selectedVariant.inStock !== false ? 'Buy Now with Paystack' : 'Currently Out of Stock'}</span>
-            </button>
-          </div>
+            );
+          })()}
 
           {/* Guarantees */}
           <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-2.5 sm:gap-3 pt-5 sm:pt-6 border-t border-gray-200 text-xs text-gray-600 font-medium">

@@ -84,39 +84,50 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
           </div>
         )}
 
-        {/* Out of Stock Badge */}
-        {product.inStock === false && (
+        {/* Out of Stock or Low Stock Badge */}
+        {product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0) ? (
           <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
             <span className="bg-neutral-900/90 text-white font-extrabold text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase px-2 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
               Out of Stock
             </span>
           </div>
-        )}
+        ) : product.stockQuantity !== undefined && product.stockQuantity <= 10 ? (
+          <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
+            <span className="bg-amber-600 text-white font-extrabold text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase px-2 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
+              Only {product.stockQuantity} Left
+            </span>
+          </div>
+        ) : null}
       </a>
 
       {/* Full-width Add to Cart Button */}
-      <button
-        onClick={handleAddToCart}
-        disabled={product.inStock === false}
-        className={`w-full mt-2.5 sm:mt-3 py-2 sm:py-3 px-2 sm:px-4 rounded-[6px] font-bold text-xs sm:text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs ${
-          product.inStock === false
-            ? 'bg-neutral-400 cursor-not-allowed opacity-80'
-            : isAdded
-            ? 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer'
-            : 'bg-[#e62b32] hover:bg-[#cf2229] active:scale-[0.99] cursor-pointer'
-        }`}
-      >
-        {product.inStock === false ? (
-          <span>Out of Stock</span>
-        ) : isAdded ? (
-          <>
-            <Check size={15} />
-            <span>Added To Cart</span>
-          </>
-        ) : (
-          <span>Add To Cart</span>
-        )}
-      </button>
+      {(() => {
+        const isOutOfStock = product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0);
+        return (
+          <button
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className={`w-full mt-2.5 sm:mt-3 py-2 sm:py-3 px-2 sm:px-4 rounded-[6px] font-bold text-xs sm:text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs ${
+              isOutOfStock
+                ? 'bg-neutral-400 cursor-not-allowed opacity-80'
+                : isAdded
+                ? 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer'
+                : 'bg-[#e62b32] hover:bg-[#cf2229] active:scale-[0.99] cursor-pointer'
+            }`}
+          >
+            {isOutOfStock ? (
+              <span>Out of Stock</span>
+            ) : isAdded ? (
+              <>
+                <Check size={15} />
+                <span>Added To Cart</span>
+              </>
+            ) : (
+              <span>Add To Cart</span>
+            )}
+          </button>
+        );
+      })()}
 
       {/* Product Info (Centered below button) */}
       <div className="pt-2 text-center">
