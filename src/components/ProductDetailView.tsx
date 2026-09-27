@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Product, ProductVariant } from '../types';
 import { cartStore } from '../store/cartStore';
 import { ProductCard } from './ProductCard';
-import { Star, ShoppingBag, ShieldCheck, Truck, RefreshCw, Check, Sparkles } from 'lucide-react';
+import {
+  Star,
+  ShoppingBag,
+  ShieldCheck,
+  Truck,
+  RefreshCw,
+  Check,
+  Sparkles,
+  Droplets,
+  AlertCircle,
+  SunMedium,
+  ChevronDown,
+} from 'lucide-react';
 
 interface Props {
   product: Product;
@@ -18,9 +30,16 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
       inStock: true,
     }
   );
-  const [activeImage, setActiveImage] = useState<string>(product.imageUrl);
+  const [activeImage, setActiveImage] = useState<string>(product.imageUrl || '');
   const [quantity, setQuantity] = useState(1);
   const [isAdded, setIsAdded] = useState(false);
+  const [openSection, setOpenSection] = useState<'apply' | 'precautions' | 'storage' | null>('apply');
+
+  useEffect(() => {
+    if (product?.imageUrl) {
+      setActiveImage(product.imageUrl);
+    }
+  }, [product?.imageUrl]);
 
   const handleAddToCart = () => {
     cartStore.addItem(product, selectedVariant, quantity);
@@ -50,10 +69,13 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
         <div className="space-y-3 sm:space-y-4">
           <div className="aspect-[4/5] bg-neutral-100 rounded-2xl overflow-hidden border border-gray-200 relative shadow-sm">
             <img
-              src={activeImage}
+              src={activeImage || product.imageUrl}
               alt={product.name}
               onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80';
+                const target = e.currentTarget as HTMLImageElement;
+                if (!target.src.includes('unsplash.com')) {
+                  target.src = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80';
+                }
               }}
               className="w-full h-full object-cover object-center"
             />
@@ -215,6 +237,109 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
             <div className="flex items-center gap-2">
               <RefreshCw size={18} className="text-[#ff2d3b] shrink-0" />
               <span>100% Pure Perfume Oil</span>
+            </div>
+          </div>
+
+          {/* Care, Application & Precautions Accordion (Option 1) */}
+          <div className="pt-6 border-t border-gray-200 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900">
+              Application & Fragrance Care
+            </h4>
+
+            {/* How & Where to Apply */}
+            <div className="border border-gray-200 rounded-xl overflow-hidden bg-gray-50/60 transition-all">
+              <button
+                type="button"
+                onClick={() => setOpenSection(openSection === 'apply' ? null : 'apply')}
+                className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-gray-900 hover:bg-gray-100/70 transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2.5">
+                  <Droplets size={16} className="text-[#ff2d3b]" />
+                  <span>How & Where to Apply</span>
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={`text-gray-400 transition-transform duration-200 ${
+                    openSection === 'apply' ? 'rotate-180 text-black' : ''
+                  }`}
+                />
+              </button>
+              {openSection === 'apply' && (
+                <div className="px-4 pb-4 pt-1 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-200/60 bg-white">
+                  <p>
+                    Focus on your pulse points—such as the wrists, behind the ears, and the base of the neck. Body heat in these zones helps amplify and diffuse the scent throughout the day.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Precautions & Safe Use */}
+            <div className="border border-gray-200 rounded-xl overflow-hidden bg-gray-50/60 transition-all">
+              <button
+                type="button"
+                onClick={() => setOpenSection(openSection === 'precautions' ? null : 'precautions')}
+                className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-gray-900 hover:bg-gray-100/70 transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2.5">
+                  <AlertCircle size={16} className="text-[#ff2d3b]" />
+                  <span>Precautions & Safe Use</span>
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={`text-gray-400 transition-transform duration-200 ${
+                    openSection === 'precautions' ? 'rotate-180 text-black' : ''
+                  }`}
+                />
+              </button>
+              {openSection === 'precautions' && (
+                <div className="px-4 pb-4 pt-2 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-200/60 bg-white">
+                  <ul className="space-y-2 list-none">
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold text-gray-900 shrink-0">• Distance:</span>
+                      <span>Spray from roughly 30 cm (12 inches) away to ensure an even mist.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold text-gray-900 shrink-0">• Fabrics:</span>
+                      <span>Avoid direct contact with light or delicate textiles to prevent staining.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold text-gray-900 shrink-0">• Sensitive Areas:</span>
+                      <span>Do not spray on irritated skin, eyes, or mucous membranes.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-semibold text-gray-900 shrink-0">• Patch Test:</span>
+                      <span>If you have sensitive skin, test a tiny amount on the inside of your wrist before full application.</span>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Storage Tips */}
+            <div className="border border-gray-200 rounded-xl overflow-hidden bg-gray-50/60 transition-all">
+              <button
+                type="button"
+                onClick={() => setOpenSection(openSection === 'storage' ? null : 'storage')}
+                className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-gray-900 hover:bg-gray-100/70 transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2.5">
+                  <SunMedium size={16} className="text-[#ff2d3b]" />
+                  <span>Storage Tips</span>
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={`text-gray-400 transition-transform duration-200 ${
+                    openSection === 'storage' ? 'rotate-180 text-black' : ''
+                  }`}
+                />
+              </button>
+              {openSection === 'storage' && (
+                <div className="px-4 pb-4 pt-1 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-200/60 bg-white">
+                  <p>
+                    Keep your fragrance in a cool, dry spot shielded from direct sunlight and sharp temperature shifts to preserve its original character and longevity.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
