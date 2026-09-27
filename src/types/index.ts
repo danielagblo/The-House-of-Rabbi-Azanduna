@@ -12,6 +12,7 @@ export interface ProductVariant {
   size: string;
   price: number;
   inStock: boolean;
+  stockQuantity?: number;
 }
 
 export interface Review {
@@ -60,6 +61,7 @@ export interface Product {
   isBestSeller: boolean;
   isNew: boolean;
   inStock: boolean;
+  stockQuantity?: number;
   notes: FragranceNote[];
   variants: ProductVariant[];
   reviews?: Review[];

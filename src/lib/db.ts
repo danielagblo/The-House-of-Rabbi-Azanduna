@@ -69,6 +69,7 @@ function mapProduct(row: any): Product {
     isBestSeller: Boolean(row.is_best_seller),
     isNew: Boolean(row.is_new),
     inStock: Boolean(row.in_stock),
+    stockQuantity: row.stock_quantity !== undefined && row.stock_quantity !== null ? Number(row.stock_quantity) : 50,
     notes: [],
     variants: [],
     reviews: [],
@@ -92,6 +93,7 @@ function mapVariant(row: any): ProductVariant {
     size: row.size || '',
     price: Number(row.price) || 0,
     inStock: Boolean(row.in_stock),
+    stockQuantity: row.stock_quantity !== undefined && row.stock_quantity !== null ? Number(row.stock_quantity) : 50,
   };
 }
 
@@ -492,13 +494,15 @@ export async function getProductById(id: number): Promise<Product | null> {
 export async function createProduct(prod: any): Promise<Product> {
   const db = getPool();
   const now = new Date();
+  const stockQty = prod.stockQuantity !== undefined ? Number(prod.stockQuantity) : (prod.stock_quantity !== undefined ? Number(prod.stock_quantity) : 50);
+  const inStockVal = prod.inStock !== false && prod.in_stock !== false && stockQty > 0 ? 1 : 0;
 
   const [result] = await db.query<ResultSetHeader>(
     `INSERT INTO products (
       collection_id, name, slug, subtitle, description, concentration, scent_family,
       gender, sillage, longevity, price, compare_at_price, image_url, hover_image_url,
-      rating, review_count, is_best_seller, is_new, in_stock, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      rating, review_count, is_best_seller, is_new, in_stock, stock_quantity, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       prod.collectionId || prod.collection_id || 1,
       prod.name,
@@ -518,7 +522,8 @@ export async function createProduct(prod: any): Promise<Product> {
       prod.reviewCount || prod.review_count || 0,
       prod.isBestSeller || prod.is_best_seller ? 1 : 0,
       prod.isNew || prod.is_new ? 1 : 0,
-      prod.inStock !== false && prod.in_stock !== false ? 1 : 0,
+      inStockVal,
+      stockQty,
       now,
       now,
     ]
@@ -535,11 +540,13 @@ export async function createProduct(prod: any): Promise<Product> {
     }
   }
 
-  if (Array.isArray(prod.variants)) {
+  if (Array.isArray(prod.variants) && prod.variants.length > 0) {
     for (const v of prod.variants) {
+      const vStock = v.stockQuantity !== undefined ? Number(v.stockQuantity) : (v.stock_quantity !== undefined ? Number(v.stock_quantity) : stockQty);
+      const vInStock = v.inStock !== false && vStock > 0 ? 1 : 0;
       await db.query(
-        'INSERT INTO product_variants (product_id, size, price, in_stock) VALUES (?, ?, ?, ?)',
-        [productId, v.size || '50ml', v.price || prod.price || 0, v.inStock !== false ? 1 : 0]
+        'INSERT INTO product_variants (product_id, size, price, in_stock, stock_quantity) VALUES (?, ?, ?, ?, ?)',
+        [productId, v.size || '6ml Crystal Flacon', v.price || prod.price || 0, vInStock, vStock]
       );
     }
   }
@@ -581,6 +588,8 @@ export async function updateProduct(id: number, updates: any): Promise<Product |
     is_new: 'is_new',
     inStock: 'in_stock',
     in_stock: 'in_stock',
+    stockQuantity: 'stock_quantity',
+    stock_quantity: 'stock_quantity',
   };
 
   for (const [key, col] of Object.entries(map)) {
@@ -588,6 +597,7 @@ export async function updateProduct(id: number, updates: any): Promise<Product |
       fields.push(`${col} = ?`);
       let val = updates[key];
       if (typeof val === 'boolean') val = val ? 1 : 0;
+      if (col === 'stock_quantity') val = Number(val) || 0;
       values.push(val);
     }
   }
@@ -612,9 +622,11 @@ export async function updateProduct(id: number, updates: any): Promise<Product |
   if (Array.isArray(updates.variants)) {
     await db.query('DELETE FROM product_variants WHERE product_id = ?', [id]);
     for (const v of updates.variants) {
+      const vStock = v.stockQuantity !== undefined ? Number(v.stockQuantity) : (v.stock_quantity !== undefined ? Number(v.stock_quantity) : 50);
+      const vInStock = v.inStock !== false && vStock > 0 ? 1 : 0;
       await db.query(
-        'INSERT INTO product_variants (product_id, size, price, in_stock) VALUES (?, ?, ?, ?)',
-        [id, v.size || '50ml', v.price || 0, v.inStock !== false ? 1 : 0]
+        'INSERT INTO product_variants (product_id, size, price, in_stock, stock_quantity) VALUES (?, ?, ?, ?, ?)',
+        [id, v.size || '6ml Crystal Flacon', v.price || 0, vInStock, vStock]
       );
     }
   }
