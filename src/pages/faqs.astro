@@ -1,20 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import type { FAQ } from '../types';
-import { API_BASE_URL } from '../config/api';
+import { getFaqs } from '../lib/db';
 
 let faqs: FAQ[] = [];
 
 try {
-  const res = await fetch(`${API_BASE_URL}/api/faqs`);
-  if (res.ok) {
-    const data = await res.json();
-    if (data && data.length > 0) {
-      faqs = data;
-    }
-  }
+  faqs = await getFaqs(false);
 } catch (e) {
-  // fallback if offline
+  console.error('Error fetching faqs for SSR:', e);
 }
 
 // Group FAQs by category in order

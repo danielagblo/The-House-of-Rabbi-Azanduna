@@ -1,20 +1,14 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import type { BlogPost } from '../../types';
-import { API_BASE_URL } from '../../config/api';
+import { getBlogPosts } from '../../lib/db';
 
 let articles: BlogPost[] = [];
 
 try {
-  const res = await fetch(`${API_BASE_URL}/api/blogs`);
-  if (res.ok) {
-    const data = await res.json();
-    if (data && data.length > 0) {
-      articles = data;
-    }
-  }
+  articles = await getBlogPosts();
 } catch (e) {
-  // fallback if offline
+  console.error('Error fetching blog posts for SSR:', e);
 }
 ---
 

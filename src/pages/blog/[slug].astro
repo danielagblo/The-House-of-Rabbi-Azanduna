@@ -1,32 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import type { BlogPost } from '../../types';
-import { API_BASE_URL } from '../../config/api';
-
-export async function getStaticPaths() {
-  const defaultSlugs = [
-    "let-oud-be-your-love-language",
-    "manifest-your-best-year-with-oud",
-    "oud-paired-with-the-unexpected",
-    "how-to-apply-pure-oud-perfume-oils",
-    "difference-between-cambodian-and-assam-oud",
-    "why-non-alcoholic-perfumes-last-longer"
-  ];
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/blogs`);
-    if (res.ok) {
-      const data: BlogPost[] = await res.json();
-      if (data && data.length > 0) {
-        return data.map((post) => ({ params: { slug: post.slug } }));
-      }
-    }
-  } catch (e) {
-    // fallback
-  }
-
-  return defaultSlugs.map((slug) => ({ params: { slug } }));
-}
+import { getBlogPostBySlug } from '../../lib/db';
 
 const { slug } = Astro.params;
 
@@ -45,15 +20,14 @@ let post: BlogPost = {
 };
 
 try {
-  const res = await fetch(`${API_BASE_URL}/api/blogs/${slug}`);
-  if (res.ok) {
-    const data = await res.json();
-    if (data && data.title) {
-      post = data;
+  if (slug) {
+    const fetched = await getBlogPostBySlug(slug);
+    if (fetched) {
+      post = fetched;
     }
   }
 } catch (e) {
-  // fallback
+  console.error('Error fetching blog post for SSR:', e);
 }
 
 const paragraphs = post.content ? post.content.split('\n\n') : [post.excerpt];

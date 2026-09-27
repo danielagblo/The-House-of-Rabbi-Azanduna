@@ -1,59 +1,36 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { ProductDetailView } from '../../components/ProductDetailView';
-import { API_BASE_URL } from '../../config/api';
-
-export async function getStaticPaths() {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/products`);
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.length > 0) {
-        return data.map((p: any) => ({
-          params: { slug: p.slug },
-        }));
-      }
-    }
-  } catch (e) {
-    // fallback build paths
-  }
-
-  return [
-    { params: { slug: 'royal-quintet-discovery-set' } },
-    { params: { slug: 'extrait-grand-discovery-wardrobe' } },
-    { params: { slug: 'royal-cambodian-oud-oil' } },
-    { params: { slug: 'imperial-amber-musk-oil' } },
-    { params: { slug: 'damascus-rose-taif-elixir' } },
-    { params: { slug: 'black-afgano-pure-attar' } },
-    { params: { slug: 'santal-creme-de-bois' } },
-    { params: { slug: 'vetiver-fumee-celeste' } },
-    { params: { slug: 'dehn-al-oud-malaki' } },
-  ];
-}
+import { getProductBySlug, getProducts } from '../../lib/db';
 
 const { slug } = Astro.params;
 
+let product = null;
 let products: any[] = [];
 
 try {
-  const prodRes = await fetch(`${API_BASE_URL}/api/products`);
-  if (prodRes.ok) {
-    const data = await prodRes.json();
-    if (data && data.length > 0) products = data;
+  if (slug) {
+    product = await getProductBySlug(slug);
   }
+  products = await getProducts();
 } catch (e) {
-  // backend offline
+  console.error('Error fetching product for SSR:', e);
 }
 
-const product = products.find((p) => p.slug === slug) || products[0] || {
-  id: 0,
-  name: slug ? slug.replace(/-/g, ' ').toUpperCase() : 'Fragrance',
-  slug: slug || '',
-  price: 0,
-  imageUrl: '',
-  description: '',
-};
-const related = products.filter((p) => p.id !== product.id && (p.scentFamily === product.scentFamily || p.collectionId === product.collectionId));
+if (!product) {
+  product = products.find((p) => p.slug === slug) || products[0] || {
+    id: 0,
+    name: slug ? slug.replace(/-/g, ' ').toUpperCase() : 'Fragrance',
+    slug: slug || '',
+    price: 0,
+    imageUrl: '',
+    description: '',
+  };
+}
+
+const related = products.filter(
+  (p) => p.id !== product.id && (p.scentFamily === product.scentFamily || p.collectionId === product.collectionId)
+);
 ---
 
 <Layout title={`${product.name} | Rabbi Azanduna`}>

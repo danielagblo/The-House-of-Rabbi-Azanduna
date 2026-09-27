@@ -1,21 +1,15 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { CollectionsGrid } from '../../components/CollectionsGrid';
-import { API_BASE_URL } from '../../config/api';
+import { getCollections } from '../../lib/db';
 
 let collections = [];
 
 try {
-  const colRes = await fetch(`${API_BASE_URL}/api/collections`);
-  if (colRes.ok) {
-    const data = await colRes.json();
-    if (data && data.length > 0) collections = data;
-  }
+  collections = await getCollections();
 } catch (e) {
-  // backend offline or empty
+  console.error('Error fetching collections for SSR collections index:', e);
 }
-
-const search = Astro.url.searchParams.get('search') || '';
 ---
 
 <Layout title="Collections | Rabbi Azanduna">
