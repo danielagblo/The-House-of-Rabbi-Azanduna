@@ -473,6 +473,25 @@ export const AdminPortal: React.FC = () => {
     }
   };
 
+  const handleToggleStock = async (prod: Product) => {
+    const newStock = prod.inStock === false;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/products/${prod.id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ inStock: newStock }),
+      });
+      if (res.ok) {
+        showToast(`${prod.name} is now ${newStock ? 'In Stock' : 'Out of Stock'}`);
+        setProducts((prev) => prev.map((p) => (p.id === prod.id ? { ...p, inStock: newStock } : p)));
+      } else {
+        showToast('Failed to update stock status', 'error');
+      }
+    } catch (err) {
+      showToast('Network error updating stock', 'error');
+    }
+  };
+
   // Collection Actions
   const handleSaveCollection = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1086,6 +1105,7 @@ export const AdminPortal: React.FC = () => {
                       <th className="py-3.5 px-4">Scent Family</th>
                       <th className="py-3.5 px-4">Price</th>
                       <th className="py-3.5 px-4">Sale / Compare</th>
+                      <th className="py-3.5 px-4">Stock Status</th>
                       <th className="py-3.5 px-4 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -1140,6 +1160,21 @@ export const AdminPortal: React.FC = () => {
                               ) : (
                                 <span className="text-gray-400">—</span>
                               )}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <button
+                                type="button"
+                                onClick={() => handleToggleStock(prod)}
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer transition-all ${
+                                  prod.inStock !== false
+                                    ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border border-emerald-300'
+                                    : 'bg-red-100 text-red-800 hover:bg-red-200 border border-red-300'
+                                }`}
+                                title="Click to toggle In Stock / Out of Stock"
+                              >
+                                <span className={`w-2 h-2 rounded-full ${prod.inStock !== false ? 'bg-emerald-600' : 'bg-red-600'}`} />
+                                <span>{prod.inStock !== false ? 'In Stock' : 'Out of Stock'}</span>
+                              </button>
                             </td>
                             <td className="py-3.5 px-4 text-right space-x-2">
                               <button
@@ -1785,6 +1820,128 @@ export const AdminPortal: React.FC = () => {
                   />
                 </div>
 
+                {/* Stock & Flacon Size Variants Section */}
+                <div className="bg-gray-50/90 border border-gray-200 rounded-xl p-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-gray-900 font-bold uppercase text-xs block">Product Stock Availability</label>
+                      <p className="text-[11px] text-gray-500">Determine whether shoppers can order this fragrance.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditingProduct({ ...editingProduct, inStock: editingProduct.inStock === false })}
+                      className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        editingProduct.inStock !== false
+                          ? 'bg-emerald-600 text-white shadow-xs'
+                          : 'bg-red-600 text-white shadow-xs'
+                      }`}
+                    >
+                      {editingProduct.inStock !== false ? '✓ In Stock' : '✗ Out of Stock'}
+                    </button>
+                  </div>
+
+                  {/* Size Variants & Variant Stock */}
+                  <div className="pt-3 border-t border-gray-200 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-gray-900 font-bold uppercase text-xs">
+                        Flacon Sizes &amp; Variant Stock ({editingProduct.variants?.length || 1})
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const curVariants = editingProduct.variants || [
+                            { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                          ];
+                          setEditingProduct({
+                            ...editingProduct,
+                            variants: [
+                              ...curVariants,
+                              { size: '12ml Royal Flacon', price: Number(editingProduct.price) ? Number(editingProduct.price) * 1.8 : 50, inStock: true }
+                            ]
+                          });
+                        }}
+                        className="text-[11px] font-bold text-[#e62b32] hover:text-[#cf2229] flex items-center gap-1 cursor-pointer"
+                      >
+                        <Plus size={12} /> Add Flacon Size
+                      </button>
+                    </div>
+
+                    <div className="space-y-2">
+                      {(editingProduct.variants && editingProduct.variants.length > 0 ? editingProduct.variants : [
+                        { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                      ]).map((v, idx) => (
+                        <div key={idx} className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-2.5 shadow-2xs">
+                          <input
+                            type="text"
+                            placeholder="Size (e.g. 6ml, 12ml, 50ml)"
+                            value={v.size}
+                            onChange={(e) => {
+                              const cur = editingProduct.variants || [
+                                { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                              ];
+                              const updated = [...cur];
+                              updated[idx] = { ...updated[idx], size: e.target.value };
+                              setEditingProduct({ ...editingProduct, variants: updated });
+                            }}
+                            className="flex-1 bg-white border border-gray-200 rounded px-2.5 py-1.5 text-xs text-gray-900"
+                          />
+                          <div className="flex items-center gap-1 w-28">
+                            <span className="text-gray-500 font-bold text-[11px]">GH₵</span>
+                            <input
+                              type="number"
+                              step="0.01"
+                              placeholder="Price"
+                              value={v.price}
+                              onChange={(e) => {
+                                const cur = editingProduct.variants || [
+                                  { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                                ];
+                                const updated = [...cur];
+                                updated[idx] = { ...updated[idx], price: parseFloat(e.target.value) || 0 };
+                                setEditingProduct({ ...editingProduct, variants: updated });
+                              }}
+                              className="w-full bg-white border border-gray-200 rounded px-2 py-1.5 text-xs text-gray-900 font-bold"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const cur = editingProduct.variants || [
+                                { size: '6ml Crystal Flacon', price: Number(editingProduct.price) || 0, inStock: true }
+                              ];
+                              const updated = [...cur];
+                              updated[idx] = { ...updated[idx], inStock: updated[idx].inStock === false };
+                              setEditingProduct({ ...editingProduct, variants: updated });
+                            }}
+                            className={`px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer shrink-0 ${
+                              v.inStock !== false
+                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                : 'bg-red-100 text-red-800 border border-red-300'
+                            }`}
+                            title="Click to toggle variant stock"
+                          >
+                            {v.inStock !== false ? 'In Stock' : 'Out'}
+                          </button>
+                          {(editingProduct.variants?.length || 0) > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const cur = editingProduct.variants || [];
+                                const updated = cur.filter((_, i) => i !== idx);
+                                setEditingProduct({ ...editingProduct, variants: updated });
+                              }}
+                              className="text-gray-400 hover:text-red-600 p-1 cursor-pointer"
+                              title="Remove Flacon Size"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-6 pt-1">
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input
@@ -1794,6 +1951,15 @@ export const AdminPortal: React.FC = () => {
                       className="rounded text-[#e62b32] w-4 h-4 cursor-pointer"
                     />
                     <span className="text-gray-800 font-bold">Best Seller Badge</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={editingProduct.isNew || false}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, isNew: e.target.checked })}
+                      className="rounded text-[#e62b32] w-4 h-4 cursor-pointer"
+                    />
+                    <span className="text-gray-800 font-bold">New Arrival Badge</span>
                   </label>
                 </div>
               </div>
