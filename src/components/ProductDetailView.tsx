@@ -135,9 +135,15 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 GH₵{product.compareAtPrice.toFixed(2)}
               </span>
             )}
-            <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded">
-              In Stock
-            </span>
+            {product.inStock !== false && selectedVariant.inStock !== false ? (
+              <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded">
+                In Stock
+              </span>
+            ) : (
+              <span className="text-xs bg-red-100 text-red-800 font-bold px-2.5 py-0.5 rounded">
+                Out of Stock
+              </span>
+            )}
           </div>
 
           <p className="text-gray-700 text-sm leading-relaxed font-light">
@@ -151,22 +157,30 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 Select Flacon Size
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
-                {product.variants.map((v) => (
-                  <button
-                    key={v.size}
-                    onClick={() => setSelectedVariant(v)}
-                    className={`p-2.5 sm:p-3 rounded-xl border text-left transition-all ${
-                      selectedVariant.size === v.size
-                        ? 'bg-black text-white border-black font-bold shadow-sm'
-                        : 'bg-white text-gray-800 border-gray-300 hover:border-gray-400'
-                    }`}
-                  >
-                    <span className="text-xs block">{v.size}</span>
-                    <span className="font-['Barlow',sans-serif] font-bold text-xs sm:text-sm block mt-0.5">
-                      GH₵{v.price.toFixed(2)}
-                    </span>
-                  </button>
-                ))}
+                {product.variants.map((v) => {
+                  const isVarInStock = v.inStock !== false && product.inStock !== false;
+                  return (
+                    <button
+                      key={v.size}
+                      onClick={() => setSelectedVariant(v)}
+                      className={`p-2.5 sm:p-3 rounded-xl border text-left transition-all ${
+                        selectedVariant.size === v.size
+                          ? 'bg-black text-white border-black font-bold shadow-sm'
+                          : 'bg-white text-gray-800 border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-xs block truncate">{v.size}</span>
+                        {!isVarInStock && (
+                          <span className="text-[9px] font-bold text-red-500 uppercase shrink-0">Sold Out</span>
+                        )}
+                      </div>
+                      <span className="font-['Barlow',sans-serif] font-bold text-xs sm:text-sm block mt-0.5">
+                        GH₵{v.price.toFixed(2)}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -192,13 +206,18 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
 
               <button
                 onClick={handleAddToCart}
-                className={`flex-1 py-3.5 px-3 sm:px-6 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer ${
-                  isAdded
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-black hover:bg-[#ff2d3b] text-white shadow-md'
+                disabled={product.inStock === false || selectedVariant.inStock === false}
+                className={`flex-1 py-3.5 px-3 sm:px-6 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors ${
+                  product.inStock === false || selectedVariant.inStock === false
+                    ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
+                    : isAdded
+                    ? 'bg-emerald-600 text-white cursor-pointer'
+                    : 'bg-black hover:bg-[#ff2d3b] text-white shadow-md cursor-pointer'
                 }`}
               >
-                {isAdded ? (
+                {product.inStock === false || selectedVariant.inStock === false ? (
+                  <span>Out of Stock</span>
+                ) : isAdded ? (
                   <>
                     <Check size={16} />
                     <span>Added to Bag</span>
@@ -214,13 +233,19 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
 
             <button
               onClick={() => {
+                if (product.inStock === false || selectedVariant.inStock === false) return;
                 cartStore.addItem(product, selectedVariant, quantity);
                 cartStore.openDrawer();
               }}
-              className="w-full py-3 bg-[#ff2d3b] hover:bg-[#e0202d] text-white font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer"
+              disabled={product.inStock === false || selectedVariant.inStock === false}
+              className={`w-full py-3 font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 ${
+                product.inStock === false || selectedVariant.inStock === false
+                  ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                  : 'bg-[#ff2d3b] hover:bg-[#e0202d] text-white cursor-pointer'
+              }`}
             >
               <Sparkles size={15} />
-              <span>Buy Now with Paystack</span>
+              <span>{product.inStock !== false && selectedVariant.inStock !== false ? 'Buy Now with Paystack' : 'Currently Out of Stock'}</span>
             </button>
           </div>
 
