@@ -37,4 +37,9 @@ server/*.db
 server/*.db-journal
 server/*.log
 server/tmp/
+archive/goserver/*.exe
+archive/goserver/*.db
+archive/goserver/*.db-journal
+archive/goserver/*.log
+archive/goserver/tmp/
 *.exe
