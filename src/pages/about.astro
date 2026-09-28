@@ -1,80 +1,117 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Award, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { BookOpen, Award, Landmark } from 'lucide-react';
 import certImg from '../assets/cert.png';
 import { CertificateViewer } from '../components/CertificateViewer';
 ---
 
 <Layout title="About Us | The House of Rabbi Azanduna">
   <div class="py-8 sm:py-12 px-3.5 sm:px-6 lg:px-8 max-w-5xl mx-auto bg-white font-['Poppins',sans-serif]">
-    {/* Hero Header */}
     <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
-      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-6xl font-extrabold text-black uppercase tracking-tight mb-3 sm:mb-4">
+      <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">About Us</span>
+      <h1 class="font-['Barlow',sans-serif] text-3xl sm:text-6xl font-extrabold text-black uppercase tracking-tight mt-3 mb-3 sm:mb-4">
         The House of Rabbi Azanduna
       </h1>
       <div class="w-16 h-1 bg-[#ff2d3b] mx-auto mb-4 sm:mb-5"></div>
       <p class="text-gray-600 text-xs sm:text-base font-normal leading-relaxed">
-        Specialists in 100% pure, non-alcoholic perfume oils, rare aged Oud, and luxury bespoke scents.
+        A luxury Ghanaian perfume house dedicated to the art of sacred olfaction.
       </p>
     </div>
 
-    {/* Narrative Section 1: The Journey */}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-14 items-center mb-12 sm:mb-16">
       <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100 shadow-md">
         <img
           src="https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?auto=format&fit=crop&w=1000&q=80"
-          alt="Artisanal Oud distillation"
+          alt="Artisanal perfume distillation"
           class="w-full h-full object-cover"
         />
       </div>
 
       <div class="space-y-4">
-        <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">Our Origins</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">Our House</span>
         <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase">
-          The Journey to Extraordinary Scent
+          Sacred Olfaction
         </h2>
         <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
-          Our passion for rare perfumery began with a simple discovery: the world of authentic Oriental attars and aged Oud. We were captivated by how pure botanical oils melt into the skin, unfolding layer by layer throughout the day without the harsh sting or quick fade of commercial alcohol sprays.
+          The House of Rabbi Azanduna is a luxury Ghanaian perfume house dedicated to the art of sacred olfaction. Rooted in rich heritage and meticulous craftsmanship, our house translates timeless biblical narrative, ancient wisdom, and theological depth into extraordinary fine fragrances.
         </p>
         <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
-          What started as a personal quest for genuine luxury evolved into The House of Rabbi Azanduna — a dedicated atelier committed to making the most concentrated, evocative, and lasting perfume oils accessible to connoisseurs who demand true quality.
+          Founded by Rabbi Micah Felix Azanduna, our family-owned brand stands at the intersection of spiritual reverence and modern haute parfumerie. Operating from Ghana—a land long renowned for its precious raw materials, vibrant trade, and deep artistic traditions—we compose complex, evocative scents designed to evoke reverence, transformation, and inner clarity.
+        </p>
+        <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
+          Every creation is formulated as a living testament: a blend of rare natural botanicals, precious resins, and pure aromatics crafted to elevate the everyday wearing of scent into a deeply meaningful personal ritual.
         </p>
       </div>
     </div>
 
-    {/* Narrative Section 2: Pure Philosophy */}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-14 items-center mb-12 sm:mb-16 md:flex-row-reverse">
+    <div class="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
+      <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">Our Brand Philosophy</span>
+      <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-4xl font-bold text-black uppercase tracking-tight mt-3 mb-3">
+        Sacred Wisdom, Bottled
+      </h2>
+      <div class="w-12 h-1 bg-[#ff2d3b] mx-auto"></div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-14 items-center mb-12 sm:mb-16">
       <div class="space-y-4 order-2 md:order-1">
-        <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">Zero Dilution</span>
-        <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase">
-          Why 100% Pure Perfume Oils?
-        </h2>
         <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
-          Most mainstream designer fragrances are composed of up to 90% denatured alcohol and synthetic fillers. While they project loudly for the first few minutes, they rapidly evaporate, leaving behind only faint chemical notes.
+          We believe that fragrance is more than an aesthetic adornment—it is an invisible bridge between the sensory and the divine. From the frankincense and myrrh of ancient altars to the restorative balsams and exotic spices mentioned throughout sacred scripture, scent has always served as a vehicle for memory, prayer, and devotion.
         </p>
         <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
-          At Rabbi Azanduna, we reject dilution. Every flacon is filled with 100% concentrated perfume oil and genuine aged agarwood resins. Because our formulas contain zero alcohol, they are gentle on sensitive skin, deeply nourishing, and produce an intimate, alluring sillage that lasts easily from morning until night.
+          We draw directly from biblical doctrines, historical figures, and timeless philosophies to compose scents with soul and purpose.
         </p>
       </div>
 
       <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100 shadow-md order-1 md:order-2">
         <img
           src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1000&q=80"
-          alt="Luxury perfume oil bottles"
+          alt="Luxury perfume bottles"
           class="w-full h-full object-cover"
         />
       </div>
     </div>
 
-    {/* Official Registration & Certificate Section */}
+    <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl p-4 sm:p-10 mb-12 sm:mb-16 shadow-xs">
+      <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">Intentional Craft</span>
+      <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight mt-2 mb-2">
+        The Artistry of Intentional Craft
+      </h2>
+      <div class="w-12 h-1 bg-[#ff2d3b] mb-4"></div>
+      <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light max-w-3xl mb-6">
+        As an independent, family-led house, we honor the deliberate patience of traditional perfumery. Our formulations are built with uncompromising attention to balance, structure, and depth.
+      </p>
+      <div class="space-y-3 text-xs sm:text-sm text-gray-800">
+        <div class="flex items-start gap-2.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#ff2d3b] mt-1.5 shrink-0"></span>
+          <span><strong>Sacred Raw Materials:</strong> We source fine resins, woods, floral absolutes, and spices, pairing traditional biblical aromatics with high-grade modern accord design.</span>
+        </div>
+        <div class="flex items-start gap-2.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#ff2d3b] mt-1.5 shrink-0"></span>
+          <span><strong>Maceration & Patience:</strong> Every batch undergoes a dedicated aging process, allowing raw materials to bind naturally into seamless, long-lasting compositions.</span>
+        </div>
+        <div class="flex items-start gap-2.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#ff2d3b] mt-1.5 shrink-0"></span>
+          <span><strong>Artisanal Integrity:</strong> Being family-owned allows us total creative freedom, ensuring that every bottle leaving our atelier remains true to our vision and values.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+      <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">Home & Anchor</span>
+      <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight mt-3 mb-4">
+        A Ghanaian Legacy of Luxury
+      </h2>
+      <p class="text-xs sm:text-sm text-gray-700 leading-relaxed font-light">
+        Ghana serves as both our home and our anchor. We take pride in representing African luxury on a global stage—demonstrating that world-class, intellectually grounded, and spiritually rich haute parfumerie thrives right here at home. We merge the warmth, dignity, and heritage of our Ghanaian roots with universal spiritual truths to create fragrances that resonate across borders.
+      </p>
+    </div>
+
     <div class="bg-neutral-50 border border-neutral-200/80 rounded-2xl p-4 sm:p-10 mb-12 sm:mb-16 shadow-xs">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
-        {/* Certificate Image Preview with React interactive modal */}
         <div class="md:col-span-5 flex flex-col items-center justify-center">
           <CertificateViewer client:load imageSrc={certImg.src} />
         </div>
 
-        {/* Meaningful Brand Trust & Authenticity Writing */}
         <div class="md:col-span-7 space-y-4">
           <div>
             <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight mb-2">
@@ -109,51 +146,56 @@ import { CertificateViewer } from '../components/CertificateViewer';
       </div>
     </div>
 
-    {/* Values Cards */}
+    <div class="text-center mb-8">
+      <span class="text-xs font-bold uppercase tracking-wider text-[#ff2d3b]">Core Pillars</span>
+      <h2 class="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight mt-3">
+        What Guides the House
+      </h2>
+    </div>
+
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
+      <div class="bg-gray-50 border border-gray-200 p-6 rounded-xl text-center">
+        <div class="w-12 h-12 rounded-full bg-red-100 text-[#ff2d3b] flex items-center justify-center mx-auto mb-4">
+          <BookOpen size={24} />
+        </div>
+        <h3 class="font-['Barlow',sans-serif] text-lg font-bold text-black uppercase mb-1">
+          Reverence
+        </h3>
+        <p class="text-xs text-gray-600 font-light">
+          Honoring biblical heritage and the profound history of sacred aromatics.
+        </p>
+      </div>
+
       <div class="bg-gray-50 border border-gray-200 p-6 rounded-xl text-center">
         <div class="w-12 h-12 rounded-full bg-red-100 text-[#ff2d3b] flex items-center justify-center mx-auto mb-4">
           <Award size={24} />
         </div>
         <h3 class="font-['Barlow',sans-serif] text-lg font-bold text-black uppercase mb-1">
-          Aged Wild Oud
+          Excellence
         </h3>
         <p class="text-xs text-gray-600 font-light">
-          Sourced ethically from mature Aquilaria trees, aged to perfection for deep, resinous richness.
+          Constructing rich, multi-layered formulas built to high-performance standards.
         </p>
       </div>
 
       <div class="bg-gray-50 border border-gray-200 p-6 rounded-xl text-center">
         <div class="w-12 h-12 rounded-full bg-red-100 text-[#ff2d3b] flex items-center justify-center mx-auto mb-4">
-          <ShieldCheck size={24} />
+          <Landmark size={24} />
         </div>
         <h3 class="font-['Barlow',sans-serif] text-lg font-bold text-black uppercase mb-1">
-          Zero Alcohol
+          Heritage
         </h3>
         <p class="text-xs text-gray-600 font-light">
-          Pure concentrated oils that are non-drying on skin, ensuring an intimate, long-lasting scent trail.
-        </p>
-      </div>
-
-      <div class="bg-gray-50 border border-gray-200 p-6 rounded-xl text-center">
-        <div class="w-12 h-12 rounded-full bg-red-100 text-[#ff2d3b] flex items-center justify-center mx-auto mb-4">
-          <HeartHandshake size={24} />
-        </div>
-        <h3 class="font-['Barlow',sans-serif] text-lg font-bold text-black uppercase mb-1">
-          Bespoke Craftsmanship
-        </h3>
-        <p class="text-xs text-gray-600 font-light">
-          Carefully blended and hand-packaged with uncompromised attention to luxury quality.
+          Remaining anchored as a proud Ghanaian family business driven by purpose and legacy.
         </p>
       </div>
     </div>
 
-    {/* Bottom CTA */}
     <div class="text-center py-10 border-t border-gray-200">
       <h3 class="font-['Barlow',sans-serif] text-2xl font-bold text-black uppercase mb-3">
         Discover Your Signature Scent
       </h3>
-      <p class="text-xs text-gray-600 mb-6">Explore our curated collections of pure Oud perfume oils and discovery sets.</p>
+      <p class="text-xs text-gray-600 mb-6">Explore our curated collections of fine fragrances and discovery sets.</p>
       <a
         href="/collections"
         class="inline-block px-8 py-3.5 bg-black hover:bg-[#ff2d3b] text-white font-bold text-xs uppercase tracking-widest rounded-lg transition-colors cursor-pointer"
@@ -163,5 +205,3 @@ import { CertificateViewer } from '../components/CertificateViewer';
     </div>
   </div>
 </Layout>
-
-
