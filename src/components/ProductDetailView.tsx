@@ -174,7 +174,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
           {product.variants && product.variants.length > 0 && (
             <div className="space-y-2 pt-2">
               <label className="text-xs uppercase font-bold text-gray-800 block">
-                Select Flacon Size
+                Select Volume
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
                 {product.variants.map((v) => {

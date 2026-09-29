@@ -97,6 +97,15 @@ function mapVariant(row: any): ProductVariant {
   };
 }
 
+function volumeMl(size: string): number {
+  const match = String(size).match(/(\d+(?:\.\d+)?)\s*ml/i);
+  return match ? Number(match[1]) : 0;
+}
+
+function sortVariants(variants: ProductVariant[]): ProductVariant[] {
+  return [...variants].sort((a, b) => volumeMl(b.size) - volumeMl(a.size));
+}
+
 function mapReview(row: any): Review {
   return {
     id: Number(row.id),
@@ -193,7 +202,7 @@ export async function getCollections(): Promise<Collection[]> {
   const prodsByColId = new Map<number, Product[]>();
   for (const p of prods) {
     const prod = mapProduct(p);
-    prod.variants = variantsByProdId.get(prod.id) || [];
+    prod.variants = sortVariants(variantsByProdId.get(prod.id) || []);
     const list = prodsByColId.get(prod.collectionId) || [];
     list.push(prod);
     prodsByColId.set(prod.collectionId, list);
@@ -233,7 +242,7 @@ export async function getCollectionBySlug(slug: string): Promise<Collection | nu
   collection.products = prods.map((p) => {
     const prod = mapProduct(p);
     prod.notes = notesByProdId.get(prod.id) || [];
-    prod.variants = variantsByProdId.get(prod.id) || [];
+    prod.variants = sortVariants(variantsByProdId.get(prod.id) || []);
     return prod;
   });
 
@@ -419,7 +428,7 @@ export async function getProducts(filter: ProductFilter = {}): Promise<Product[]
       };
     }
     p.notes = notesByProdId.get(p.id) || [];
-    p.variants = variantsByProdId.get(p.id) || [];
+    p.variants = sortVariants(variantsByProdId.get(p.id) || []);
   }
 
   return products;
@@ -452,7 +461,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   const [reviews] = await db.query<RowDataPacket[]>('SELECT * FROM reviews WHERE product_id = ? ORDER BY created_at DESC', [product.id]);
 
   product.notes = notes.map(mapFragranceNote);
-  product.variants = variants.map(mapVariant);
+  product.variants = sortVariants(variants.map(mapVariant));
   product.reviews = reviews.map(mapReview);
 
   return product;
@@ -485,7 +494,7 @@ export async function getProductById(id: number): Promise<Product | null> {
   const [reviews] = await db.query<RowDataPacket[]>('SELECT * FROM reviews WHERE product_id = ?', [product.id]);
 
   product.notes = notes.map(mapFragranceNote);
-  product.variants = variants.map(mapVariant);
+  product.variants = sortVariants(variants.map(mapVariant));
   product.reviews = reviews.map(mapReview);
 
   return product;

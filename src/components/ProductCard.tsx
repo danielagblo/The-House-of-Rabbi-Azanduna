@@ -7,9 +7,20 @@ interface Props {
   product: Product;
 }
 
+function volumeMl(size: string): number {
+  const match = String(size).match(/(\d+(?:\.\d+)?)\s*ml/i);
+  return match ? Number(match[1]) : 0;
+}
+
+function volumeLabel(size: string): string {
+  const ml = volumeMl(size);
+  return ml > 0 ? `${ml}ml` : size;
+}
+
 export const ProductCard: React.FC<Props> = ({ product }) => {
-  const [selectedVariant] = useState<ProductVariant>(
-    product.variants?.[0] || {
+  const variants = [...(product.variants || [])].sort((a, b) => volumeMl(b.size) - volumeMl(a.size));
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(
+    variants[0] || {
       id: 0,
       size: 'Standard',
       price: product.price,
@@ -32,18 +43,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
     ? (product.compareAtPrice - product.price).toFixed(2)
     : null;
 
-  // Price range calculation if variants have different prices
-  const priceDisplay = (() => {
-    if (product.variants && product.variants.length > 1) {
-      const prices = product.variants.map((v) => v.price);
-      const minPrice = Math.min(...prices);
-      const maxPrice = Math.max(...prices);
-      if (minPrice !== maxPrice) {
-        return `GH₵${minPrice.toFixed(2)} - GH₵${maxPrice.toFixed(2)}`;
-      }
-    }
-    return `GH₵${product.price.toFixed(2)}`;
-  })();
+  const priceDisplay = `GH₵${Number(selectedVariant.price || product.price).toFixed(2)}`;
 
   return (
     <div className="group flex flex-col bg-transparent">
@@ -100,9 +100,51 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         ) : null}
       </a>
 
+      {variants.length > 0 && (
+        <div className="mt-2.5 sm:mt-3" role="group" aria-label={`Select volume for ${product.name}`}>
+          <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-gray-500 text-center mb-1.5">
+            Volume
+          </p>
+          <div className={`grid gap-1.5 ${variants.length >= 3 ? 'grid-cols-3' : variants.length === 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            {variants.map((variant) => {
+              const variantStock = variant.stockQuantity !== undefined
+                ? Number(variant.stockQuantity)
+                : (product.stockQuantity !== undefined ? Number(product.stockQuantity) : 50);
+              const variantOut = product.inStock === false || variant.inStock === false || variantStock <= 0;
+              const isSelected = selectedVariant.size === variant.size;
+              return (
+                <button
+                  key={variant.size}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSelectedVariant(variant);
+                    setIsAdded(false);
+                  }}
+                  className={`rounded-md border px-1 py-1.5 text-center transition-colors cursor-pointer ${
+                    isSelected
+                      ? 'bg-black text-white border-black'
+                      : 'bg-white text-gray-800 border-gray-300 hover:border-black'
+                  } ${variantOut ? 'opacity-50' : ''}`}
+                >
+                  <span className="block text-[11px] sm:text-xs font-bold leading-tight">{volumeLabel(variant.size)}</span>
+                  <span className={`block text-[10px] sm:text-[11px] leading-tight ${isSelected ? 'text-white/80' : 'text-gray-500'}`}>
+                    GH₵{Number(variant.price).toFixed(0)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Full-width Add to Cart Button */}
       {(() => {
-        const isOutOfStock = product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0);
+        const selectedStock = selectedVariant.stockQuantity !== undefined
+          ? Number(selectedVariant.stockQuantity)
+          : (product.stockQuantity !== undefined ? Number(product.stockQuantity) : 50);
+        const isOutOfStock = product.inStock === false || selectedVariant.inStock === false || selectedStock <= 0;
         return (
           <button
             onClick={handleAddToCart}
@@ -152,7 +194,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         {/* Price & Strikethrough Discount Price */}
         <div className="font-['Barlow',sans-serif] text-[14px] sm:text-[16px] font-bold text-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
           <span>{priceDisplay}</span>
-          {product.compareAtPrice && Number(product.compareAtPrice) > product.price ? (
+          {product.compareAtPrice && Number(product.compareAtPrice) > Number(selectedVariant.price) ? (
             <span className="text-gray-400 line-through text-[11px] sm:text-xs font-normal">
               GH₵{Number(product.compareAtPrice).toFixed(2)}
             </span>
