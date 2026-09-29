@@ -159,7 +159,7 @@ export const ProductsCatalog: React.FC<Props> = ({
       )}
 
       {/* Product Grid: 2 columns on mobile, 3 columns on desktop */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4">
         {filteredProducts.slice(0, visibleLimit).map((product) => (
           <ProductCard key={product.id || product.slug} product={product} />
         ))}

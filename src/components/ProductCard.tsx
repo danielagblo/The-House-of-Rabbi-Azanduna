@@ -50,7 +50,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       {/* Product Image Wrapper with Rounded Corners */}
       <a
         href={`/product/${product.slug}`}
-        className="relative aspect-square sm:aspect-[4/5] rounded-xl overflow-hidden bg-neutral-100 block shadow-2xs"
+        className="relative aspect-square rounded-lg overflow-hidden bg-neutral-100 block shadow-2xs"
       >
         {/* Main Image */}
         <img
@@ -101,8 +101,8 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       </a>
 
       {variants.length > 0 && (
-        <div className="mt-2.5 sm:mt-3" role="group" aria-label={`Select volume for ${product.name}`}>
-          <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-gray-500 text-center mb-1.5">
+        <div className="mt-2" role="group" aria-label={`Select volume for ${product.name}`}>
+          <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-gray-500 text-center mb-1">
             Volume
           </p>
           <div className={`grid gap-1.5 ${variants.length >= 3 ? 'grid-cols-3' : variants.length === 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
@@ -122,14 +122,14 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
                     setSelectedVariant(variant);
                     setIsAdded(false);
                   }}
-                  className={`rounded-md border px-1 py-1.5 text-center transition-colors cursor-pointer ${
+                  className={`rounded-md border px-0.5 py-1 text-center transition-colors cursor-pointer ${
                     isSelected
                       ? 'bg-black text-white border-black'
                       : 'bg-white text-gray-800 border-gray-300 hover:border-black'
                   } ${variantOut ? 'opacity-50' : ''}`}
                 >
-                  <span className="block text-[11px] sm:text-xs font-bold leading-tight">{volumeLabel(variant.size)}</span>
-                  <span className={`block text-[10px] sm:text-[11px] leading-tight ${isSelected ? 'text-white/80' : 'text-gray-500'}`}>
+                  <span className="block text-[10px] sm:text-[11px] font-bold leading-tight">{volumeLabel(variant.size)}</span>
+                  <span className={`block text-[9px] sm:text-[10px] leading-tight ${isSelected ? 'text-white/80' : 'text-gray-500'}`}>
                     GH₵{Number(variant.price).toFixed(0)}
                   </span>
                 </button>
@@ -149,7 +149,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
           <button
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`w-full mt-2.5 sm:mt-3 py-2 sm:py-3 px-2 sm:px-4 rounded-[6px] font-bold text-xs sm:text-sm tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs ${
+            className={`w-full mt-2 py-1.5 sm:py-2 px-2 rounded-[6px] font-bold text-[11px] sm:text-xs tracking-wide text-white transition-all duration-200 flex items-center justify-center gap-1.5 shadow-xs ${
               isOutOfStock
                 ? 'bg-neutral-400 cursor-not-allowed opacity-80'
                 : isAdded
@@ -174,7 +174,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       {/* Product Info (Centered below button) */}
       <div className="pt-2 text-center">
         <a href={`/product/${product.slug}`} className="block">
-          <h3 className="font-['Barlow',sans-serif] text-[14px] sm:text-[17px] font-bold text-gray-900 hover:text-[#e62b32] transition-colors leading-tight sm:leading-snug line-clamp-2">
+          <h3 className="font-['Barlow',sans-serif] text-[13px] sm:text-[15px] font-bold text-gray-900 hover:text-[#e62b32] transition-colors leading-tight line-clamp-2">
             {product.name}
           </h3>
         </a>
@@ -192,7 +192,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         </div>
 
         {/* Price & Strikethrough Discount Price */}
-        <div className="font-['Barlow',sans-serif] text-[14px] sm:text-[16px] font-bold text-gray-900 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
+        <div className="font-['Barlow',sans-serif] text-[13px] sm:text-[15px] font-bold text-gray-900 flex items-center justify-center gap-1.5 flex-wrap">
           <span>{priceDisplay}</span>
           {product.compareAtPrice && Number(product.compareAtPrice) > Number(selectedVariant.price) ? (
             <span className="text-gray-400 line-through text-[11px] sm:text-xs font-normal">

@@ -50,7 +50,7 @@ const hasDiscounts = collectionProducts.some(
 
     {/* Products 2-Column Mobile, 3-Column Desktop Grid */}
     {collectionProducts.length > 0 ? (
-      <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4">
         {collectionProducts.map((product) => (
           <ProductCard client:load product={product} />
         ))}
