@@ -10,7 +10,9 @@
     "start": "node ./dist/server/entry.mjs",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "db:setup": "node scripts/setup-db.mjs",
+    "db:migrate": "node scripts/migrate-db.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.6",
