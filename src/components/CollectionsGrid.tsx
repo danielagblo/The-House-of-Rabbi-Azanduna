@@ -7,12 +7,15 @@ interface Props {
   collections: Collection[];
   title?: string;
   subtitle?: string;
+  headingLevel?: 'h1' | 'h2';
 }
 
 export const CollectionsGrid: React.FC<Props> = ({
   collections: initialCollections = [],
   title = "Collections",
+  headingLevel = "h1",
 }) => {
+  const Heading = headingLevel === 'h2' ? 'h2' : 'h1';
   const [collections, setCollections] = useState<Collection[]>(initialCollections);
   const [loading, setLoading] = useState<boolean>(initialCollections.length === 0);
 
@@ -58,9 +61,9 @@ export const CollectionsGrid: React.FC<Props> = ({
     <section className="pt-4 sm:pt-6 pb-12 sm:pb-14 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
       {/* 1. Condensed Heading */}
       <div className="text-center mb-4 sm:mb-6">
-        <h1 className="font-['Barlow_Condensed',sans-serif] text-[32px] sm:text-[44px] lg:text-[48px] font-bold text-black tracking-normal leading-tight">
+        <Heading className="font-['Barlow_Condensed',sans-serif] text-[32px] sm:text-[44px] lg:text-[48px] font-bold text-black tracking-normal leading-tight">
           {title}
-        </h1>
+        </Heading>
         {loading && (
           <p className="text-xs text-gray-400 mt-1 animate-pulse">Loading live collections...</p>
         )}
@@ -68,7 +71,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
       {/* 2. Top 2-Column Discovery / Gift Sets Grid */}
       {discoveryProducts.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
           {discoveryProducts.map((prod) => {
             const savings = prod.compareAtPrice && prod.compareAtPrice > prod.price
               ? (prod.compareAtPrice - prod.price).toFixed(2)
@@ -77,7 +80,7 @@ export const CollectionsGrid: React.FC<Props> = ({
               <div key={prod.id || prod.slug} className="flex flex-col group">
                 <a
                   href={`/product/${prod.slug}`}
-                  className="relative aspect-[4/3] sm:aspect-[3/4] overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
+                  className="relative aspect-square overflow-hidden rounded-lg bg-neutral-100 shadow-2xs block"
                 >
                   <img
                     src={prod.imageUrl}
@@ -136,14 +139,14 @@ export const CollectionsGrid: React.FC<Props> = ({
 
       {/* 3. Category Showcase Grid (All dynamic collections from database) */}
       {showcaseCollections.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mb-8 sm:mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
           {showcaseCollections.map((cat) => {
             const productCount = cat.products ? cat.products.length : 0;
             return (
               <div key={cat.id || cat.slug} className="flex flex-col items-center group">
                 <a
                   href={`/collections/${cat.slug}`}
-                  className="relative aspect-[4/3] sm:aspect-[3/4] w-full overflow-hidden rounded-xl bg-neutral-100 shadow-2xs block"
+                  className="relative aspect-square w-full overflow-hidden rounded-lg bg-neutral-100 shadow-2xs block"
                 >
                   <img
                     src={cat.imageUrl}
@@ -173,9 +176,9 @@ export const CollectionsGrid: React.FC<Props> = ({
                   )}
                 </a>
 
-                <div className="pt-3 pb-2 text-center flex flex-col items-center w-full">
+                <div className="pt-2 pb-1 text-center flex flex-col items-center w-full">
                   <a href={`/collections/${cat.slug}`}>
-                    <h3 className="font-['Barlow_Condensed',sans-serif] text-2xl sm:text-[26px] font-bold text-black group-hover:text-[#e62b32] transition-colors mb-1">
+                    <h3 className="font-['Barlow_Condensed',sans-serif] text-base sm:text-lg font-bold text-black group-hover:text-[#e62b32] transition-colors mb-0.5 leading-tight">
                       {cat.name}
                     </h3>
                   </a>
@@ -189,7 +192,7 @@ export const CollectionsGrid: React.FC<Props> = ({
                   {/* Red VIEW NOW Button */}
                   <a
                     href={`/collections/${cat.slug}`}
-                    className="inline-block bg-[#e62b32] hover:bg-[#cf2229] text-white px-6 py-1.5 rounded-[4px] text-[11px] sm:text-[12px] font-extrabold uppercase tracking-wider shadow-xs transition-colors"
+                    className="inline-block bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-1 rounded-[4px] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider shadow-xs transition-colors"
                   >
                     VIEW NOW
                   </a>

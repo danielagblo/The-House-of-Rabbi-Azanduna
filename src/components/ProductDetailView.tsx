@@ -64,10 +64,10 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
         <span className="text-black font-bold truncate">{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,18rem)_1fr] gap-6 lg:gap-12 items-start">
         {/* Left Image Gallery */}
-        <div className="space-y-3 sm:space-y-4">
-          <div className="aspect-[4/5] bg-neutral-100 rounded-2xl overflow-hidden border border-gray-200 relative shadow-sm">
+        <div className="space-y-3 w-full max-w-[15rem] sm:max-w-[18rem] mx-auto lg:mx-0 lg:max-w-none">
+          <div className="aspect-square bg-neutral-100 rounded-xl overflow-hidden border border-gray-200 relative shadow-sm">
             <img
               src={activeImage || product.imageUrl}
               alt={product.name}
@@ -77,7 +77,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                   target.src = 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80';
                 }
               }}
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-contain object-center"
             />
             {savings && (
               <span className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-[#ff2d3b] text-white font-extrabold text-[10px] sm:text-xs uppercase px-2.5 py-1 rounded shadow">
@@ -92,7 +92,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 <button
                   key={idx}
                   onClick={() => setActiveImage(img)}
-                  className={`w-16 h-20 sm:w-20 sm:h-24 shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
+                  className={`w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-md overflow-hidden border-2 transition-all ${
                     activeImage === img ? 'border-black scale-105' : 'border-gray-200 opacity-60 hover:opacity-100'
                   }`}
                 >
