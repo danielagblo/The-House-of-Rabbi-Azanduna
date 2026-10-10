@@ -33,7 +33,7 @@ export const HeroCarousel: React.FC<Props> = ({ products }) => {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="relative h-[300px] sm:h-[440px] lg:h-[520px]">
+      <div className="relative h-[150px] sm:h-[220px] lg:h-[260px]">
         {slides.map((product, slideIndex) => (
           <a
             key={product.id || product.slug}
@@ -50,11 +50,11 @@ export const HeroCarousel: React.FC<Props> = ({ products }) => {
               className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F3A]/85 via-[#0B1F3A]/20 to-[#0B1F3A]/25" />
-            <div className="absolute inset-x-0 bottom-0 px-6 pb-14 sm:pb-16 text-center text-white">
-              <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-white/80">
+            <div className="absolute inset-x-0 bottom-0 px-6 pb-8 sm:pb-9 text-center text-white">
+              <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80">
                 The House of Rabbi Azanduna
               </p>
-              <p className="font-['Barlow_Condensed',sans-serif] text-[34px] sm:text-[52px] font-bold leading-none mt-2">
+              <p className="font-['Barlow_Condensed',sans-serif] text-[22px] sm:text-[32px] font-bold leading-none mt-1">
                 {product.name}
               </p>
             </div>
