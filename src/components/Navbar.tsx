@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, Search, Menu, X } from 'lucide-react';
+import { ShoppingBag, Menu, X } from 'lucide-react';
 import { cartStore } from '../store/cartStore';
+
+const links = [
+  { href: '/collections', label: 'Shop', match: (path: string) => path === '/' || path.startsWith('/collections') || path.startsWith('/product') },
+  { href: '/blog', label: 'Blog', match: (path: string) => path.startsWith('/blog') },
+  { href: '/faqs', label: 'FAQs', match: (path: string) => path.startsWith('/faqs') },
+  { href: '/about', label: 'About Us', match: (path: string) => path.startsWith('/about') },
+  { href: '/contact', label: 'Contact', match: (path: string) => path.startsWith('/contact') },
+];
 
 export const Navbar: React.FC = () => {
   const [itemCount, setItemCount] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [currentPath, setCurrentPath] = useState('');
 
   useEffect(() => {
@@ -16,180 +23,66 @@ export const Navbar: React.FC = () => {
       setItemCount(cartStore.getItemCount());
     };
     update();
-    const unsubCart = cartStore.subscribe(update);
-
-    return () => {
-      unsubCart();
-    };
+    return cartStore.subscribe(update);
   }, []);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/collections?search=${encodeURIComponent(searchQuery.trim())}`;
-    }
-  };
-
-  const isShopActive = currentPath === '/' || currentPath.startsWith('/collections') || currentPath.startsWith('/product');
-  const isBlogActive = currentPath.startsWith('/blog');
-  const isFaqsActive = currentPath.startsWith('/faqs');
-  const isAboutActive = currentPath.startsWith('/about');
-  const isContactActive = currentPath.startsWith('/contact');
-
   return (
-    <header className="w-full bg-white z-40">
-      {/* Top Row: Search, Logo, Cart on Pure White Canvas */}
-      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-4">
-        {/* Mobile menu trigger */}
-        <div className="flex items-center gap-2 lg:hidden">
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-gray-800 hover:text-black cursor-pointer rounded-md active:bg-gray-100"
-            aria-label="Toggle Menu"
-          >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
+    <header className="w-full bg-white z-40 border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-[64px] flex items-center gap-3 sm:gap-6">
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="lg:hidden p-2 text-[#0B1F3A] cursor-pointer rounded-md"
+          aria-label="Toggle Menu"
+        >
+          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
 
-        {/* Left: Search Box (Matching exact user screenshot) */}
-        <div className="hidden lg:block w-72 lg:w-80">
-          <form onSubmit={handleSearchSubmit} className="relative">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="What are you looking for?"
-              className="w-full bg-white border border-[#e2e2e2] rounded-[4px] py-2 px-4 pr-11 text-[13.5px] text-black placeholder:text-[#1a1a1a] focus:outline-none focus:border-black transition-colors"
-            />
-            <button
-              type="submit"
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-black hover:opacity-75 transition-opacity cursor-pointer flex items-center justify-center"
-              aria-label="Search"
-            >
-              <Search size={18} strokeWidth={2} />
-            </button>
-          </form>
-        </div>
+        <a href="/" className="shrink-0">
+          <span className="font-['Montserrat',sans-serif] text-[15px] min-[390px]:text-lg sm:text-[20px] font-bold tracking-[0.14em] sm:tracking-[0.18em] text-[#0B1F3A] uppercase">
+            Rabbi Azanduna
+          </span>
+        </a>
 
-        {/* Center: RABBI AZANDUNA Brand Wordmark (Exact Bold Geometric Montserrat Style as OUD ATTAR) */}
-        <div className="flex-1 lg:flex-initial text-center overflow-hidden">
-          <a href="/" className="inline-block group">
-            <span className="font-['Montserrat',sans-serif] text-[15px] min-[390px]:text-lg sm:text-[23px] font-bold tracking-[0.12em] min-[390px]:tracking-[0.18em] sm:tracking-[0.25em] text-[#0B1F3A] uppercase block truncate">
-              RABBI AZANDUNA
-            </span>
-          </a>
-        </div>
+        <nav className="hidden lg:flex flex-1 items-center justify-center gap-7 font-['Barlow_Condensed',sans-serif] text-[18px] font-bold tracking-[0.04em] uppercase">
+          {links.map((link) => {
+            const active = link.match(currentPath);
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                className={active ? 'text-[#0B1F3A] underline underline-offset-4' : 'text-[#0B1F3A]/75 hover:text-[#0B1F3A]'}
+              >
+                {link.label}
+              </a>
+            );
+          })}
+        </nav>
 
-        {/* Right: Cart Icon */}
-        <div className="flex items-center justify-end w-auto lg:w-72 lg:w-80">
-          <button
-            onClick={() => cartStore.openDrawer()}
-            className="p-2 text-gray-900 hover:text-[#0B1F3A] transition-colors relative flex items-center gap-1 group cursor-pointer"
-            aria-label="Shopping Bag"
-          >
-            <ShoppingBag size={22} strokeWidth={1.5} />
-            <span className="absolute top-0.5 right-0.5 bg-black text-white text-[10px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center">
-              {itemCount}
-            </span>
-          </button>
-        </div>
+        <button
+          onClick={() => cartStore.openDrawer()}
+          className="ml-auto lg:ml-0 p-2 text-[#0B1F3A] relative cursor-pointer"
+          aria-label="Shopping Bag"
+        >
+          <ShoppingBag size={22} strokeWidth={1.5} />
+          <span className="absolute top-0.5 right-0.5 bg-[#0B1F3A] text-white text-[10px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center">
+            {itemCount}
+          </span>
+        </button>
       </div>
 
-      {/* Sub-Navigation Row: Dedicated Light Gray Strip matching screenshot */}
-      <div className="bg-[#f4f4f4] border-y border-gray-200/80">
-        <div className="hidden lg:flex items-center justify-center gap-8 sm:gap-10 py-2 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[18px] sm:text-[19px] font-bold tracking-[0.04em] uppercase leading-tight">
-          <a
-            href="/collections"
-            className={`${isShopActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
-          >
-            SHOP
-          </a>
-          <a
-            href="/blog"
-            className={`${isBlogActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
-          >
-            BLOG
-          </a>
-          <a
-            href="/faqs"
-            className={`${isFaqsActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
-          >
-            FAQS
-          </a>
-          <a
-            href="/about"
-            className={`${isAboutActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
-          >
-            ABOUT US
-          </a>
-          <a
-            href="/contact"
-            className={`${isContactActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
-          >
-            CONTACT
-          </a>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-200 px-5 py-5 shadow-xl animate-in slide-in-from-top-2 duration-200">
-          <form onSubmit={handleSearchSubmit} className="relative mb-5">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="What are you looking for?"
-              className="w-full bg-white border border-[#e2e2e2] rounded-[4px] py-2.5 px-4 pr-10 text-[14px] text-black placeholder:text-[#1a1a1a] focus:outline-none focus:border-black"
-            />
-            <button type="submit" className="absolute right-3.5 top-1/2 -translate-y-1/2 text-black p-1" aria-label="Search">
-              <Search size={18} strokeWidth={2} />
-            </button>
-          </form>
-
-          <nav className="flex flex-col gap-1 font-['Barlow_Condensed',sans-serif] text-xl font-bold uppercase text-black">
+        <nav className="lg:hidden border-t border-gray-200 px-5 py-3 font-['Barlow_Condensed',sans-serif] text-xl font-bold uppercase text-[#0B1F3A]">
+          {links.map((link) => (
             <a
-              href="/collections"
+              key={link.href}
+              href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isShopActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
+              className="block py-2.5 border-b border-gray-100 last:border-0"
             >
-              <span>SHOP</span>
-              <span className="text-xs text-gray-400 font-normal">→</span>
+              {link.label}
             </a>
-            <a
-              href="/blog"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isBlogActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
-            >
-              <span>BLOG</span>
-              <span className="text-xs text-gray-400 font-normal">→</span>
-            </a>
-            <a
-              href="/faqs"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isFaqsActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
-            >
-              <span>FAQS</span>
-              <span className="text-xs text-gray-400 font-normal">→</span>
-            </a>
-            <a
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isAboutActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
-            >
-              <span>ABOUT US</span>
-              <span className="text-xs text-gray-400 font-normal">→</span>
-            </a>
-            <a
-              href="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 flex items-center justify-between ${isContactActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
-            >
-              <span>CONTACT</span>
-              <span className="text-xs text-gray-400 font-normal">→</span>
-            </a>
-          </nav>
-        </div>
+          ))}
+        </nav>
       )}
     </header>
   );
