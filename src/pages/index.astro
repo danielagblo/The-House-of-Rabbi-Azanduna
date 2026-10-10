@@ -27,7 +27,7 @@ if (!products.length) {
 ---
 
 <Layout title="The House of Rabbi Azanduna">
-  <HeroCarousel client:load products={products} />
+  <HeroCarousel client:load products={products.filter((product) => product.showInHero !== false)} />
 
   <section class="pt-10 sm:pt-14 pb-4 px-3.5 sm:px-6 lg:px-8 max-w-5xl mx-auto font-['Poppins',sans-serif]">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-14 items-center">

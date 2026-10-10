@@ -49,6 +49,7 @@ export const TABLE_SCHEMAS = [
         \`review_count\` bigint(20) DEFAULT '0',
         \`is_best_seller\` tinyint(1) DEFAULT '0',
         \`is_new\` tinyint(1) DEFAULT '0',
+        \`show_in_hero\` tinyint(1) NOT NULL DEFAULT '1',
         \`in_stock\` tinyint(1) DEFAULT '1',
         \`stock_quantity\` int(11) NOT NULL DEFAULT '50',
         \`created_at\` datetime DEFAULT CURRENT_TIMESTAMP,

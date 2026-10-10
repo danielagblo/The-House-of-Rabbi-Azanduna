@@ -29,6 +29,22 @@ export const GET: APIRoute = async ({ url }) => {
     });
   } catch (err: any) {
     console.error('Error fetching products:', err);
+    if (url.hostname !== 'rabbiazanduna.vercel.app') {
+      try {
+        const response = await fetch('https://rabbiazanduna.vercel.app/api/products');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length) {
+            return new Response(JSON.stringify(data), {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            });
+          }
+        }
+      } catch (fallbackError) {
+        console.error('Error fetching published products:', fallbackError);
+      }
+    }
     return new Response(
       JSON.stringify({ error: 'Failed to fetch products', details: err?.message }),
       {

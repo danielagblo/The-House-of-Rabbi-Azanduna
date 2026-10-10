@@ -60,6 +60,7 @@ export interface Product {
   reviewCount: number;
   isBestSeller: boolean;
   isNew: boolean;
+  showInHero?: boolean;
   inStock: boolean;
   stockQuantity?: number;
   notes: FragranceNote[];

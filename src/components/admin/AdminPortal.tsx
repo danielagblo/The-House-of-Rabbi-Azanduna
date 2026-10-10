@@ -206,7 +206,7 @@ export const AdminPortal: React.FC = () => {
   const [loginError, setLoginError] = useState<string>('');
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
-  const [activeTab, setActiveTab] = useState<'products' | 'collections' | 'blogs' | 'faqs' | 'orders' | 'overview'>('overview');
+  const [activeTab, setActiveTab] = useState<'products' | 'hero' | 'collections' | 'blogs' | 'faqs' | 'orders' | 'overview'>('hero');
   const [products, setProducts] = useState<Product[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -386,6 +386,7 @@ export const AdminPortal: React.FC = () => {
       concentration: 'Pure Perfume Oil',
       isBestSeller: false,
       isNew: true,
+      showInHero: true,
       inStock: true,
       stockQuantity: 50,
       variants: [
@@ -470,6 +471,27 @@ export const AdminPortal: React.FC = () => {
     } catch (err) {
       showToast('Error communicating with database', 'error');
       setIsProductModalOpen(false);
+    }
+  };
+
+  const handleToggleHero = async (prod: Product) => {
+    const next = prod.showInHero === false;
+    setProducts((current) =>
+      current.map((item) => (item.id === prod.id ? { ...item, showInHero: next } : item))
+    );
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/products/${prod.id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ showInHero: next }),
+      });
+      if (!res.ok) throw new Error('update failed');
+      showToast(next ? `${prod.name} is on the homepage hero` : `${prod.name} removed from the hero`);
+    } catch {
+      setProducts((current) =>
+        current.map((item) => (item.id === prod.id ? { ...item, showInHero: !next } : item))
+      );
+      showToast('Could not update the homepage hero', 'error');
     }
   };
 
@@ -912,6 +934,15 @@ export const AdminPortal: React.FC = () => {
             Products ({products.length})
           </button>
           <button
+            onClick={() => setActiveTab('hero')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              activeTab === 'hero' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
+            }`}
+          >
+            <ImageIcon size={14} />
+            Hero images ({products.filter((prod) => prod.showInHero !== false && prod.imageUrl).length})
+          </button>
+          <button
             onClick={() => setActiveTab('collections')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
               activeTab === 'collections' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
@@ -1181,7 +1212,10 @@ export const AdminPortal: React.FC = () => {
                                 />
                                 <div>
                                   <span className="font-bold text-gray-900 block text-sm">{prod.name}</span>
-                                  <span className="text-[11px] text-gray-500">{prod.concentration || 'Pure Oil'}</span>
+                                  <span className="text-[11px] text-gray-500">
+                                    {prod.concentration || 'Pure Oil'}
+                                    {prod.showInHero !== false ? ' · Hero' : ''}
+                                  </span>
                                 </div>
                               </div>
                             </td>
@@ -1318,6 +1352,49 @@ export const AdminPortal: React.FC = () => {
                 </table>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'hero' && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">Homepage hero</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Choose which fragrance photos appear in the carousel under the menu. Changes show on the homepage immediately.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {products.filter((prod) => prod.imageUrl).map((prod) => {
+                const onHero = prod.showInHero !== false;
+                return (
+                  <div key={prod.id || prod.slug} className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-xs">
+                    <div className="h-36 bg-gray-100">
+                      <img src={prod.imageUrl} alt={prod.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="p-4 flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-bold text-sm text-gray-900 truncate">{prod.name}</p>
+                        <p className="text-[11px] text-gray-500">{onHero ? 'Showing on the homepage' : 'Hidden from the hero'}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleHero(prod)}
+                        className={`shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider cursor-pointer ${
+                          onHero
+                            ? 'bg-[#e62b32] text-white'
+                            : 'bg-white text-gray-700 border border-gray-300'
+                        }`}
+                      >
+                        {onHero ? 'On hero' : 'Add'}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {products.filter((prod) => prod.imageUrl).length === 0 && (
+              <p className="text-sm text-gray-500">Add a fragrance with a photo before it can appear in the hero.</p>
+            )}
           </div>
         )}
 
@@ -2118,7 +2195,7 @@ export const AdminPortal: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-6 pt-1">
+                <div className="flex items-center gap-6 pt-1 flex-wrap">
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input
                       type="checkbox"
@@ -2136,6 +2213,15 @@ export const AdminPortal: React.FC = () => {
                       className="rounded text-[#e62b32] w-4 h-4 cursor-pointer"
                     />
                     <span className="text-gray-800 font-bold">New Arrival Badge</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={editingProduct.showInHero !== false}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, showInHero: e.target.checked })}
+                      className="rounded text-[#e62b32] w-4 h-4 cursor-pointer"
+                    />
+                    <span className="text-gray-800 font-bold">Show in homepage hero</span>
                   </label>
                 </div>
               </div>
