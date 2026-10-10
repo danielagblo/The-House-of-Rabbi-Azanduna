@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { HeroCarousel } from '../components/HeroCarousel';
 import { FragranceCarousel } from '../components/FragranceCarousel';
 import { getProducts } from '../lib/db';
 import type { Product } from '../types';
@@ -14,6 +15,8 @@ try {
 ---
 
 <Layout title="The House of Rabbi Azanduna">
+  <HeroCarousel client:load products={products} />
+
   <section class="pt-10 sm:pt-14 pb-8 sm:pb-10 px-3.5 sm:px-6 lg:px-8 max-w-3xl mx-auto text-center">
     <h1 class="font-['Barlow_Condensed',sans-serif] text-[36px] sm:text-[52px] font-bold text-[#0B1F3A] leading-tight">
       Sacred Wisdom, Bottled.
