@@ -6,7 +6,6 @@ const links = [
   { href: '/collections', label: 'Shop', match: (path: string) => path.startsWith('/collections') || path.startsWith('/product') },
   { href: '/blog', label: 'Blog', match: (path: string) => path.startsWith('/blog') },
   { href: '/faqs', label: 'FAQs', match: (path: string) => path.startsWith('/faqs') },
-  { href: '/about', label: 'About Us', match: (path: string) => path.startsWith('/about') },
   { href: '/contact', label: 'Contact', match: (path: string) => path.startsWith('/contact') },
 ];
 
