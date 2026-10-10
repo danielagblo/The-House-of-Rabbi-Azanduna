@@ -1,18 +1,11 @@
 import type { Product } from '../types';
 
-/** Attars are oud oils. Every other fragrance is a perfume. */
+/** Attars are the oud-oil line. Every other fragrance is a perfume. */
 export function isAttar(product: Pick<Product, 'name' | 'subtitle' | 'concentration' | 'scentFamily' | 'collection'>): boolean {
-  const text = [
-    product.name,
-    product.subtitle,
-    product.concentration,
-    product.scentFamily,
-    product.collection?.name,
-    product.collection?.slug,
-  ]
+  const group = [product.collection?.name, product.collection?.slug, product.name]
     .filter(Boolean)
     .join(' ')
     .toLowerCase();
 
-  return /\battars?\b|oud oils?|perfume oils?|bakhoor|mukhallat/.test(text);
+  return /\battars?\b|oud perfume oils?|oud-perfume-oils?|oud oils?/.test(group);
 }
