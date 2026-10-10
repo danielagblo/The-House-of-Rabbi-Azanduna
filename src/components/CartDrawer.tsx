@@ -166,7 +166,7 @@ export const CartDrawer: React.FC = () => {
                 <a
                   href="/collections"
                   onClick={() => cartStore.closeDrawer()}
-                  className="inline-block px-6 py-2.5 bg-black text-white font-bold text-xs uppercase rounded-lg hover:bg-[#ff2d3b] transition-colors"
+                  className="inline-block px-6 py-2.5 bg-black text-white font-bold text-xs uppercase rounded-lg hover:bg-[#0B1F3A] transition-colors"
                 >
                   Start Shopping
                 </a>
@@ -291,8 +291,8 @@ export const CartDrawer: React.FC = () => {
                   />
                 </div>
 
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-xs text-gray-700">
-                  <ShieldCheck size={20} className="text-[#ff2d3b] shrink-0" />
+                <div className="p-3 bg-[#f4f7fb] border border-[#d5e0ee] rounded-lg flex items-center gap-2 text-xs text-gray-700">
+                  <ShieldCheck size={20} className="text-[#0B1F3A] shrink-0" />
                   <span>Secure checkout processed in Ghana Cedis by <strong>Paystack</strong>.</span>
                 </div>
               </form>
@@ -315,7 +315,7 @@ export const CartDrawer: React.FC = () => {
                 )}
                 <div className="flex justify-between text-sm font-bold text-black pt-2 border-t border-gray-200">
                   <span className="font-['Barlow',sans-serif] uppercase">Total</span>
-                  <span className="font-['Barlow',sans-serif] text-base text-[#ff2d3b]">
+                  <span className="font-['Barlow',sans-serif] text-base text-[#0B1F3A]">
                     GH₵{finalTotal.toFixed(2)}
                   </span>
                 </div>
@@ -324,7 +324,7 @@ export const CartDrawer: React.FC = () => {
               {checkoutStep === 'cart' ? (
                 <button
                   onClick={() => setCheckoutStep('details')}
-                  className="w-full py-3.5 bg-black hover:bg-[#ff2d3b] text-white font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3.5 bg-black hover:bg-[#0B1F3A] text-white font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Proceed to Checkout</span>
                   <ArrowRight size={15} />
@@ -334,7 +334,7 @@ export const CartDrawer: React.FC = () => {
                   type="submit"
                   form="checkout-form"
                   disabled={isLoading}
-                  className="w-full py-3.5 bg-[#ff2d3b] hover:bg-[#e0202d] text-white font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                  className="w-full py-3.5 bg-[#0B1F3A] hover:bg-[#16325C] text-white font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
                   <CreditCard size={16} />
                   <span>{isLoading ? 'Connecting...' : `Pay GH₵${finalTotal.toFixed(2)} with Paystack`}</span>

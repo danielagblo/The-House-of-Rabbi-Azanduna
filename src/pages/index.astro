@@ -1,89 +1,35 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { CollectionsGrid } from '../components/CollectionsGrid';
-import { ProductCard } from '../components/ProductCard';
-import { getCollections, getProducts } from '../lib/db';
+import { FragranceCarousel } from '../components/FragranceCarousel';
+import { getProducts } from '../lib/db';
 import type { Product } from '../types';
 
-let collections = [];
-let featured: Product[] = [];
+let products: Product[] = [];
 
 try {
-  collections = await getCollections();
-  const products = await getProducts();
-  featured = [...products]
-    .sort((a, b) => Number(b.isBestSeller) - Number(a.isBestSeller))
-    .slice(0, 4);
+  products = await getProducts();
 } catch (e) {
-  console.error('Error fetching homepage data:', e);
+  console.error('Error fetching homepage fragrances:', e);
 }
 ---
 
 <Layout title="The House of Rabbi Azanduna">
-  <section class="pt-8 sm:pt-10 pb-2 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-    <p class="text-[11px] sm:text-xs font-bold uppercase tracking-[0.18em] text-[#ff2d3b]">
-      The House of Rabbi Azanduna
-    </p>
-    <h1 class="font-['Barlow_Condensed',sans-serif] text-[34px] sm:text-[46px] font-bold text-black leading-tight mt-2">
-      Sacred fragrance, bottled in Ghana
+  <section class="pt-10 sm:pt-14 pb-8 sm:pb-10 px-3.5 sm:px-6 lg:px-8 max-w-3xl mx-auto text-center">
+    <h1 class="font-['Barlow_Condensed',sans-serif] text-[36px] sm:text-[52px] font-bold text-[#0B1F3A] leading-tight">
+      Sacred Wisdom, Bottled.
     </h1>
-    <p class="max-w-2xl mx-auto mt-3 text-sm sm:text-[15px] text-gray-600 leading-relaxed">
-      A family perfume house composing fine fragrances from biblical heritage and Ghanaian craft. Choose 15ml, 30ml, or 50ml on every scent.
-    </p>
-
-    <ul class="mt-5 flex flex-wrap items-center justify-center gap-2 list-none p-0">
-      <li class="px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-[11px] sm:text-xs font-semibold text-gray-800">
-        Family house in Ghana
-      </li>
-      <li class="px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-[11px] sm:text-xs font-semibold text-gray-800">
-        15ml · 30ml · 50ml
-      </li>
-      <li class="px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-[11px] sm:text-xs font-semibold text-gray-800">
-        MoMo, Visa & debit cards
-      </li>
-    </ul>
-
-    <div class="mt-5 flex flex-wrap items-center justify-center gap-2.5">
-      <a
-        href="#collections"
-        class="inline-block px-5 py-2.5 bg-black hover:bg-[#ff2d3b] text-white text-[11px] sm:text-xs font-bold uppercase tracking-widest rounded-md transition-colors"
-      >
-        Shop collections
-      </a>
-      <a
-        href="/about"
-        class="inline-block px-5 py-2.5 border border-gray-300 hover:border-black text-black text-[11px] sm:text-xs font-bold uppercase tracking-widest rounded-md transition-colors"
-      >
-        Our story
-      </a>
+    <div class="mt-5 space-y-4 text-sm sm:text-[15px] text-[#0B1F3A]/80 leading-relaxed">
+      <p>
+        Welcome to The House of Rabbi Azanduna—a luxury Ghanaian perfume house where ancient spiritual heritage meets haute parfumerie.
+      </p>
+      <p>
+        Founded by Rabbi Micah Felix Azanduna, our family-owned atelier crafts fine fragrances inspired by biblical wisdom, sacred doctrines, and timeless philosophy. Operating from Ghana, we blend precious resins, rare botanicals, and rich aromatics to transform scent into a deeply personal ritual of reverence, elegance, and purpose.
+      </p>
+      <p class="font-medium text-[#0B1F3A]">
+        Discover fragrances with soul, crafted for the extraordinary.
+      </p>
     </div>
   </section>
 
-  <div id="collections">
-    <CollectionsGrid client:load collections={collections} title="Collections" headingLevel="h2" />
-  </div>
-
-  {featured.length > 0 && (
-    <section class="pb-12 sm:pb-16 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div class="text-center mb-5">
-        <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-[#ff2d3b]">In the house</p>
-        <h2 class="font-['Barlow_Condensed',sans-serif] text-[28px] sm:text-[36px] font-bold text-black mt-1">
-          Fragrances ready to wear
-        </h2>
-      </div>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-        {featured.map((product) => (
-          <ProductCard client:load product={product} />
-        ))}
-      </div>
-      <div class="text-center mt-6">
-        <a
-          href="/sale"
-          class="text-xs font-bold uppercase tracking-widest text-black hover:text-[#ff2d3b] underline underline-offset-4"
-        >
-          View all fragrances
-        </a>
-      </div>
-    </section>
-  )}
+  <FragranceCarousel client:load products={products} />
 </Layout>

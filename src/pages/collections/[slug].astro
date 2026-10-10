@@ -38,7 +38,7 @@ const hasDiscounts = collectionProducts.some(
       <h1 class="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
         {currentCollection.name}
       </h1>
-      <p class="font-['Barlow',sans-serif] text-lg sm:text-2xl font-bold text-[#e62b32] mb-1">
+      <p class="font-['Barlow',sans-serif] text-lg sm:text-2xl font-bold text-[#0B1F3A] mb-1">
         {currentCollection.subtitle || "Curated Artisanal Fragrances"}
       </p>
       {hasDiscounts && (
@@ -65,7 +65,7 @@ const hasDiscounts = collectionProducts.some(
         </p>
         <a
           href="/collections"
-          class="inline-block bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-lg transition-colors"
+          class="inline-block bg-[#0B1F3A] hover:bg-[#16325C] text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-lg transition-colors"
         >
           Explore All Collections
         </a>
@@ -81,12 +81,12 @@ const hasDiscounts = collectionProducts.some(
 
         {/* Red Progress Bar */}
         <div class="w-48 sm:w-64 h-1 bg-gray-200 rounded-full overflow-hidden mb-6">
-          <div class="bg-[#e62b32] h-full rounded-full" style="width: 100%;"></div>
+          <div class="bg-[#0B1F3A] h-full rounded-full" style="width: 100%;"></div>
         </div>
 
         <button
           type="button"
-          class="bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
+          class="bg-[#0B1F3A] hover:bg-[#16325C] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
         >
           Show more products
         </button>

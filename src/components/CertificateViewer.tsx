@@ -61,7 +61,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
         onClick={() => setIsOpen(true)}
         className="text-xs text-gray-600 hover:text-black mt-3.5 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
       >
-        <ZoomIn size={14} className="text-[#ff2d3b]" /> Click to open large full-screen certificate
+        <ZoomIn size={14} className="text-[#0B1F3A]" /> Click to open large full-screen certificate
       </button>
 
       {/* Lightbox Modal */}
@@ -78,7 +78,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute top-2 right-2 sm:-top-4 sm:-right-4 md:-right-8 bg-black/80 hover:bg-[#ff2d3b] text-white rounded-full p-2.5 sm:p-3 shadow-2xl cursor-pointer transition-colors z-20 border border-white/30 backdrop-blur-md"
+              className="absolute top-2 right-2 sm:-top-4 sm:-right-4 md:-right-8 bg-black/80 hover:bg-[#0B1F3A] text-white rounded-full p-2.5 sm:p-3 shadow-2xl cursor-pointer transition-colors z-20 border border-white/30 backdrop-blur-md"
               aria-label="Close certificate modal"
             >
               <X size={22} />

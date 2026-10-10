@@ -80,7 +80,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
               className="w-full h-full object-cover object-center"
             />
             {savings && (
-              <span className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-[#ff2d3b] text-white font-extrabold text-[10px] sm:text-xs uppercase px-2.5 py-1 rounded shadow">
+              <span className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-[#0B1F3A] text-white font-extrabold text-[10px] sm:text-xs uppercase px-2.5 py-1 rounded shadow">
                 SAVE GH₵{savings}
               </span>
             )}
@@ -120,7 +120,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
             <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
               {product.name}
             </h1>
-            <p className="text-xs font-bold uppercase tracking-widest text-[#ff2d3b] mt-1">
+            <p className="text-xs font-bold uppercase tracking-widest text-[#0B1F3A] mt-1">
               {product.subtitle || product.concentration}
             </p>
           </div>
@@ -144,7 +144,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
 
               if (isOutOfStock) {
                 return (
-                  <span className="text-xs bg-red-100 text-red-800 font-bold px-2.5 py-0.5 rounded">
+                  <span className="text-xs bg-[#e7eef6] text-[#0B1F3A] font-bold px-2.5 py-0.5 rounded">
                     Out of Stock
                   </span>
                 );
@@ -195,7 +195,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                       }}
                       className={`p-2.5 sm:p-3 rounded-xl border text-left transition-all ${
                         isSelected
-                          ? 'bg-black text-white border-black font-bold shadow-sm'
+                          ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] font-bold shadow-sm'
                           : 'bg-white text-gray-800 border-gray-300 hover:border-gray-400'
                       }`}
                     >
@@ -267,7 +267,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                         ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
                         : isAdded
                         ? 'bg-emerald-600 text-white cursor-pointer'
-                        : 'bg-black hover:bg-[#ff2d3b] text-white shadow-md cursor-pointer'
+                        : 'bg-[#0B1F3A] hover:bg-[#16325C] text-white shadow-md cursor-pointer'
                     }`}
                   >
                     {isOutOfStock ? (
@@ -296,7 +296,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                   className={`w-full py-3 font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 ${
                     isOutOfStock
                       ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
-                      : 'bg-[#ff2d3b] hover:bg-[#e0202d] text-white cursor-pointer'
+                      : 'bg-[#0B1F3A] hover:bg-[#16325C] text-white cursor-pointer'
                   }`}
                 >
                   <Sparkles size={15} />
@@ -309,15 +309,15 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
           {/* Guarantees */}
           <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-2.5 sm:gap-3 pt-5 sm:pt-6 border-t border-gray-200 text-xs text-gray-600 font-medium">
             <div className="flex items-center gap-2">
-              <Sparkles size={18} className="text-[#ff2d3b] shrink-0" />
+              <Sparkles size={18} className="text-[#0B1F3A] shrink-0" />
               <span>Authentic Aged Oud</span>
             </div>
             <div className="flex items-center gap-2">
-              <ShieldCheck size={18} className="text-[#ff2d3b] shrink-0" />
+              <ShieldCheck size={18} className="text-[#0B1F3A] shrink-0" />
               <span>Paystack Secured</span>
             </div>
             <div className="flex items-center gap-2">
-              <RefreshCw size={18} className="text-[#ff2d3b] shrink-0" />
+              <RefreshCw size={18} className="text-[#0B1F3A] shrink-0" />
               <span>100% Pure Perfume Oil</span>
             </div>
           </div>
@@ -336,7 +336,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-gray-900 hover:bg-gray-100/70 transition-colors cursor-pointer"
               >
                 <span className="flex items-center gap-2.5">
-                  <Droplets size={16} className="text-[#ff2d3b]" />
+                  <Droplets size={16} className="text-[#0B1F3A]" />
                   <span>How & Where to Apply</span>
                 </span>
                 <ChevronDown
@@ -363,7 +363,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-gray-900 hover:bg-gray-100/70 transition-colors cursor-pointer"
               >
                 <span className="flex items-center gap-2.5">
-                  <AlertCircle size={16} className="text-[#ff2d3b]" />
+                  <AlertCircle size={16} className="text-[#0B1F3A]" />
                   <span>Precautions & Safe Use</span>
                 </span>
                 <ChevronDown
@@ -405,7 +405,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-gray-900 hover:bg-gray-100/70 transition-colors cursor-pointer"
               >
                 <span className="flex items-center gap-2.5">
-                  <SunMedium size={16} className="text-[#ff2d3b]" />
+                  <SunMedium size={16} className="text-[#0B1F3A]" />
                   <span>Storage Tips</span>
                 </span>
                 <ChevronDown
@@ -436,7 +436,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {product.notes.map((note, idx) => (
               <div key={idx} className="bg-white border border-gray-200 p-4 sm:p-5 rounded-xl">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#ff2d3b] block mb-1">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#0B1F3A] block mb-1">
                   {note.layer} notes
                 </span>
                 <h4 className="font-bold text-black text-sm mb-1">{note.noteName}</h4>

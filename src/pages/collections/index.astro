@@ -1,18 +1,66 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { CollectionsGrid } from '../../components/CollectionsGrid';
-import { getCollections } from '../../lib/db';
+import { ProductCard } from '../../components/ProductCard';
+import { getProducts } from '../../lib/db';
+import { isAttar } from '../../lib/catalog';
+import type { Product } from '../../types';
 
-let collections = [];
+const search = Astro.url.searchParams.get('search')?.trim() || '';
+let products: Product[] = [];
 
 try {
-  collections = await getCollections();
+  products = await getProducts();
 } catch (e) {
-  console.error('Error fetching collections for SSR collections index:', e);
+  console.error('Error fetching shop products:', e);
 }
+
+if (search) {
+  const needle = search.toLowerCase();
+  products = products.filter((product) =>
+    `${product.name} ${product.subtitle} ${product.description}`.toLowerCase().includes(needle)
+  );
+}
+
+const perfumes = products.filter((product) => !isAttar(product));
+const attars = products.filter((product) => isAttar(product));
+
+const sections = [
+  { title: 'Perfumes', items: perfumes },
+  { title: 'Attars (Oud Oils)', items: attars },
+];
 ---
 
-<Layout title="Collections | Rabbi Azanduna">
-  <!-- Collections Storefront matching exact screenshot -->
-  <CollectionsGrid client:load collections={collections} title="Collections" />
+<Layout title="Shop | The House of Rabbi Azanduna">
+  <div class="pt-8 sm:pt-10 pb-14 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="text-center mb-8 sm:mb-10">
+      <h1 class="font-['Barlow_Condensed',sans-serif] text-[34px] sm:text-[46px] font-bold text-[#0B1F3A]">
+        Shop
+      </h1>
+      <p class="mt-2 text-sm text-[#0B1F3A]/70">
+        All of our fragrances are faith inspired.
+      </p>
+      {search && (
+        <p class="mt-2 text-sm text-[#0B1F3A]">
+          Results for “{search}”
+        </p>
+      )}
+    </div>
+
+    {sections.map((section) => (
+      <section class="mb-12">
+        <h2 class="font-['Barlow_Condensed',sans-serif] text-[26px] sm:text-[32px] font-bold text-[#0B1F3A] mb-4">
+          {section.title}
+        </h2>
+        {section.items.length > 0 ? (
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4">
+            {section.items.map((product) => (
+              <ProductCard client:load product={product} />
+            ))}
+          </div>
+        ) : (
+          <p class="text-sm text-gray-500">Nothing in this section yet.</p>
+        )}
+      </section>
+    ))}
+  </div>
 </Layout>

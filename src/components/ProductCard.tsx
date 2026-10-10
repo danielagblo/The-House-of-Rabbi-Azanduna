@@ -78,7 +78,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         {/* Red Save Badge in Top Left */}
         {savings && (
           <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
-            <span className="bg-[#e62b32] text-white font-extrabold text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
+            <span className="bg-[#0B1F3A] text-white font-extrabold text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
               SAVE GH₵{savings}
             </span>
           </div>
@@ -154,7 +154,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
                 ? 'bg-neutral-400 cursor-not-allowed opacity-80'
                 : isAdded
                 ? 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer'
-                : 'bg-[#e62b32] hover:bg-[#cf2229] active:scale-[0.99] cursor-pointer'
+                : 'bg-[#0B1F3A] hover:bg-[#16325C] active:scale-[0.99] cursor-pointer'
             }`}
           >
             {isOutOfStock ? (
@@ -174,14 +174,14 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       {/* Product Info (Centered below button) */}
       <div className="pt-2 text-center">
         <a href={`/product/${product.slug}`} className="block">
-          <h3 className="font-['Barlow',sans-serif] text-[13px] sm:text-[15px] font-bold text-gray-900 hover:text-[#e62b32] transition-colors leading-tight line-clamp-2">
+          <h3 className="font-['Barlow',sans-serif] text-[13px] sm:text-[15px] font-bold text-gray-900 hover:text-[#0B1F3A] transition-colors leading-tight line-clamp-2">
             {product.name}
           </h3>
         </a>
 
         {/* Star Ratings (Red/Amber stars + review count) */}
         <div className="flex items-center justify-center gap-1 my-1">
-          <div className="flex text-[#e62b32]">
+          <div className="flex text-[#0B1F3A]">
             {[...Array(5)].map((_, i) => (
               <Star key={i} size={11} fill="currentColor" />
             ))}

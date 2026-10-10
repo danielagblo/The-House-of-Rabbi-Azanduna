@@ -2,15 +2,15 @@
 
 @layer base {
   :root {
-    --color-brand-red: #ff2d3b;
-    --color-brand-red-hover: #e0202d;
-    --color-dark: #111111;
+    --color-brand-navy: #0B1F3A;
+    --color-brand-navy-hover: #16325C;
+    --color-dark: #0B1F3A;
     --color-light-bg: #f8f9fa;
   }
 
   body {
     background-color: #ffffff;
-    color: #111111;
+    color: #0B1F3A;
     font-family: 'Poppins', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
   }
@@ -31,10 +31,18 @@
 }
 
 .brand-red-bg {
-  background-color: #ff2d3b;
+  background-color: #0B1F3A;
 }
 
 .brand-red-text {
-  color: #ff2d3b;
+  color: #0B1F3A;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 

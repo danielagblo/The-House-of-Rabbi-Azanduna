@@ -50,7 +50,7 @@ export const AnnouncementBar: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#e62b32] text-white py-1.5 sm:py-2 px-2.5 sm:px-6 sticky top-0 z-50 flex items-center justify-between shadow-xs select-none overflow-hidden">
+    <div className="bg-[#0B1F3A] text-white py-1.5 sm:py-2 px-2.5 sm:px-6 sticky top-0 z-50 flex items-center justify-between shadow-xs select-none overflow-hidden">
       <button
         onClick={handlePrev}
         className="text-white hover:opacity-80 transition-opacity p-1 cursor-pointer flex items-center z-10 shrink-0"

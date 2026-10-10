@@ -106,7 +106,7 @@ Rabbi Azanduna Luxury Fragrances`;
         Thank You for Your Order
       </h1>
 
-      <div className="w-14 h-1 bg-[#ff2d3b] mx-auto mb-4"></div>
+      <div className="w-14 h-1 bg-[#0B1F3A] mx-auto mb-4"></div>
 
       <p className="text-gray-600 text-xs sm:text-sm font-normal max-w-lg mx-auto leading-relaxed mb-6 sm:mb-8">
         Your order has been safely placed and is now being packaged with utmost care. Share your proof on WhatsApp below for fast dispatch confirmation!
@@ -222,7 +222,7 @@ Rabbi Azanduna Luxury Fragrances`;
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5">
         <a
           href="/collections"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-black hover:bg-[#ff2d3b] text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md cursor-pointer"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-black hover:bg-[#0B1F3A] text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-md cursor-pointer"
         >
           <ShoppingBag size={15} />
           <span>Continue Exploring</span>

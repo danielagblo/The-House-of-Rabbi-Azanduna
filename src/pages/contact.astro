@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ContactForm } from '../components/ContactForm';
+---
+
+<Layout title="Contact Us | The House of Rabbi Azanduna">
+  <section class="py-10 sm:py-14 px-3.5 sm:px-6 lg:px-8 max-w-xl mx-auto">
+    <p class="text-[11px] sm:text-xs font-bold uppercase tracking-[0.18em] text-[#0B1F3A] text-center">
+      The House of Rabbi Azanduna
+    </p>
+    <h1 class="font-['Barlow_Condensed',sans-serif] text-[34px] sm:text-[46px] font-bold text-[#0B1F3A] text-center leading-tight mt-2">
+      Contact Us
+    </h1>
+    <p class="text-sm text-gray-600 text-center mt-3 mb-8 leading-relaxed">
+      Write to the house. Your name, email, and message come straight to us.
+    </p>
+    <ContactForm client:load />
+  </section>
+</Layout>

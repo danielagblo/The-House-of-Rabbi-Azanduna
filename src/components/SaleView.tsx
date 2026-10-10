@@ -54,7 +54,7 @@ export const SaleView: React.FC<SaleViewProps> = ({ initialProducts = [] }) => {
           <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
             Bank Holiday Sale
           </h1>
-          <p className="font-['Barlow',sans-serif] text-lg sm:text-2xl font-bold text-[#e62b32] mb-1">
+          <p className="font-['Barlow',sans-serif] text-lg sm:text-2xl font-bold text-[#0B1F3A] mb-1">
             Minimum 20% Off!
           </p>
           <p className="text-xs text-gray-500 font-normal">
@@ -81,7 +81,7 @@ export const SaleView: React.FC<SaleViewProps> = ({ initialProducts = [] }) => {
         </div>
       ) : loading ? (
         <div className="text-center py-20">
-          <div className="inline-block w-8 h-8 border-3 border-gray-300 border-t-[#e62b32] rounded-full animate-spin"></div>
+          <div className="inline-block w-8 h-8 border-3 border-gray-300 border-t-[#0B1F3A] rounded-full animate-spin"></div>
           <p className="mt-3 text-xs text-gray-500 font-medium">Loading collection...</p>
         </div>
       ) : (
@@ -91,7 +91,7 @@ export const SaleView: React.FC<SaleViewProps> = ({ initialProducts = [] }) => {
           </p>
           <a
             href="/collections"
-            className="inline-block bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-lg transition-colors mt-2"
+            className="inline-block bg-[#0B1F3A] hover:bg-[#16325C] text-white font-bold text-xs uppercase tracking-widest px-6 py-3 rounded-lg transition-colors mt-2"
           >
             Explore Collections
           </a>
@@ -106,12 +106,12 @@ export const SaleView: React.FC<SaleViewProps> = ({ initialProducts = [] }) => {
           </p>
 
           <div className="w-48 sm:w-64 h-1 bg-gray-200 rounded-full overflow-hidden mb-6">
-            <div className="bg-[#e62b32] h-full rounded-full" style={{ width: '100%' }}></div>
+            <div className="bg-[#0B1F3A] h-full rounded-full" style={{ width: '100%' }}></div>
           </div>
 
           <button
             type="button"
-            className="bg-[#e62b32] hover:bg-[#cf2229] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
+            className="bg-[#0B1F3A] hover:bg-[#16325C] text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-lg shadow-xs transition-all uppercase tracking-wider font-['Barlow_Condensed',sans-serif] cursor-pointer"
           >
             Show more products
           </button>

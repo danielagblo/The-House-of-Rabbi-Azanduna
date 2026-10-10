@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Search, Menu, X } from 'lucide-react';
 import { cartStore } from '../store/cartStore';
-import { discountStore } from '../store/discountStore';
 
 export const Navbar: React.FC = () => {
   const [itemCount, setItemCount] = useState(0);
-  const [hasDiscounts, setHasDiscounts] = useState<boolean>(discountStore.getHasDiscounts() === true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPath, setCurrentPath] = useState('');
@@ -20,12 +18,8 @@ export const Navbar: React.FC = () => {
     update();
     const unsubCart = cartStore.subscribe(update);
 
-    discountStore.checkDiscounts().then(setHasDiscounts);
-    const unsubDiscount = discountStore.subscribe(setHasDiscounts);
-
     return () => {
       unsubCart();
-      unsubDiscount();
     };
   }, []);
 
@@ -37,10 +31,10 @@ export const Navbar: React.FC = () => {
   };
 
   const isShopActive = currentPath === '/' || currentPath.startsWith('/collections') || currentPath.startsWith('/product');
-  const isSaleActive = currentPath.startsWith('/sale');
   const isBlogActive = currentPath.startsWith('/blog');
   const isFaqsActive = currentPath.startsWith('/faqs');
   const isAboutActive = currentPath.startsWith('/about');
+  const isContactActive = currentPath.startsWith('/contact');
 
   return (
     <header className="w-full bg-white z-40">
@@ -80,7 +74,7 @@ export const Navbar: React.FC = () => {
         {/* Center: RABBI AZANDUNA Brand Wordmark (Exact Bold Geometric Montserrat Style as OUD ATTAR) */}
         <div className="flex-1 lg:flex-initial text-center overflow-hidden">
           <a href="/" className="inline-block group">
-            <span className="font-['Montserrat',sans-serif] text-[15px] min-[390px]:text-lg sm:text-[23px] font-bold tracking-[0.12em] min-[390px]:tracking-[0.18em] sm:tracking-[0.25em] text-black uppercase block truncate">
+            <span className="font-['Montserrat',sans-serif] text-[15px] min-[390px]:text-lg sm:text-[23px] font-bold tracking-[0.12em] min-[390px]:tracking-[0.18em] sm:tracking-[0.25em] text-[#0B1F3A] uppercase block truncate">
               RABBI AZANDUNA
             </span>
           </a>
@@ -90,7 +84,7 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-end w-auto lg:w-72 lg:w-80">
           <button
             onClick={() => cartStore.openDrawer()}
-            className="p-2 text-gray-900 hover:text-[#e62b32] transition-colors relative flex items-center gap-1 group cursor-pointer"
+            className="p-2 text-gray-900 hover:text-[#0B1F3A] transition-colors relative flex items-center gap-1 group cursor-pointer"
             aria-label="Shopping Bag"
           >
             <ShoppingBag size={22} strokeWidth={1.5} />
@@ -106,44 +100,33 @@ export const Navbar: React.FC = () => {
         <div className="hidden lg:flex items-center justify-center gap-8 sm:gap-10 py-2 max-w-7xl mx-auto px-4 font-['Barlow_Condensed',sans-serif] text-[18px] sm:text-[19px] font-bold tracking-[0.04em] uppercase leading-tight">
           <a
             href="/collections"
-            className={`${isShopActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+            className={`${isShopActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
           >
             SHOP
           </a>
-          {hasDiscounts ? (
-            <a
-              href="/sale"
-              className={`px-3.5 py-1 rounded-[4px] text-[15px] font-extrabold transition-colors shadow-2xs tracking-[0.04em] leading-tight inline-flex items-center justify-center ${
-                isSaleActive ? 'bg-[#cf2229] text-white ring-2 ring-[#e62b32]/50' : 'bg-[#e62b32] text-white hover:bg-[#cf2229]'
-              }`}
-            >
-              SALE
-            </a>
-          ) : (
-            <a
-              href="/sale"
-              className={`${isSaleActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
-            >
-              SALE
-            </a>
-          )}
           <a
             href="/blog"
-            className={`${isBlogActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+            className={`${isBlogActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
           >
             BLOG
           </a>
           <a
             href="/faqs"
-            className={`${isFaqsActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+            className={`${isFaqsActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
           >
             FAQS
           </a>
           <a
             href="/about"
-            className={`${isAboutActive ? 'text-[#e62b32]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+            className={`${isAboutActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
           >
             ABOUT US
+          </a>
+          <a
+            href="/contact"
+            className={`${isContactActive ? 'text-[#0B1F3A]' : 'text-[#1a1a1a] hover:underline'} transition-colors`}
+          >
+            CONTACT
           </a>
         </div>
       </div>
@@ -168,27 +151,15 @@ export const Navbar: React.FC = () => {
             <a
               href="/collections"
               onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isShopActive ? 'text-[#e62b32]' : 'hover:text-[#e62b32]'}`}
+              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isShopActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
             >
               <span>SHOP</span>
               <span className="text-xs text-gray-400 font-normal">→</span>
             </a>
             <a
-              href="/sale"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isSaleActive ? 'text-[#e62b32]' : 'hover:text-[#e62b32]'}`}
-            >
-              <span>SALE</span>
-              {hasDiscounts ? (
-                <span className="bg-[#e62b32] text-white text-[11px] font-extrabold px-2 py-0.5 rounded">20% OFF</span>
-              ) : (
-                <span className="text-xs text-gray-400 font-normal">→</span>
-              )}
-            </a>
-            <a
               href="/blog"
               onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isBlogActive ? 'text-[#e62b32]' : 'hover:text-[#e62b32]'}`}
+              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isBlogActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
             >
               <span>BLOG</span>
               <span className="text-xs text-gray-400 font-normal">→</span>
@@ -196,7 +167,7 @@ export const Navbar: React.FC = () => {
             <a
               href="/faqs"
               onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isFaqsActive ? 'text-[#e62b32]' : 'hover:text-[#e62b32]'}`}
+              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isFaqsActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
             >
               <span>FAQS</span>
               <span className="text-xs text-gray-400 font-normal">→</span>
@@ -204,9 +175,17 @@ export const Navbar: React.FC = () => {
             <a
               href="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className={`py-2.5 px-2 flex items-center justify-between ${isAboutActive ? 'text-[#e62b32]' : 'hover:text-[#e62b32]'}`}
+              className={`py-2.5 px-2 border-b border-gray-100 flex items-center justify-between ${isAboutActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
             >
               <span>ABOUT US</span>
+              <span className="text-xs text-gray-400 font-normal">→</span>
+            </a>
+            <a
+              href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`py-2.5 px-2 flex items-center justify-between ${isContactActive ? 'text-[#0B1F3A]' : 'hover:text-[#0B1F3A]'}`}
+            >
+              <span>CONTACT</span>
               <span className="text-xs text-gray-400 font-normal">→</span>
             </a>
           </nav>

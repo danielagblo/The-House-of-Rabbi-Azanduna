@@ -95,7 +95,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
                   {savings && (
                     <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 z-10">
-                      <span className="bg-[#e62b32] text-white font-extrabold text-[10px] sm:text-[12px] uppercase px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
+                      <span className="bg-[#0B1F3A] text-white font-extrabold text-[10px] sm:text-[12px] uppercase px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
                         SAVE GH₵{savings}
                       </span>
                     </div>
@@ -104,13 +104,13 @@ export const CollectionsGrid: React.FC<Props> = ({
 
                 <div className="pt-3 text-center">
                   <a href={`/product/${prod.slug}`}>
-                    <h3 className="font-['Barlow',sans-serif] text-[15px] sm:text-[16px] font-bold text-black group-hover:text-[#e62b32] transition-colors">
+                    <h3 className="font-['Barlow',sans-serif] text-[15px] sm:text-[16px] font-bold text-black group-hover:text-[#0B1F3A] transition-colors">
                       {prod.name}
                     </h3>
                   </a>
 
                   <div className="flex items-center justify-center gap-1 my-1">
-                    <div className="flex text-[#e62b32]">
+                    <div className="flex text-[#0B1F3A]">
                       {[...Array(5)].map((_, i) => (
                         <Star key={i} size={11} fill="currentColor" />
                       ))}
@@ -122,7 +122,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
                   <div className="font-['Barlow',sans-serif] text-[13px] sm:text-[14px] font-bold flex items-center justify-center gap-1.5">
                     {prod.compareAtPrice && Number(prod.compareAtPrice) > prod.price ? (
-                      <span className="line-through text-[#e62b32] font-semibold">
+                      <span className="line-through text-[#0B1F3A] font-semibold">
                         GH₵{Number(prod.compareAtPrice).toFixed(2)}
                       </span>
                     ) : null}
@@ -162,7 +162,7 @@ export const CollectionsGrid: React.FC<Props> = ({
                   {/* Badge if present */}
                   {cat.badge && (
                     <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 z-10">
-                      <span className="bg-[#e62b32] text-white font-extrabold text-[10px] sm:text-[11px] uppercase px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
+                      <span className="bg-[#0B1F3A] text-white font-extrabold text-[10px] sm:text-[11px] uppercase px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
                         {cat.badge}
                       </span>
                     </div>
@@ -178,7 +178,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
                 <div className="pt-2 pb-1 text-center flex flex-col items-center w-full">
                   <a href={`/collections/${cat.slug}`}>
-                    <h3 className="font-['Barlow_Condensed',sans-serif] text-base sm:text-lg font-bold text-black group-hover:text-[#e62b32] transition-colors mb-0.5 leading-tight">
+                    <h3 className="font-['Barlow_Condensed',sans-serif] text-base sm:text-lg font-bold text-black group-hover:text-[#0B1F3A] transition-colors mb-0.5 leading-tight">
                       {cat.name}
                     </h3>
                   </a>
@@ -192,7 +192,7 @@ export const CollectionsGrid: React.FC<Props> = ({
                   {/* Red VIEW NOW Button */}
                   <a
                     href={`/collections/${cat.slug}`}
-                    className="inline-block bg-[#e62b32] hover:bg-[#cf2229] text-white px-4 py-1 rounded-[4px] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider shadow-xs transition-colors"
+                    className="inline-block bg-[#0B1F3A] hover:bg-[#16325C] text-white px-4 py-1 rounded-[4px] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider shadow-xs transition-colors"
                   >
                     VIEW NOW
                   </a>
@@ -222,7 +222,7 @@ export const CollectionsGrid: React.FC<Props> = ({
             />
             {bannerCollection.badge && (
               <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10">
-                <span className="bg-[#e62b32] text-white font-extrabold text-[11px] sm:text-[12px] uppercase px-3 py-1 rounded-[3px] shadow-xs tracking-wider">
+                <span className="bg-[#0B1F3A] text-white font-extrabold text-[11px] sm:text-[12px] uppercase px-3 py-1 rounded-[3px] shadow-xs tracking-wider">
                   {bannerCollection.badge}
                 </span>
               </div>
@@ -231,7 +231,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
           <div className="pt-3.5 pb-2 text-center flex flex-col items-center w-full">
             <a href={`/collections/${bannerCollection.slug}`}>
-              <h3 className="font-['Barlow_Condensed',sans-serif] text-2xl sm:text-[28px] font-bold text-black group-hover:text-[#e62b32] transition-colors mb-1.5">
+              <h3 className="font-['Barlow_Condensed',sans-serif] text-2xl sm:text-[28px] font-bold text-black group-hover:text-[#0B1F3A] transition-colors mb-1.5">
                 {bannerCollection.name}
               </h3>
             </a>
@@ -245,7 +245,7 @@ export const CollectionsGrid: React.FC<Props> = ({
             {/* Red VIEW NOW Button */}
             <a
               href={`/collections/${bannerCollection.slug}`}
-              className="inline-block bg-[#e62b32] hover:bg-[#cf2229] text-white px-7 py-2 rounded-[4px] text-[11px] sm:text-[12px] font-extrabold uppercase tracking-wider shadow-xs transition-colors"
+              className="inline-block bg-[#0B1F3A] hover:bg-[#16325C] text-white px-7 py-2 rounded-[4px] text-[11px] sm:text-[12px] font-extrabold uppercase tracking-wider shadow-xs transition-colors"
             >
               VIEW NOW
             </a>
