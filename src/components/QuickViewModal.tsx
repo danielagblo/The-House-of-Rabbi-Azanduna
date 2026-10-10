@@ -34,11 +34,11 @@ export const QuickViewModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-[#0B1F3A]/80 backdrop-blur-md flex items-center justify-center p-4">
       <div className="relative w-full max-w-3xl bg-[#111116] border border-amber-500/30 rounded-2xl overflow-hidden shadow-2xl animate-scale-up max-h-[90vh] overflow-y-auto">
         <button
           onClick={() => cartStore.closeQuickView()}
-          className="absolute top-4 right-4 z-20 p-2 text-zinc-400 hover:text-white bg-black/50 rounded-full"
+          className="absolute top-4 right-4 z-20 p-2 text-zinc-400 hover:text-white bg-[#0B1F3A]/50 rounded-full"
           aria-label="Close"
         >
           <X size={20} />
@@ -46,14 +46,14 @@ export const QuickViewModal: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Product Image */}
-          <div className="aspect-[4/5] bg-black/50 relative overflow-hidden">
+          <div className="aspect-[4/5] bg-[#0B1F3A]/50 relative overflow-hidden">
             <img
               src={product.imageUrl}
               alt={product.name}
               className="w-full h-full object-cover object-center"
             />
             <div className="absolute top-4 left-4">
-              <span className="px-3 py-1 bg-amber-500/90 text-black text-[10px] font-bold uppercase tracking-widest rounded shadow">
+              <span className="px-3 py-1 bg-amber-500/90 text-[#0B1F3A] text-[10px] font-bold uppercase tracking-widest rounded shadow">
                 {product.scentFamily}
               </span>
             </div>
@@ -81,7 +81,7 @@ export const QuickViewModal: React.FC = () => {
 
               {/* Scent Notes Preview */}
               {product.notes && product.notes.length > 0 && (
-                <div className="mb-6 bg-black/40 p-3.5 rounded-lg border border-zinc-800">
+                <div className="mb-6 bg-[#0B1F3A]/40 p-3.5 rounded-lg border border-zinc-800">
                   <span className="text-[10px] uppercase tracking-wider text-amber-400 font-semibold block mb-2 flex items-center gap-1">
                     <Sparkles size={11} />
                     Olfactory Highlights
@@ -127,7 +127,7 @@ export const QuickViewModal: React.FC = () => {
 
             {/* Price & Actions */}
             <div className="pt-4 border-t border-zinc-800 flex items-center gap-4">
-              <div className="flex items-center border border-zinc-700 rounded-lg bg-black/40">
+              <div className="flex items-center border border-zinc-700 rounded-lg bg-[#0B1F3A]/40">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="px-3 py-2 text-zinc-400 hover:text-white"
@@ -147,8 +147,8 @@ export const QuickViewModal: React.FC = () => {
                 onClick={handleAddToCart}
                 className={`flex-1 py-3 px-6 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${
                   isAdded
-                    ? 'bg-emerald-500 text-black'
-                    : 'bg-gradient-to-r from-amber-400 to-amber-500 hover:brightness-110 text-black shadow-lg shadow-amber-500/20'
+                    ? 'bg-emerald-500 text-[#0B1F3A]'
+                    : 'bg-gradient-to-r from-amber-400 to-amber-500 hover:brightness-110 text-[#0B1F3A] shadow-lg shadow-amber-500/20'
                 }`}
               >
                 {isAdded ? (

@@ -42,7 +42,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
           className="w-full h-auto rounded-2xl object-contain block group-hover:scale-[1.02] transition-transform duration-300"
         />
         {/* Hover / Touch Overlay */}
-        <div className="absolute inset-0 bg-black/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2.5 text-white p-4 text-center backdrop-blur-2xs pointer-events-none">
+        <div className="absolute inset-0 bg-[#0B1F3A]/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2.5 text-white p-4 text-center backdrop-blur-2xs pointer-events-none">
           <div className="w-12 h-12 rounded-full bg-white/25 flex items-center justify-center shadow-lg">
             <ZoomIn size={26} className="text-white" />
           </div>
@@ -59,7 +59,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="text-xs text-gray-600 hover:text-black mt-3.5 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+        className="text-xs text-gray-600 hover:text-[#0B1F3A] mt-3.5 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
       >
         <ZoomIn size={14} className="text-[#0B1F3A]" /> Click to open large full-screen certificate
       </button>
@@ -68,7 +68,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-50 bg-black/92 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-200 cursor-zoom-out"
+          className="fixed inset-0 z-50 bg-[#0B1F3A]/92 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-200 cursor-zoom-out"
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -78,7 +78,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ imageSrc }
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute top-2 right-2 sm:-top-4 sm:-right-4 md:-right-8 bg-black/80 hover:bg-[#0B1F3A] text-white rounded-full p-2.5 sm:p-3 shadow-2xl cursor-pointer transition-colors z-20 border border-white/30 backdrop-blur-md"
+              className="absolute top-2 right-2 sm:-top-4 sm:-right-4 md:-right-8 bg-[#0B1F3A]/80 hover:bg-[#0B1F3A] text-white rounded-full p-2.5 sm:p-3 shadow-2xl cursor-pointer transition-colors z-20 border border-white/30 backdrop-blur-md"
               aria-label="Close certificate modal"
             >
               <X size={22} />

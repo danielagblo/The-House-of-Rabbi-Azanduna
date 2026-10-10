@@ -61,7 +61,7 @@ export const CollectionsGrid: React.FC<Props> = ({
     <section className="pt-4 sm:pt-6 pb-12 sm:pb-14 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-white">
       {/* 1. Condensed Heading */}
       <div className="text-center mb-4 sm:mb-6">
-        <Heading className="font-['Barlow_Condensed',sans-serif] text-[32px] sm:text-[44px] lg:text-[48px] font-bold text-black tracking-normal leading-tight">
+        <Heading className="font-['Barlow_Condensed',sans-serif] text-[32px] sm:text-[44px] lg:text-[48px] font-bold text-[#0B1F3A] tracking-normal leading-tight">
           {title}
         </Heading>
         {loading && (
@@ -104,7 +104,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
                 <div className="pt-3 text-center">
                   <a href={`/product/${prod.slug}`}>
-                    <h3 className="font-['Barlow',sans-serif] text-[15px] sm:text-[16px] font-bold text-black group-hover:text-[#0B1F3A] transition-colors">
+                    <h3 className="font-['Barlow',sans-serif] text-[15px] sm:text-[16px] font-bold text-[#0B1F3A] group-hover:text-[#0B1F3A] transition-colors">
                       {prod.name}
                     </h3>
                   </a>
@@ -126,7 +126,7 @@ export const CollectionsGrid: React.FC<Props> = ({
                         GH₵{Number(prod.compareAtPrice).toFixed(2)}
                       </span>
                     ) : null}
-                    <span className="text-black font-bold">
+                    <span className="text-[#0B1F3A] font-bold">
                       GH₵{prod.price.toFixed(2)}
                     </span>
                   </div>
@@ -170,7 +170,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
                   {/* Product Count Pill */}
                   {productCount > 0 && (
-                    <span className="absolute bottom-2.5 right-2.5 bg-black/75 backdrop-blur-xs text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded">
+                    <span className="absolute bottom-2.5 right-2.5 bg-[#0B1F3A]/75 backdrop-blur-xs text-white text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded">
                       {productCount} {productCount === 1 ? 'Fragrance' : 'Fragrances'}
                     </span>
                   )}
@@ -178,7 +178,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
                 <div className="pt-2 pb-1 text-center flex flex-col items-center w-full">
                   <a href={`/collections/${cat.slug}`}>
-                    <h3 className="font-['Barlow_Condensed',sans-serif] text-base sm:text-lg font-bold text-black group-hover:text-[#0B1F3A] transition-colors mb-0.5 leading-tight">
+                    <h3 className="font-['Barlow_Condensed',sans-serif] text-base sm:text-lg font-bold text-[#0B1F3A] group-hover:text-[#0B1F3A] transition-colors mb-0.5 leading-tight">
                       {cat.name}
                     </h3>
                   </a>
@@ -231,7 +231,7 @@ export const CollectionsGrid: React.FC<Props> = ({
 
           <div className="pt-3.5 pb-2 text-center flex flex-col items-center w-full">
             <a href={`/collections/${bannerCollection.slug}`}>
-              <h3 className="font-['Barlow_Condensed',sans-serif] text-2xl sm:text-[28px] font-bold text-black group-hover:text-[#0B1F3A] transition-colors mb-1.5">
+              <h3 className="font-['Barlow_Condensed',sans-serif] text-2xl sm:text-[28px] font-bold text-[#0B1F3A] group-hover:text-[#0B1F3A] transition-colors mb-1.5">
                 {bannerCollection.name}
               </h3>
             </a>

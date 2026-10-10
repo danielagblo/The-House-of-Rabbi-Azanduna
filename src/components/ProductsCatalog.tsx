@@ -66,7 +66,7 @@ export const ProductsCatalog: React.FC<Props> = ({
             onClick={() => setSelectedCollection('all')}
             className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs uppercase tracking-wider rounded-lg font-bold transition-all ${
               selectedCollection === 'all'
-                ? 'bg-black text-white'
+                ? 'bg-[#0B1F3A] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
@@ -78,7 +78,7 @@ export const ProductsCatalog: React.FC<Props> = ({
               onClick={() => setSelectedCollection(col.slug)}
               className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs uppercase tracking-wider rounded-lg font-bold transition-all ${
                 selectedCollection === col.slug
-                  ? 'bg-black text-white'
+                  ? 'bg-[#0B1F3A] text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -113,13 +113,13 @@ export const ProductsCatalog: React.FC<Props> = ({
         {/* Right Sort */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end pt-2 md:pt-0 border-t md:border-t-0 border-gray-200">
           <span className="text-xs text-gray-500 font-medium">
-            Showing <strong className="text-black">{filteredProducts.length}</strong> fragrances
+            Showing <strong className="text-[#0B1F3A]">{filteredProducts.length}</strong> fragrances
           </span>
 
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-white text-gray-800 text-xs border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:border-black font-medium"
+            className="bg-white text-gray-800 text-xs border border-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#0B1F3A] font-medium"
           >
             <option value="featured">Featured</option>
             <option value="price_asc">Price: Low to High</option>
@@ -134,13 +134,13 @@ export const ProductsCatalog: React.FC<Props> = ({
         <div className="flex items-center gap-2 mb-6 flex-wrap">
           <span className="text-xs text-gray-500 font-medium">Active:</span>
           {selectedCollection !== 'all' && (
-            <span className="inline-flex items-center gap-1 text-xs bg-gray-200 text-black px-2.5 py-0.5 rounded-full font-semibold">
+            <span className="inline-flex items-center gap-1 text-xs bg-gray-200 text-[#0B1F3A] px-2.5 py-0.5 rounded-full font-semibold">
               {collections.find((c) => c.slug === selectedCollection)?.name}
               <button onClick={() => setSelectedCollection('all')}><X size={12} /></button>
             </span>
           )}
           {selectedFamily !== 'all' && (
-            <span className="inline-flex items-center gap-1 text-xs bg-gray-200 text-black px-2.5 py-0.5 rounded-full font-semibold">
+            <span className="inline-flex items-center gap-1 text-xs bg-gray-200 text-[#0B1F3A] px-2.5 py-0.5 rounded-full font-semibold">
               {selectedFamily}
               <button onClick={() => setSelectedFamily('all')}><X size={12} /></button>
             </span>
@@ -168,7 +168,7 @@ export const ProductsCatalog: React.FC<Props> = ({
       {/* Pagination Progress Section */}
       <div className="mt-14 mb-4 text-center flex flex-col items-center justify-center">
         <p className="text-xs sm:text-sm text-gray-600 mb-3 font-['Poppins',sans-serif]">
-          You have seen <strong className="text-black font-bold">{Math.min(visibleLimit, filteredProducts.length)}</strong> out of <strong className="text-black font-bold">{filteredProducts.length}</strong> products
+          You have seen <strong className="text-[#0B1F3A] font-bold">{Math.min(visibleLimit, filteredProducts.length)}</strong> out of <strong className="text-[#0B1F3A] font-bold">{filteredProducts.length}</strong> products
         </p>
 
         {/* Red Progress Bar */}

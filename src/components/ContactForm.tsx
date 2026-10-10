@@ -1,28 +1,26 @@
 import { useState } from 'react';
 
+const WHATSAPP_NUMBER = '233554405880';
+
 export const ContactForm: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sent'>('idle');
 
-  const onSubmit = async (event: React.FormEvent) => {
+  const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setStatus('sending');
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, message }),
-      });
-      if (!response.ok) throw new Error('Request failed');
-      setStatus('sent');
-      setName('');
-      setEmail('');
-      setMessage('');
-    } catch {
-      setStatus('error');
-    }
+    const text = [
+      'Hello, The House of Rabbi Azanduna.',
+      '',
+      `Name: ${name.trim()}`,
+      `Email: ${email.trim()}`,
+      '',
+      message.trim(),
+    ].join('\n');
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+    setStatus('sent');
   };
 
   return (
@@ -61,16 +59,12 @@ export const ContactForm: React.FC = () => {
       </label>
       <button
         type="submit"
-        disabled={status === 'sending'}
-        className="w-full sm:w-auto px-8 py-3 bg-[#0B1F3A] hover:bg-[#16325C] disabled:opacity-60 text-white text-xs font-bold uppercase tracking-widest rounded-md cursor-pointer"
+        className="w-full sm:w-auto px-8 py-3 bg-[#0B1F3A] hover:bg-[#16325C] text-white text-xs font-bold uppercase tracking-widest rounded-md cursor-pointer"
       >
-        {status === 'sending' ? 'Sending…' : 'Send message'}
+        Send on WhatsApp
       </button>
       {status === 'sent' && (
-        <p className="text-sm text-[#0B1F3A]">Thank you. Your message is on its way to us.</p>
-      )}
-      {status === 'error' && (
-        <p className="text-sm text-[#0B1F3A]">We could not send that just now. Please try again in a moment.</p>
+        <p className="text-sm text-[#0B1F3A]">WhatsApp is open with your message. Tap send to reach us on 0554405880.</p>
       )}
     </form>
   );

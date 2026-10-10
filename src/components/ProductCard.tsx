@@ -124,8 +124,8 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
                   }}
                   className={`rounded-md border px-0.5 py-1 text-center transition-colors cursor-pointer ${
                     isSelected
-                      ? 'bg-black text-white border-black'
-                      : 'bg-white text-gray-800 border-gray-300 hover:border-black'
+                      ? 'bg-[#0B1F3A] text-white border-[#0B1F3A]'
+                      : 'bg-white text-gray-800 border-gray-300 hover:border-[#0B1F3A]'
                   } ${variantOut ? 'opacity-50' : ''}`}
                 >
                   <span className="block text-[10px] sm:text-[11px] font-bold leading-tight">{volumeLabel(variant.size)}</span>
@@ -174,7 +174,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       {/* Product Info (Centered below button) */}
       <div className="pt-2 text-center">
         <a href={`/product/${product.slug}`} className="block">
-          <h3 className="font-['Barlow',sans-serif] text-[13px] sm:text-[15px] font-bold text-gray-900 hover:text-[#0B1F3A] transition-colors leading-tight line-clamp-2">
+          <h3 className="font-['Barlow',sans-serif] text-[13px] sm:text-[15px] font-bold text-[#0B1F3A] hover:text-[#0B1F3A] transition-colors leading-tight line-clamp-2">
             {product.name}
           </h3>
         </a>
@@ -192,7 +192,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
         </div>
 
         {/* Price & Strikethrough Discount Price */}
-        <div className="font-['Barlow',sans-serif] text-[13px] sm:text-[15px] font-bold text-gray-900 flex items-center justify-center gap-1.5 flex-wrap">
+        <div className="font-['Barlow',sans-serif] text-[13px] sm:text-[15px] font-bold text-[#0B1F3A] flex items-center justify-center gap-1.5 flex-wrap">
           <span>{priceDisplay}</span>
           {product.compareAtPrice && Number(product.compareAtPrice) > Number(selectedVariant.price) ? (
             <span className="text-gray-400 line-through text-[11px] sm:text-xs font-normal">

@@ -51,7 +51,7 @@ export const SaleView: React.FC<SaleViewProps> = ({ initialProducts = [] }) => {
       {/* Header: Conditionally display Bank Holiday Sale / Minimum 20% Off! / Discount applied at checkout ONLY if discounts exist */}
       {hasDiscounts ? (
         <div className="text-center pt-1 pb-5 sm:pb-6">
-          <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
+          <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-5xl font-extrabold text-[#0B1F3A] tracking-tight mb-1">
             Bank Holiday Sale
           </h1>
           <p className="font-['Barlow',sans-serif] text-lg sm:text-2xl font-bold text-[#0B1F3A] mb-1">
@@ -63,7 +63,7 @@ export const SaleView: React.FC<SaleViewProps> = ({ initialProducts = [] }) => {
         </div>
       ) : (
         <div className="text-center pt-1 pb-5 sm:pb-6">
-          <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-1">
+          <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-4xl lg:text-5xl font-extrabold text-[#0B1F3A] tracking-tight mb-1">
             All Fragrances
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 font-normal mt-1">
@@ -102,7 +102,7 @@ export const SaleView: React.FC<SaleViewProps> = ({ initialProducts = [] }) => {
       {displayedProducts.length > 0 && (
         <div className="mt-14 mb-4 text-center flex flex-col items-center justify-center">
           <p className="text-xs sm:text-sm text-gray-600 mb-3 font-['Poppins',sans-serif]">
-            You have seen <strong className="text-black font-bold">{displayedProducts.length}</strong> out of <strong className="text-black font-bold">{displayedProducts.length}</strong> products
+            You have seen <strong className="text-[#0B1F3A] font-bold">{displayedProducts.length}</strong> out of <strong className="text-[#0B1F3A] font-bold">{displayedProducts.length}</strong> products
           </p>
 
           <div className="w-48 sm:w-64 h-1 bg-gray-200 rounded-full overflow-hidden mb-6">

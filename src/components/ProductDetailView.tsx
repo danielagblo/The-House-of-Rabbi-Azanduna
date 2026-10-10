@@ -57,11 +57,11 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
     <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-6 sm:py-10 font-['Poppins',sans-serif]">
       {/* Breadcrumb */}
       <nav className="text-xs uppercase text-gray-400 mb-6 sm:mb-8 flex items-center gap-1.5 sm:gap-2 font-medium overflow-x-auto no-scrollbar whitespace-nowrap">
-        <a href="/" className="hover:text-black">Home</a>
+        <a href="/" className="hover:text-[#0B1F3A]">Home</a>
         <span>/</span>
-        <a href="/collections" className="hover:text-black">Collections</a>
+        <a href="/collections" className="hover:text-[#0B1F3A]">Collections</a>
         <span>/</span>
-        <span className="text-black font-bold truncate">{product.name}</span>
+        <span className="text-[#0B1F3A] font-bold truncate">{product.name}</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start">
@@ -93,7 +93,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                   key={idx}
                   onClick={() => setActiveImage(img)}
                   className={`w-16 h-20 sm:w-20 sm:h-24 shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                    activeImage === img ? 'border-black scale-105' : 'border-gray-200 opacity-60 hover:opacity-100'
+                    activeImage === img ? 'border-[#0B1F3A] scale-105' : 'border-gray-200 opacity-60 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
@@ -117,7 +117,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
               </span>
             </div>
 
-            <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
+            <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight leading-tight">
               {product.name}
             </h1>
             <p className="text-xs font-bold uppercase tracking-widest text-[#0B1F3A] mt-1">
@@ -127,7 +127,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
 
           {/* Price Strip */}
           <div className="flex items-baseline gap-3 pb-5 sm:pb-6 border-b border-gray-200 flex-wrap">
-            <span className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-extrabold text-black">
+            <span className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-extrabold text-[#0B1F3A]">
               GH₵{selectedVariant.price.toFixed(2)}
             </span>
             {product.compareAtPrice && Number(product.compareAtPrice) > selectedVariant.price ? (
@@ -245,15 +245,15 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       disabled={quantity <= 1 || isOutOfStock}
-                      className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-black font-bold disabled:opacity-30"
+                      className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-[#0B1F3A] font-bold disabled:opacity-30"
                     >
                       -
                     </button>
-                    <span className="px-2 sm:px-3 font-bold text-black text-sm">{quantity}</span>
+                    <span className="px-2 sm:px-3 font-bold text-[#0B1F3A] text-sm">{quantity}</span>
                     <button
                       onClick={() => setQuantity(Math.min(maxQty, quantity + 1))}
                       disabled={quantity >= maxQty || isOutOfStock}
-                      className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-black font-bold disabled:opacity-30"
+                      className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-[#0B1F3A] font-bold disabled:opacity-30"
                     >
                       +
                     </button>
@@ -324,7 +324,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
 
           {/* Care, Application & Precautions Accordion (Option 1) */}
           <div className="pt-6 border-t border-gray-200 space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-gray-900">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#0B1F3A]">
               Application & Fragrance Care
             </h4>
 
@@ -333,7 +333,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
               <button
                 type="button"
                 onClick={() => setOpenSection(openSection === 'apply' ? null : 'apply')}
-                className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-gray-900 hover:bg-gray-100/70 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-[#0B1F3A] hover:bg-gray-100/70 transition-colors cursor-pointer"
               >
                 <span className="flex items-center gap-2.5">
                   <Droplets size={16} className="text-[#0B1F3A]" />
@@ -342,7 +342,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 <ChevronDown
                   size={16}
                   className={`text-gray-400 transition-transform duration-200 ${
-                    openSection === 'apply' ? 'rotate-180 text-black' : ''
+                    openSection === 'apply' ? 'rotate-180 text-[#0B1F3A]' : ''
                   }`}
                 />
               </button>
@@ -360,7 +360,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
               <button
                 type="button"
                 onClick={() => setOpenSection(openSection === 'precautions' ? null : 'precautions')}
-                className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-gray-900 hover:bg-gray-100/70 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-[#0B1F3A] hover:bg-gray-100/70 transition-colors cursor-pointer"
               >
                 <span className="flex items-center gap-2.5">
                   <AlertCircle size={16} className="text-[#0B1F3A]" />
@@ -369,7 +369,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 <ChevronDown
                   size={16}
                   className={`text-gray-400 transition-transform duration-200 ${
-                    openSection === 'precautions' ? 'rotate-180 text-black' : ''
+                    openSection === 'precautions' ? 'rotate-180 text-[#0B1F3A]' : ''
                   }`}
                 />
               </button>
@@ -377,19 +377,19 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 <div className="px-4 pb-4 pt-2 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-200/60 bg-white">
                   <ul className="space-y-2 list-none">
                     <li className="flex items-start gap-2">
-                      <span className="font-semibold text-gray-900 shrink-0">• Distance:</span>
+                      <span className="font-semibold text-[#0B1F3A] shrink-0">• Distance:</span>
                       <span>Spray from roughly 30 cm (12 inches) away to ensure an even mist.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="font-semibold text-gray-900 shrink-0">• Fabrics:</span>
+                      <span className="font-semibold text-[#0B1F3A] shrink-0">• Fabrics:</span>
                       <span>Avoid direct contact with light or delicate textiles to prevent staining.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="font-semibold text-gray-900 shrink-0">• Sensitive Areas:</span>
+                      <span className="font-semibold text-[#0B1F3A] shrink-0">• Sensitive Areas:</span>
                       <span>Do not spray on irritated skin, eyes, or mucous membranes.</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="font-semibold text-gray-900 shrink-0">• Patch Test:</span>
+                      <span className="font-semibold text-[#0B1F3A] shrink-0">• Patch Test:</span>
                       <span>If you have sensitive skin, test a tiny amount on the inside of your wrist before full application.</span>
                     </li>
                   </ul>
@@ -402,7 +402,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
               <button
                 type="button"
                 onClick={() => setOpenSection(openSection === 'storage' ? null : 'storage')}
-                className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-gray-900 hover:bg-gray-100/70 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-semibold text-xs sm:text-sm text-[#0B1F3A] hover:bg-gray-100/70 transition-colors cursor-pointer"
               >
                 <span className="flex items-center gap-2.5">
                   <SunMedium size={16} className="text-[#0B1F3A]" />
@@ -411,7 +411,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 <ChevronDown
                   size={16}
                   className={`text-gray-400 transition-transform duration-200 ${
-                    openSection === 'storage' ? 'rotate-180 text-black' : ''
+                    openSection === 'storage' ? 'rotate-180 text-[#0B1F3A]' : ''
                   }`}
                 />
               </button>
@@ -430,7 +430,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
       {/* Fragrance Notes Breakdown */}
       {product.notes && product.notes.length > 0 && (
         <div className="mt-12 sm:mt-16 bg-gray-50 border border-gray-200 rounded-2xl p-5 sm:p-8">
-          <h3 className="font-['Barlow',sans-serif] text-xl sm:text-2xl font-bold text-black uppercase mb-4 sm:mb-6">
+          <h3 className="font-['Barlow',sans-serif] text-xl sm:text-2xl font-bold text-[#0B1F3A] uppercase mb-4 sm:mb-6">
             Fragrance Notes & Accord
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
@@ -439,7 +439,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 <span className="text-xs font-bold uppercase tracking-widest text-[#0B1F3A] block mb-1">
                   {note.layer} notes
                 </span>
-                <h4 className="font-bold text-black text-sm mb-1">{note.noteName}</h4>
+                <h4 className="font-bold text-[#0B1F3A] text-sm mb-1">{note.noteName}</h4>
                 {note.description && (
                   <p className="text-xs text-gray-500 font-light">{note.description}</p>
                 )}
@@ -452,7 +452,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
       {/* Recommended Pairings */}
       {relatedProducts && relatedProducts.length > 0 && (
         <div className="mt-12 sm:mt-16 border-t border-gray-200 pt-8 sm:pt-12">
-          <h3 className="font-['Barlow',sans-serif] text-xl sm:text-2xl font-bold text-black uppercase mb-6 sm:mb-8 text-center">
+          <h3 className="font-['Barlow',sans-serif] text-xl sm:text-2xl font-bold text-[#0B1F3A] uppercase mb-6 sm:mb-8 text-center">
             You May Also Like
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5 sm:gap-4">

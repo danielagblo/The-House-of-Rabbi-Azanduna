@@ -24,7 +24,7 @@ export const FragranceCarousel: React.FC<Props> = ({ products, showHeading = tru
       <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
         <div className={`flex items-center ${showHeading ? 'justify-between' : 'justify-end'} gap-4 mb-4`}>
           {showHeading && (
-            <h2 className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight">
+            <h2 className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-[#0B1F3A] uppercase tracking-tight">
               Fragrances
             </h2>
           )}
