@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Rabbi Micah Felix Azanduna, Founder">
-  <rect width="800" height="1000" fill="#0B1F3A"/>
-  <circle cx="400" cy="390" r="150" fill="none" stroke="#ffffff" stroke-width="3"/>
-  <text x="400" y="430" text-anchor="middle" fill="#ffffff" font-family="Georgia, serif" font-size="140">M</text>
-  <text x="400" y="640" text-anchor="middle" fill="#ffffff" font-family="Georgia, serif" font-size="42" letter-spacing="6">RABBI MICAH</text>
-  <text x="400" y="700" text-anchor="middle" fill="#ffffff" font-family="Georgia, serif" font-size="42" letter-spacing="6">FELIX AZANDUNA</text>
-  <line x1="280" y1="760" x2="520" y2="760" stroke="#ffffff" stroke-width="3"/>
-  <text x="400" y="820" text-anchor="middle" fill="#ffffff" font-family="Georgia, serif" font-size="28" letter-spacing="8">FOUNDER</text>
-</svg>

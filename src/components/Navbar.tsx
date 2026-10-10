@@ -36,8 +36,9 @@ export const Navbar: React.FC = () => {
           {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
 
-        <a href="/" className="shrink-0">
-          <span className="font-['Montserrat',sans-serif] text-[15px] min-[390px]:text-lg sm:text-[20px] font-bold tracking-[0.14em] sm:tracking-[0.18em] text-[#0B1F3A] uppercase">
+        <a href="/" className="shrink-0 flex items-center gap-2" aria-label="The House of Rabbi Azanduna">
+          <img src="/logo.png" alt="" className="h-10 sm:h-12 w-auto" />
+          <span className="hidden min-[480px]:inline font-['Montserrat',sans-serif] text-[15px] sm:text-[20px] font-bold tracking-[0.14em] sm:tracking-[0.18em] text-[#0B1F3A] uppercase">
             Rabbi Azanduna
           </span>
         </a>
