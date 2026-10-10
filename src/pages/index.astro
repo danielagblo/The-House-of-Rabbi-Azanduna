@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AboutStory from '../components/AboutStory.astro';
 import { HeroCarousel } from '../components/HeroCarousel';
-import { FragranceCarousel } from '../components/FragranceCarousel';
 import { getProducts } from '../lib/db';
 import type { Product } from '../types';
 
@@ -12,27 +12,21 @@ try {
 } catch (e) {
   console.error('Error fetching homepage fragrances:', e);
 }
+
+if (!products.length) {
+  try {
+    const response = await fetch('https://rabbiazanduna.vercel.app/api/products');
+    if (response.ok) {
+      const data = await response.json();
+      if (Array.isArray(data)) products = data;
+    }
+  } catch (e) {
+    console.error('Error fetching published fragrances for the hero:', e);
+  }
+}
 ---
 
 <Layout title="The House of Rabbi Azanduna">
   <HeroCarousel client:load products={products} />
-
-  <section class="pt-10 sm:pt-14 pb-8 sm:pb-10 px-3.5 sm:px-6 lg:px-8 max-w-3xl mx-auto text-center">
-    <h1 class="font-['Barlow_Condensed',sans-serif] text-[36px] sm:text-[52px] font-bold text-[#0B1F3A] leading-tight">
-      Sacred Wisdom, Bottled.
-    </h1>
-    <div class="mt-5 space-y-4 text-sm sm:text-[15px] text-[#0B1F3A]/80 leading-relaxed">
-      <p>
-        Welcome to The House of Rabbi Azanduna—a luxury Ghanaian perfume house where ancient spiritual heritage meets haute parfumerie.
-      </p>
-      <p>
-        Founded by Rabbi Micah Felix Azanduna, our family-owned atelier crafts fine fragrances inspired by biblical wisdom, sacred doctrines, and timeless philosophy. Operating from Ghana, we blend precious resins, rare botanicals, and rich aromatics to transform scent into a deeply personal ritual of reverence, elegance, and purpose.
-      </p>
-      <p class="font-medium text-[#0B1F3A]">
-        Discover fragrances with soul, crafted for the extraordinary.
-      </p>
-    </div>
-  </section>
-
-  <FragranceCarousel client:load products={products} />
+  <AboutStory />
 </Layout>

@@ -5,9 +5,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Props {
   products: Product[];
+  showHeading?: boolean;
 }
 
-export const FragranceCarousel: React.FC<Props> = ({ products }) => {
+export const FragranceCarousel: React.FC<Props> = ({ products, showHeading = true }) => {
   const scroller = useRef<HTMLDivElement>(null);
 
   const move = (direction: number) => {
@@ -19,12 +20,14 @@ export const FragranceCarousel: React.FC<Props> = ({ products }) => {
   if (!products.length) return null;
 
   return (
-    <section className="pb-14 sm:pb-16" aria-label="Fragrances">
+    <section className="pb-10 sm:pb-12" aria-label="Fragrances">
       <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between gap-4 mb-4">
-          <h2 className="font-['Barlow_Condensed',sans-serif] text-[28px] sm:text-[36px] font-bold text-[#0B1F3A]">
-            Fragrances
-          </h2>
+        <div className={`flex items-center ${showHeading ? 'justify-between' : 'justify-end'} gap-4 mb-4`}>
+          {showHeading && (
+            <h2 className="font-['Barlow',sans-serif] text-2xl sm:text-3xl font-bold text-black uppercase tracking-tight">
+              Fragrances
+            </h2>
+          )}
           <div className="flex items-center gap-2">
             <button
               type="button"
