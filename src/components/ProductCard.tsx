@@ -101,10 +101,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
       </a>
 
       {variants.length > 0 && (
-        <div className="mt-2" role="group" aria-label={`Select volume for ${product.name}`}>
-          <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-gray-500 text-center mb-1">
-            Volume
-          </p>
+        <div className="mt-2" role="group" aria-label={`Select size for ${product.name}`}>
           <div className={`grid gap-1.5 ${variants.length >= 3 ? 'grid-cols-3' : variants.length === 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
             {variants.map((variant) => {
               const variantStock = variant.stockQuantity !== undefined

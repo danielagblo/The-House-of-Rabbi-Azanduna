@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Product, Collection, Order, BlogPost, FAQ } from '../../types';
 import { API_BASE_URL } from '../../config/api';
+import { HOMEPAGE_IMAGE_DEFAULTS, HOMEPAGE_IMAGE_FIELDS, type HomepageImages } from '../../lib/homepage';
 import { 
   Lock, KeyRound, Eye, EyeOff, LogOut, Package, Layers, 
   ShoppingBag, Plus, Edit2, Trash2, CheckCircle2, AlertCircle, 
@@ -208,6 +209,8 @@ export const AdminPortal: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<'products' | 'hero' | 'collections' | 'blogs' | 'faqs' | 'orders' | 'overview'>('hero');
   const [products, setProducts] = useState<Product[]>([]);
+  const [homeImages, setHomeImages] = useState<HomepageImages>({ ...HOMEPAGE_IMAGE_DEFAULTS });
+  const [savingHomeImage, setSavingHomeImage] = useState<string | null>(null);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -323,6 +326,14 @@ export const AdminPortal: React.FC = () => {
         }
       }
       setProducts(loadedProducts);
+
+      const homeRes = await fetch(`${API_BASE_URL}/api/homepage-images`);
+      if (homeRes.ok) {
+        const homeData = await homeRes.json();
+        if (homeData?.founder && homeData?.story && homeData?.philosophy) {
+          setHomeImages(homeData);
+        }
+      }
 
       // Stats (Protected)
       const statsRes = await fetch(`${API_BASE_URL}/api/admin/stats`, {
@@ -492,6 +503,25 @@ export const AdminPortal: React.FC = () => {
         current.map((item) => (item.id === prod.id ? { ...item, showInHero: !next } : item))
       );
       showToast('Could not update the homepage hero', 'error');
+    }
+  };
+
+  const handleSaveHomeImage = async (key: keyof HomepageImages) => {
+    setSavingHomeImage(key);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/homepage-images`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ [key]: homeImages[key] }),
+      });
+      if (!res.ok) throw new Error('save failed');
+      const saved = await res.json();
+      if (saved?.founder) setHomeImages(saved);
+      showToast('Homepage photo updated');
+    } catch {
+      showToast('Could not save that homepage photo', 'error');
+    } finally {
+      setSavingHomeImage(null);
     }
   };
 
@@ -1357,6 +1387,39 @@ export const AdminPortal: React.FC = () => {
 
         {activeTab === 'hero' && (
           <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">Homepage photos</h2>
+              <p className="text-sm text-gray-500 mt-1">
+                Replace the owner portrait and the two story photos. Upload a new picture, then save that photo.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              {HOMEPAGE_IMAGE_FIELDS.map((field) => (
+                <div key={field.key} className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs space-y-3">
+                  <div>
+                    <p className="font-bold text-sm text-gray-900">{field.label}</p>
+                    <p className="text-[11px] text-gray-500">{field.help}</p>
+                  </div>
+                  {homeImages[field.key] && (
+                    <img src={homeImages[field.key]} alt="" className="w-full h-36 object-cover rounded-lg bg-gray-100" />
+                  )}
+                  <ImageUploadField
+                    label="Replacement"
+                    value={homeImages[field.key]}
+                    onChange={(value) => setHomeImages((current) => ({ ...current, [field.key]: value }))}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleSaveHomeImage(field.key)}
+                    disabled={savingHomeImage === field.key}
+                    className="w-full px-3 py-2 rounded-lg bg-[#e62b32] text-white text-[11px] font-bold uppercase tracking-wider cursor-pointer disabled:opacity-60"
+                  >
+                    {savingHomeImage === field.key ? 'Saving...' : 'Save photo'}
+                  </button>
+                </div>
+              ))}
+            </div>
+
             <div>
               <h2 className="text-xl font-bold text-gray-900">Homepage hero</h2>
               <p className="text-sm text-gray-500 mt-1">

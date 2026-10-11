@@ -2,6 +2,7 @@ import 'dotenv/config';
 import mysql from 'mysql2/promise';
 import type { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 import type { Collection, Product, FragranceNote, ProductVariant, Review, Order, OrderItem, BlogPost, FAQ } from '../types';
+import { HOMEPAGE_IMAGE_DEFAULTS, type HomepageImageKey, type HomepageImages } from './homepage';
 
 let pool: mysql.Pool | null = null;
 let heroColumnReady = false;
@@ -929,6 +930,68 @@ export async function updateOrderStatus(reference: string, status: string, payst
 
   values.push(reference);
   await db.query(`UPDATE orders SET ${fields.join(', ')} WHERE reference = ?`, values);
+}
+
+// ----------------- Homepage images -----------------
+
+const HOMEPAGE_SETTING_KEYS: Record<HomepageImageKey, string> = {
+  founder: 'home_founder',
+  story: 'home_story',
+  philosophy: 'home_philosophy',
+};
+
+let homepageTableReady = false;
+
+async function ensureHomepageTable() {
+  if (homepageTableReady) return;
+  const db = getPool();
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS site_settings (
+        setting_key varchar(100) NOT NULL,
+        setting_value longtext,
+        updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (setting_key)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+  } catch (err: any) {
+    console.error('Could not prepare homepage images:', err?.message || err);
+  }
+  homepageTableReady = true;
+}
+
+export async function getHomepageImages(): Promise<HomepageImages> {
+  await ensureHomepageTable();
+  const db = getPool();
+  const keys = Object.values(HOMEPAGE_SETTING_KEYS);
+  const [rows] = await db.query<RowDataPacket[]>(
+    `SELECT setting_key, setting_value FROM site_settings WHERE setting_key IN (${keys.map(() => '?').join(', ')})`,
+    keys
+  );
+  const images: HomepageImages = { ...HOMEPAGE_IMAGE_DEFAULTS };
+  for (const row of rows) {
+    const match = (Object.entries(HOMEPAGE_SETTING_KEYS) as [HomepageImageKey, string][])
+      .find(([, settingKey]) => settingKey === row.setting_key);
+    if (match && row.setting_value) images[match[0]] = String(row.setting_value);
+  }
+  return images;
+}
+
+export async function saveHomepageImages(updates: Partial<HomepageImages>): Promise<HomepageImages> {
+  await ensureHomepageTable();
+  const db = getPool();
+  const now = new Date();
+  for (const [key, settingKey] of Object.entries(HOMEPAGE_SETTING_KEYS) as [HomepageImageKey, string][]) {
+    if (updates[key] === undefined) continue;
+    const value = updates[key] || HOMEPAGE_IMAGE_DEFAULTS[key];
+    await db.query(
+      `INSERT INTO site_settings (setting_key, setting_value, updated_at)
+       VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_at = VALUES(updated_at)`,
+      [settingKey, value, now]
+    );
+  }
+  return getHomepageImages();
 }
 
 // ----------------- Admin Portal & Stats Operations -----------------

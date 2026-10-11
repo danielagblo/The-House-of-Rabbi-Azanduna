@@ -190,6 +190,17 @@ export const TABLE_SCHEMAS = [
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `,
   },
+  {
+    name: 'site_settings',
+    sql: `
+      CREATE TABLE IF NOT EXISTS \`site_settings\` (
+        \`setting_key\` varchar(100) NOT NULL,
+        \`setting_value\` longtext,
+        \`updated_at\` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (\`setting_key\`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `,
+  },
 ];
 
 export async function setupDatabase(config) {

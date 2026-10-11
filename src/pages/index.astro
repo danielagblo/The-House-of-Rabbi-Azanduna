@@ -2,7 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import AboutStory from '../components/AboutStory.astro';
 import { HeroCarousel } from '../components/HeroCarousel';
-import { getProducts } from '../lib/db';
+import { getHomepageImages, getProducts } from '../lib/db';
+import { HOMEPAGE_IMAGE_DEFAULTS, type HomepageImages } from '../lib/homepage';
 import type { Product } from '../types';
 
 let products: Product[] = [];
@@ -11,6 +12,14 @@ try {
   products = await getProducts();
 } catch (e) {
   console.error('Error fetching homepage fragrances:', e);
+}
+
+let homeImages: HomepageImages = { ...HOMEPAGE_IMAGE_DEFAULTS };
+
+try {
+  homeImages = await getHomepageImages();
+} catch (e) {
+  console.error('Error fetching homepage images:', e);
 }
 
 if (!products.length) {
@@ -33,7 +42,7 @@ if (!products.length) {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-14 items-center">
       <div class="mx-auto w-full max-w-xs aspect-[35/45] rounded-2xl overflow-hidden bg-white shadow-md">
         <img
-          src="/founder.jpg"
+          src={homeImages.founder}
           alt="Rabbi Micah Felix Azanduna, Founder"
           class="w-full h-full object-cover object-center"
         />
@@ -59,5 +68,5 @@ if (!products.length) {
     </div>
   </section>
 
-  <AboutStory />
+  <AboutStory storyImage={homeImages.story} philosophyImage={homeImages.philosophy} />
 </Layout>
