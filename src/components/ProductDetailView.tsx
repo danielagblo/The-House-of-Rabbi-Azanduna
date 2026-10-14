@@ -41,6 +41,13 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
     }
   }, [product?.imageUrl]);
 
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get('volume');
+    if (!requested || !product.variants?.length) return;
+    const match = product.variants.find((variant) => variant.size === requested);
+    if (match) setSelectedVariant(match);
+  }, [product.variants]);
+
   const handleAddToCart = () => {
     cartStore.addItem(product, selectedVariant, quantity);
     setIsAdded(true);
