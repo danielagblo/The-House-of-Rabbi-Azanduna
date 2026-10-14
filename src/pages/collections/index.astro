@@ -16,9 +16,19 @@ try {
 
 if (search) {
   const needle = search.toLowerCase();
-  products = products.filter((product) =>
-    `${product.name} ${product.subtitle} ${product.description}`.toLowerCase().includes(needle)
-  );
+  products = products.filter((product) => {
+    const notes = (product.notes || []).map((note) => `${note.noteName} ${note.description || ''}`).join(' ');
+    const haystack = [
+      product.name,
+      product.subtitle,
+      product.description,
+      product.scentFamily,
+      product.concentration,
+      product.collection?.name,
+      notes,
+    ].join(' ').toLowerCase();
+    return haystack.includes(needle);
+  });
 }
 
 const perfumes = products.filter((product) => !isAttar(product));
@@ -46,23 +56,29 @@ const sections = [
       )}
     </div>
 
-    {sections.map((section) => (
-      <section class="mb-12">
-        <h2 class="font-['Barlow_Condensed',sans-serif] text-[26px] sm:text-[32px] font-bold text-[#0B1F3A] mb-4 text-center">
-          {section.title}
-        </h2>
-        {section.items.length > 0 ? (
-          <div class="mx-auto flex max-w-3xl flex-wrap justify-center gap-x-5 gap-y-8">
-            {section.items.map((product) => (
-              <div class="w-full max-w-sm sm:w-[calc((100%-2.5rem)/3)] sm:max-w-none">
-                <ProductCard client:load product={product} />
+    {search && products.length === 0 ? (
+      <p class="text-center text-sm text-gray-500">No fragrances match “{search}”.</p>
+    ) : (
+      sections.map((section) => (
+        search && section.items.length === 0 ? null : (
+          <section class="mb-12">
+            <h2 class="font-['Barlow_Condensed',sans-serif] text-[26px] sm:text-[32px] font-bold text-[#0B1F3A] mb-4 text-center">
+              {section.title}
+            </h2>
+            {section.items.length > 0 ? (
+              <div class="mx-auto flex max-w-3xl flex-wrap justify-center gap-x-5 gap-y-8">
+                {section.items.map((product) => (
+                  <div class="w-full max-w-sm sm:w-[calc((100%-2.5rem)/3)] sm:max-w-none">
+                    <ProductCard client:load product={product} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : (
-          <p class="text-sm text-gray-500">Nothing in this section yet.</p>
-        )}
-      </section>
-    ))}
+            ) : (
+              <p class="text-sm text-gray-500 text-center">Nothing in this section yet.</p>
+            )}
+          </section>
+        )
+      ))
+    )}
   </div>
 </Layout>
