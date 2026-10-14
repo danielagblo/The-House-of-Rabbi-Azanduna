@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const WHATSAPP_NUMBER = '233554405880';
+const WHATSAPP_NUMBER = '233555181555';
 
 export const ContactForm: React.FC = () => {
   const [name, setName] = useState('');
@@ -64,7 +64,7 @@ export const ContactForm: React.FC = () => {
         Send on WhatsApp
       </button>
       {status === 'sent' && (
-        <p className="text-sm text-[#0B1F3A]">WhatsApp is open with your message. Tap send to reach us on 0554405880.</p>
+        <p className="text-sm text-[#0B1F3A]">WhatsApp is open with your message. Tap send to reach us on 0555181555.</p>
       )}
     </form>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Product, ProductVariant } from '../types';
-import { Star, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { cartStore } from '../store/cartStore';
 
 interface Props {
@@ -42,8 +42,6 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
   const savings = product.compareAtPrice && product.compareAtPrice > product.price
     ? (product.compareAtPrice - product.price).toFixed(2)
     : null;
-
-  const priceDisplay = `GH₵${Number(selectedVariant.price || product.price).toFixed(2)}`;
 
   return (
     <div className="group flex flex-col bg-transparent">
@@ -102,7 +100,7 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
 
       {variants.length > 0 && (
         <div className="mt-2" role="group" aria-label={`Select size for ${product.name}`}>
-          <div className={`grid gap-1.5 ${variants.length >= 3 ? 'grid-cols-3' : variants.length === 2 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+          <div className="flex flex-col gap-1">
             {variants.map((variant) => {
               const variantStock = variant.stockQuantity !== undefined
                 ? Number(variant.stockQuantity)
@@ -119,14 +117,14 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
                     setSelectedVariant(variant);
                     setIsAdded(false);
                   }}
-                  className={`rounded-md border px-0.5 py-1 text-center transition-colors cursor-pointer ${
+                  className={`flex items-center justify-between gap-2 rounded-md border px-2 py-1 text-left transition-colors cursor-pointer ${
                     isSelected
                       ? 'bg-[#0B1F3A] text-white border-[#0B1F3A]'
                       : 'bg-white text-gray-800 border-gray-300 hover:border-[#0B1F3A]'
                   } ${variantOut ? 'opacity-50' : ''}`}
                 >
-                  <span className="block text-[10px] sm:text-[11px] font-bold leading-tight">{volumeLabel(variant.size)}</span>
-                  <span className={`block text-[9px] sm:text-[10px] leading-tight ${isSelected ? 'text-white/80' : 'text-gray-500'}`}>
+                  <span className="text-[11px] font-bold leading-none">{volumeLabel(variant.size)}</span>
+                  <span className={`text-[11px] font-bold leading-none whitespace-nowrap ${isSelected ? 'text-white' : 'text-[#0B1F3A]'}`}>
                     GH₵{Number(variant.price).toFixed(0)}
                   </span>
                 </button>
@@ -176,27 +174,6 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
           </h3>
         </a>
 
-        {/* Star Ratings (Red/Amber stars + review count) */}
-        <div className="flex items-center justify-center gap-1 my-1">
-          <div className="flex text-[#0B1F3A]">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={11} fill="currentColor" />
-            ))}
-          </div>
-          <span className="text-[11px] sm:text-[12px] text-gray-500 font-normal ml-0.5">
-            {product.reviewCount || 48} reviews
-          </span>
-        </div>
-
-        {/* Price & Strikethrough Discount Price */}
-        <div className="font-['Barlow',sans-serif] text-[13px] sm:text-[15px] font-bold text-[#0B1F3A] flex items-center justify-center gap-1.5 flex-wrap">
-          <span>{priceDisplay}</span>
-          {product.compareAtPrice && Number(product.compareAtPrice) > Number(selectedVariant.price) ? (
-            <span className="text-gray-400 line-through text-[11px] sm:text-xs font-normal">
-              GH₵{Number(product.compareAtPrice).toFixed(2)}
-            </span>
-          ) : null}
-        </div>
       </div>
     </div>
   );

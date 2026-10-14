@@ -308,18 +308,24 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
 
           {/* Guarantees */}
           <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-2.5 sm:gap-3 pt-5 sm:pt-6 border-t border-gray-200 text-xs text-gray-600 font-medium">
-            <div className="flex items-center gap-2">
-              <Sparkles size={18} className="text-[#0B1F3A] shrink-0" />
-              <span>Authentic Aged Oud</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <ShieldCheck size={18} className="text-[#0B1F3A] shrink-0" />
-              <span>Paystack Secured</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <RefreshCw size={18} className="text-[#0B1F3A] shrink-0" />
-              <span>100% Pure Perfume Oil</span>
-            </div>
+            {product.highlightOne !== '' && (
+              <div className="flex items-center gap-2">
+                <Sparkles size={18} className="text-[#0B1F3A] shrink-0" />
+                <span>{product.highlightOne || 'Authentic Aged Oud'}</span>
+              </div>
+            )}
+            {product.highlightTwo !== '' && (
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={18} className="text-[#0B1F3A] shrink-0" />
+                <span>{product.highlightTwo || 'Paystack Secured'}</span>
+              </div>
+            )}
+            {product.highlightThree !== '' && (
+              <div className="flex items-center gap-2">
+                <RefreshCw size={18} className="text-[#0B1F3A] shrink-0" />
+                <span>{product.highlightThree || '100% Pure Perfume Oil'}</span>
+              </div>
+            )}
           </div>
 
           {/* Care, Application & Precautions Accordion (Option 1) */}

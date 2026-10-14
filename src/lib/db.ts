@@ -6,6 +6,27 @@ import { HOMEPAGE_IMAGE_DEFAULTS, type HomepageImageKey, type HomepageImages } f
 
 let pool: mysql.Pool | null = null;
 let heroColumnReady = false;
+let detailColumnsReady = false;
+
+async function ensureDetailColumns() {
+  if (detailColumnsReady) return;
+  const db = getPool();
+  const columns = [
+    "ALTER TABLE products ADD COLUMN highlight_one varchar(160) NOT NULL DEFAULT 'Authentic Aged Oud'",
+    "ALTER TABLE products ADD COLUMN highlight_two varchar(160) NOT NULL DEFAULT 'Paystack Secured'",
+    "ALTER TABLE products ADD COLUMN highlight_three varchar(160) NOT NULL DEFAULT '100% Pure Perfume Oil'",
+  ];
+  for (const sql of columns) {
+    try {
+      await db.query(sql);
+    } catch (err: any) {
+      if (err?.code !== 'ER_DUP_FIELDNAME') {
+        console.error('Could not add product detail column:', err?.message || err);
+      }
+    }
+  }
+  detailColumnsReady = true;
+}
 
 async function ensureHeroColumn() {
   if (heroColumnReady) return;
@@ -87,6 +108,9 @@ function mapProduct(row: any): Product {
     isBestSeller: Boolean(row.is_best_seller),
     isNew: Boolean(row.is_new),
     showInHero: row.show_in_hero === undefined || row.show_in_hero === null ? true : Boolean(row.show_in_hero),
+    highlightOne: row.highlight_one === undefined || row.highlight_one === null ? 'Authentic Aged Oud' : row.highlight_one,
+    highlightTwo: row.highlight_two === undefined || row.highlight_two === null ? 'Paystack Secured' : row.highlight_two,
+    highlightThree: row.highlight_three === undefined || row.highlight_three === null ? '100% Pure Perfume Oil' : row.highlight_three,
     inStock: Boolean(row.in_stock),
     stockQuantity: row.stock_quantity !== undefined && row.stock_quantity !== null ? Number(row.stock_quantity) : 50,
     notes: [],
@@ -352,6 +376,7 @@ export interface ProductFilter {
 
 export async function getProducts(filter: ProductFilter = {}): Promise<Product[]> {
   await ensureHeroColumn();
+  await ensureDetailColumns();
   const db = getPool();
   let sql = 'SELECT p.*, c.name as collection_name, c.slug as collection_slug FROM products p LEFT JOIN collections c ON p.collection_id = c.id WHERE 1=1';
   const params: any[] = [];
@@ -455,6 +480,7 @@ export async function getProducts(filter: ProductFilter = {}): Promise<Product[]
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
+  await ensureDetailColumns();
   const db = getPool();
   const [rows] = await db.query<RowDataPacket[]>(
     'SELECT p.*, c.name as collection_name, c.slug as collection_slug FROM products p LEFT JOIN collections c ON p.collection_id = c.id WHERE p.slug = ? LIMIT 1',
@@ -522,6 +548,7 @@ export async function getProductById(id: number): Promise<Product | null> {
 
 export async function createProduct(prod: any): Promise<Product> {
   await ensureHeroColumn();
+  await ensureDetailColumns();
   const db = getPool();
   const now = new Date();
   const stockQty = prod.stockQuantity !== undefined ? Number(prod.stockQuantity) : (prod.stock_quantity !== undefined ? Number(prod.stock_quantity) : 50);
@@ -531,8 +558,8 @@ export async function createProduct(prod: any): Promise<Product> {
     `INSERT INTO products (
       collection_id, name, slug, subtitle, description, concentration, scent_family,
       gender, sillage, longevity, price, compare_at_price, image_url, hover_image_url,
-      rating, review_count, is_best_seller, is_new, show_in_hero, in_stock, stock_quantity, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      rating, review_count, is_best_seller, is_new, show_in_hero, highlight_one, highlight_two, highlight_three, in_stock, stock_quantity, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       prod.collectionId || prod.collection_id || 1,
       prod.name,
@@ -553,6 +580,9 @@ export async function createProduct(prod: any): Promise<Product> {
       prod.isBestSeller || prod.is_best_seller ? 1 : 0,
       prod.isNew || prod.is_new ? 1 : 0,
       prod.showInHero === false || prod.show_in_hero === false || prod.show_in_hero === 0 ? 0 : 1,
+      prod.highlightOne ?? prod.highlight_one ?? 'Authentic Aged Oud',
+      prod.highlightTwo ?? prod.highlight_two ?? 'Paystack Secured',
+      prod.highlightThree ?? prod.highlight_three ?? '100% Pure Perfume Oil',
       inStockVal,
       stockQty,
       now,
@@ -587,6 +617,7 @@ export async function createProduct(prod: any): Promise<Product> {
 
 export async function updateProduct(id: number, updates: any): Promise<Product | null> {
   await ensureHeroColumn();
+  await ensureDetailColumns();
   const db = getPool();
   const fields: string[] = [];
   const values: any[] = [];
@@ -620,6 +651,12 @@ export async function updateProduct(id: number, updates: any): Promise<Product |
     is_new: 'is_new',
     showInHero: 'show_in_hero',
     show_in_hero: 'show_in_hero',
+    highlightOne: 'highlight_one',
+    highlight_one: 'highlight_one',
+    highlightTwo: 'highlight_two',
+    highlight_two: 'highlight_two',
+    highlightThree: 'highlight_three',
+    highlight_three: 'highlight_three',
     inStock: 'in_stock',
     in_stock: 'in_stock',
     stockQuantity: 'stock_quantity',

@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import type { BlogPost } from '../../types';
 import { getBlogPostBySlug } from '../../lib/db';
+import { renderBlogHtml } from '../../lib/blogContent';
 
 const { slug } = Astro.params;
 
@@ -30,7 +31,7 @@ try {
   console.error('Error fetching blog post for SSR:', e);
 }
 
-const paragraphs = post.content ? post.content.split('\n\n') : [post.excerpt];
+const articleHtml = renderBlogHtml(post.content || post.excerpt || '');
 const currentUrl = `https://rabbiazanduna.com/blog/${post.slug}`;
 const shareText = encodeURIComponent(post.title);
 ---
@@ -56,11 +57,10 @@ const shareText = encodeURIComponent(post.title);
 
   {/* 2. Article Content Body */}
   <article class="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 py-8 sm:py-14 bg-white">
-    <div class="space-y-6 text-[14.5px] sm:text-[15.5px] text-[#2c2c2c] leading-relaxed font-normal">
-      {paragraphs.map((p) => (
-        <p>{p}</p>
-      ))}
-    </div>
+    <div
+      class="blog-article space-y-4 text-[14.5px] sm:text-[15.5px] text-[#2c2c2c] leading-relaxed font-normal [&_h2]:mt-8 [&_h2]:font-['Barlow',sans-serif] [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:uppercase [&_h2]:text-[#0B1F3A] [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-[#0B1F3A] [&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:my-4 [&_blockquote]:border-l-4 [&_blockquote]:border-[#0B1F3A] [&_blockquote]:pl-4 [&_blockquote]:italic [&_a]:text-[#0B1F3A] [&_a]:underline"
+      set:html={articleHtml}
+    />
 
     {/* 3. Share on: Row with social media icons */}
     <div class="mt-12 pt-6 border-t border-gray-100 flex flex-wrap items-center gap-4 sm:gap-6 text-gray-800 text-[13.5px]">

@@ -61,6 +61,9 @@ export interface Product {
   isBestSeller: boolean;
   isNew: boolean;
   showInHero?: boolean;
+  highlightOne?: string;
+  highlightTwo?: string;
+  highlightThree?: string;
   inStock: boolean;
   stockQuantity?: number;
   notes: FragranceNote[];

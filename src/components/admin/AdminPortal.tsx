@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { Product, Collection, Order, BlogPost, FAQ } from '../../types';
 import { API_BASE_URL } from '../../config/api';
 import { HOMEPAGE_IMAGE_DEFAULTS, HOMEPAGE_IMAGE_FIELDS, type HomepageImages } from '../../lib/homepage';
+import { BlogEditor } from './BlogEditor';
 import { 
   Lock, KeyRound, Eye, EyeOff, LogOut, Package, Layers, 
   ShoppingBag, Plus, Edit2, Trash2, CheckCircle2, AlertCircle, 
@@ -395,11 +396,19 @@ export const AdminPortal: React.FC = () => {
       scentFamily: 'Oud',
       gender: 'Unisex',
       concentration: 'Pure Perfume Oil',
+      highlightOne: 'Authentic Aged Oud',
+      highlightTwo: 'Paystack Secured',
+      highlightThree: '100% Pure Perfume Oil',
       isBestSeller: false,
       isNew: true,
       showInHero: true,
       inStock: true,
       stockQuantity: 50,
+      notes: [
+        { layer: 'top', noteName: '', description: '' },
+        { layer: 'heart', noteName: '', description: '' },
+        { layer: 'base', noteName: '', description: '' },
+      ],
       variants: [
         { size: '6ml Crystal Flacon', price: 35.0, inStock: true, stockQuantity: 30 },
         { size: '12ml Royal Flacon', price: 60.0, inStock: true, stockQuantity: 20 },
@@ -432,11 +441,13 @@ export const AdminPortal: React.FC = () => {
       reviewCount: editingProduct.reviewCount || 1,
       stockQuantity: stockQty,
       inStock: inStockVal,
-      notes: editingProduct.notes || [
-        { layer: 'top', noteName: 'Sun-Dried Bergamot & Saffron', description: 'Opening' },
-        { layer: 'heart', noteName: 'Artisanal Agarwood & Rose', description: 'Heart' },
-        { layer: 'base', noteName: 'Smoked Ambergris & Sandalwood', description: 'Base' },
-      ],
+      notes: (editingProduct.notes || [])
+        .filter((note) => (note.noteName || '').trim())
+        .map((note) => ({
+          layer: note.layer || 'top',
+          noteName: note.noteName.trim(),
+          description: (note.description || '').trim(),
+        })),
       variants: (editingProduct.variants && editingProduct.variants.length > 0
         ? editingProduct.variants
         : [
@@ -2058,9 +2069,120 @@ export const AdminPortal: React.FC = () => {
                     rows={3}
                     value={editingProduct.description || ''}
                     onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-                    placeholder="Fragrance profile, notes, and characteristics..."
+                    placeholder="Fragrance profile and characteristics..."
                     className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 shadow-2xs"
                   />
+                </div>
+
+                <div className="bg-gray-50/90 border border-gray-200 rounded-xl p-4 space-y-3">
+                  <div>
+                    <label className="text-gray-900 font-bold uppercase text-xs block">Details under the buy button</label>
+                    <p className="text-[11px] text-gray-500">These three lines are saved on this fragrance only. Clear a line to hide it.</p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-gray-700 font-bold uppercase mb-1">Detail 1</label>
+                      <input
+                        type="text"
+                        value={editingProduct.highlightOne ?? 'Authentic Aged Oud'}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, highlightOne: e.target.value })}
+                        className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-bold uppercase mb-1">Detail 2</label>
+                      <input
+                        type="text"
+                        value={editingProduct.highlightTwo ?? 'Paystack Secured'}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, highlightTwo: e.target.value })}
+                        className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 font-bold uppercase mb-1">Detail 3</label>
+                      <input
+                        type="text"
+                        value={editingProduct.highlightThree ?? '100% Pure Perfume Oil'}
+                        onChange={(e) => setEditingProduct({ ...editingProduct, highlightThree: e.target.value })}
+                        className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50/90 border border-gray-200 rounded-xl p-4 space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <label className="text-gray-900 font-bold uppercase text-xs block">Fragrance Notes &amp; Accord</label>
+                      <p className="text-[11px] text-gray-500">Shown on the product page. Each row is one note and its accord.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const notes = editingProduct.notes || [];
+                        setEditingProduct({
+                          ...editingProduct,
+                          notes: [...notes, { layer: 'heart', noteName: '', description: '' }],
+                        });
+                      }}
+                      className="text-[11px] font-bold text-[#e62b32] hover:text-[#cf2229] flex items-center gap-1 cursor-pointer shrink-0"
+                    >
+                      <Plus size={12} /> Add note
+                    </button>
+                  </div>
+                  {(editingProduct.notes || []).map((note, idx) => (
+                    <div key={idx} className="grid grid-cols-1 sm:grid-cols-[140px_1fr_1fr_auto] gap-2 items-start">
+                      <select
+                        value={note.layer || 'top'}
+                        onChange={(e) => {
+                          const notes = [...(editingProduct.notes || [])];
+                          notes[idx] = { ...notes[idx], layer: e.target.value as 'top' | 'heart' | 'base' };
+                          setEditingProduct({ ...editingProduct, notes });
+                        }}
+                        className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                      >
+                        <option value="top">Top notes</option>
+                        <option value="heart">Heart notes</option>
+                        <option value="base">Base notes</option>
+                      </select>
+                      <input
+                        type="text"
+                        value={note.noteName || ''}
+                        onChange={(e) => {
+                          const notes = [...(editingProduct.notes || [])];
+                          notes[idx] = { ...notes[idx], noteName: e.target.value };
+                          setEditingProduct({ ...editingProduct, notes });
+                        }}
+                        placeholder="Fragrance note"
+                        className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                      />
+                      <input
+                        type="text"
+                        value={note.description || ''}
+                        onChange={(e) => {
+                          const notes = [...(editingProduct.notes || [])];
+                          notes[idx] = { ...notes[idx], description: e.target.value };
+                          setEditingProduct({ ...editingProduct, notes });
+                        }}
+                        placeholder="Accord"
+                        className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const notes = (editingProduct.notes || []).filter((_, noteIndex) => noteIndex !== idx);
+                          setEditingProduct({ ...editingProduct, notes });
+                        }}
+                        className="text-gray-400 hover:text-red-600 p-2 cursor-pointer"
+                        title="Remove note"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+                  {(editingProduct.notes || []).length === 0 && (
+                    <p className="text-[11px] text-gray-500">No notes yet. Add a top, heart, or base note.</p>
+                  )}
                 </div>
 
                 {/* Stock & Flacon Size Variants Section */}
@@ -2408,7 +2530,7 @@ export const AdminPortal: React.FC = () => {
       {/* EDIT / CREATE BLOG MODAL */}
       {isBlogModalOpen && editingBlog && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-hidden">
-          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white border border-gray-300 rounded-2xl w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Modal Header */}
             <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/90">
               <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wider">
@@ -2484,14 +2606,11 @@ export const AdminPortal: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 font-bold uppercase mb-1">Full Article Content (Markdown or Text) *</label>
-                  <textarea
-                    rows={7}
+                  <label className="block text-gray-700 font-bold uppercase mb-1">Article *</label>
+                  <p className="text-[11px] text-gray-500 mb-2">Select the words, then use the bar to bold, add a heading, a list, a quote, or a link.</p>
+                  <BlogEditor
                     value={editingBlog.content || ''}
-                    onChange={(e) => setEditingBlog({ ...editingBlog, content: e.target.value })}
-                    required
-                    placeholder="Write complete article paragraphs here..."
-                    className="w-full bg-white border border-gray-300 focus:border-black rounded-lg p-2.5 text-gray-900 font-mono text-[11px] shadow-2xs"
+                    onChange={(content) => setEditingBlog({ ...editingBlog, content })}
                   />
                 </div>
               </div>

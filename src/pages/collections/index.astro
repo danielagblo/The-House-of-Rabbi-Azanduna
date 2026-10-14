@@ -54,7 +54,7 @@ const sections = [
         {section.items.length > 0 ? (
           <div class="mx-auto flex max-w-3xl flex-wrap justify-center gap-x-5 gap-y-8">
             {section.items.map((product) => (
-              <div class="w-[calc((100%-2.5rem)/3)]">
+              <div class="w-full max-w-sm sm:w-[calc((100%-2.5rem)/3)] sm:max-w-none">
                 <ProductCard client:load product={product} />
               </div>
             ))}
