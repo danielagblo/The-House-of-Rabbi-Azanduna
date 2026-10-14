@@ -1,9 +1,19 @@
 ---
-// Footer with store links and accepted payment methods
+import { NewsletterForm } from './NewsletterForm';
 ---
 <footer class="bg-white border-t border-gray-200">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
     <div class="flex flex-col items-center gap-6">
+      <div class="w-full max-w-xl text-center">
+        <p class="font-['Barlow',sans-serif] text-[11px] sm:text-xs font-bold uppercase tracking-[0.22em] text-[#0B1F3A]">
+          Newsletter
+        </p>
+        <p class="mt-2 mb-4 text-xs sm:text-sm text-[#0B1F3A]/75 font-['Poppins',sans-serif]">
+          Leave your email for new fragrances and notes from the house.
+        </p>
+        <NewsletterForm client:load />
+      </div>
+
       <p class="font-['Barlow',sans-serif] text-[11px] sm:text-xs font-bold uppercase tracking-[0.22em] text-gray-500">
         Pay your way
       </p>

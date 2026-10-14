@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import mysql from 'mysql2/promise';
 import type { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
-import type { Collection, Product, FragranceNote, ProductVariant, Review, Order, OrderItem, BlogPost, FAQ } from '../types';
+import type { Collection, Product, FragranceNote, ProductVariant, Review, Order, OrderItem, BlogPost, FAQ, NewsletterSubscriber } from '../types';
 import { HOMEPAGE_IMAGE_DEFAULTS, type HomepageImageKey, type HomepageImages } from './homepage';
 
 let pool: mysql.Pool | null = null;
@@ -1032,6 +1032,62 @@ export async function saveHomepageImages(updates: Partial<HomepageImages>): Prom
 }
 
 // ----------------- Admin Portal & Stats Operations -----------------
+
+let newsletterTableReady = false;
+
+async function ensureNewsletterTable() {
+  if (newsletterTableReady) return;
+  const db = getPool();
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        email varchar(255) NOT NULL,
+        created_at datetime DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        UNIQUE KEY idx_newsletter_email (email)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+  } catch (err: any) {
+    console.error('Could not prepare newsletter list:', err?.message || err);
+  }
+  newsletterTableReady = true;
+}
+
+export async function addNewsletterSubscriber(email: string): Promise<{ already: boolean }> {
+  await ensureNewsletterTable();
+  const db = getPool();
+  const clean = email.trim().toLowerCase();
+  try {
+    await db.query(
+      'INSERT INTO newsletter_subscribers (email, created_at) VALUES (?, ?)',
+      [clean, new Date()]
+    );
+    return { already: false };
+  } catch (err: any) {
+    if (err?.code === 'ER_DUP_ENTRY') return { already: true };
+    throw err;
+  }
+}
+
+export async function getNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
+  await ensureNewsletterTable();
+  const db = getPool();
+  const [rows] = await db.query<RowDataPacket[]>(
+    'SELECT id, email, created_at FROM newsletter_subscribers ORDER BY created_at DESC, id DESC'
+  );
+  return rows.map((row) => ({
+    id: Number(row.id),
+    email: row.email || '',
+    createdAt: row.created_at ? new Date(row.created_at).toISOString() : '',
+  }));
+}
+
+export async function deleteNewsletterSubscriber(id: number): Promise<void> {
+  await ensureNewsletterTable();
+  const db = getPool();
+  await db.query('DELETE FROM newsletter_subscribers WHERE id = ?', [id]);
+}
 
 export async function getAdminStats() {
   const db = getPool();

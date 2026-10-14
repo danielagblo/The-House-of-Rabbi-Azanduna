@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import type { Product, Collection, Order, BlogPost, FAQ } from '../../types';
+import type { Product, Collection, Order, BlogPost, FAQ, NewsletterSubscriber } from '../../types';
 import { API_BASE_URL } from '../../config/api';
 import { HOMEPAGE_IMAGE_DEFAULTS, HOMEPAGE_IMAGE_FIELDS, type HomepageImages } from '../../lib/homepage';
 import { BlogEditor } from './BlogEditor';
@@ -8,7 +8,7 @@ import {
   ShoppingBag, Plus, Edit2, Trash2, CheckCircle2, AlertCircle, 
   ExternalLink, Search, DollarSign, TrendingUp, RefreshCw, X,
   Filter, Tag, ArrowRight, BookOpen, HelpCircle, FileText,
-  Upload, Image as ImageIcon
+  Upload, Image as ImageIcon, Mail
 } from 'lucide-react';
 
 interface ImageUploadFieldProps {
@@ -208,13 +208,14 @@ export const AdminPortal: React.FC = () => {
   const [loginError, setLoginError] = useState<string>('');
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
-  const [activeTab, setActiveTab] = useState<'products' | 'hero' | 'collections' | 'blogs' | 'faqs' | 'orders' | 'overview'>('hero');
+  const [activeTab, setActiveTab] = useState<'products' | 'hero' | 'collections' | 'blogs' | 'faqs' | 'orders' | 'newsletter' | 'overview'>('hero');
   const [products, setProducts] = useState<Product[]>([]);
   const [homeImages, setHomeImages] = useState<HomepageImages>({ ...HOMEPAGE_IMAGE_DEFAULTS });
   const [savingHomeImage, setSavingHomeImage] = useState<string | null>(null);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState<{ products_count: number; collections_count: number; orders_count: number; total_revenue: number }>({
     products_count: 0,
@@ -374,11 +375,35 @@ export const AdminPortal: React.FC = () => {
         const faqData = await faqRes.json();
         setFaqs(faqData || []);
       }
+
+      const newsletterRes = await fetch(`${API_BASE_URL}/api/admin/newsletter`, {
+        headers: getAuthHeaders(),
+      });
+      if (newsletterRes.ok) {
+        const newsletterData = await newsletterRes.json();
+        setSubscribers(Array.isArray(newsletterData) ? newsletterData : []);
+      }
     } catch (e) {
       console.error('Failed to load admin data:', e);
       showToast('Unable to connect to database server', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteSubscriber = async (id: number) => {
+    if (!confirm('Remove this email from the newsletter list?')) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/newsletter`, {
+        method: 'DELETE',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) throw new Error('delete failed');
+      setSubscribers((current) => current.filter((subscriber) => subscriber.id !== id));
+      showToast('Email removed from the newsletter');
+    } catch {
+      showToast('Could not remove that email', 'error');
     }
   };
 
@@ -1011,6 +1036,15 @@ export const AdminPortal: React.FC = () => {
             FAQs ({faqs.length})
           </button>
           <button
+            onClick={() => setActiveTab('newsletter')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              activeTab === 'newsletter' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
+            }`}
+          >
+            <Mail size={14} />
+            Newsletter ({subscribers.length})
+          </button>
+          <button
             onClick={() => setActiveTab('orders')}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
               activeTab === 'orders' ? 'bg-[#e62b32] text-white shadow-xs' : 'text-gray-700 hover:text-black hover:bg-gray-200/70'
@@ -1625,6 +1659,54 @@ export const AdminPortal: React.FC = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'newsletter' && (
+          <div className="space-y-6">
+            <div className="bg-white p-4 rounded-xl border border-gray-200/90 shadow-2xs">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900">Newsletter</h2>
+              <p className="text-xs text-gray-500">Emails collected from the signup on the website</p>
+            </div>
+            <div className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-xs">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#f4f4f4] text-gray-700 uppercase font-bold tracking-wider text-[11px] border-b border-gray-200">
+                  <tr>
+                    <th className="py-3.5 px-4">Email</th>
+                    <th className="py-3.5 px-4">Joined</th>
+                    <th className="py-3.5 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {subscribers.length > 0 ? (
+                    subscribers.map((subscriber) => (
+                      <tr key={subscriber.id} className="hover:bg-gray-50/80">
+                        <td className="py-3.5 px-4 font-bold text-gray-900">{subscriber.email}</td>
+                        <td className="py-3.5 px-4 text-gray-600">
+                          {subscriber.createdAt ? new Date(subscriber.createdAt).toLocaleString() : ''}
+                        </td>
+                        <td className="py-3.5 px-4 text-right">
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteSubscriber(subscriber.id)}
+                            className="p-1.5 text-gray-400 hover:text-[#e62b32] hover:bg-red-50 rounded cursor-pointer"
+                            title="Remove email"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} className="py-12 text-center text-sm text-gray-500">
+                        No newsletter emails yet.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         )}

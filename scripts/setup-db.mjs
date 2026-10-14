@@ -204,6 +204,18 @@ export const TABLE_SCHEMAS = [
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `,
   },
+  {
+    name: 'newsletter_subscribers',
+    sql: `
+      CREATE TABLE IF NOT EXISTS \`newsletter_subscribers\` (
+        \`id\` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        \`email\` varchar(255) NOT NULL,
+        \`created_at\` datetime DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (\`id\`),
+        UNIQUE KEY \`idx_newsletter_email\` (\`email\`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `,
+  },
 ];
 
 export async function setupDatabase(config) {

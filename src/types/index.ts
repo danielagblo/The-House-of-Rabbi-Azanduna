@@ -133,3 +133,9 @@ export interface Order {
   updatedAt?: string;
 }
 
+export interface NewsletterSubscriber {
+  id: number;
+  email: string;
+  createdAt: string;
+}
+
