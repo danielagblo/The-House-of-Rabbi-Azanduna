@@ -51,6 +51,11 @@ export const HeroCarousel: React.FC<Props> = ({ products }) => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0B1F3A]/85 via-[#0B1F3A]/20 to-[#0B1F3A]/25" />
             <div className="absolute inset-x-0 bottom-0 px-6 pb-8 sm:pb-9 text-center text-white">
+              {product.comingSoon && (
+                <p className="mb-1 inline-block rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#0B1F3A]">
+                  Coming soon
+                </p>
+              )}
               <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80">
                 The House of Rabbi Azanduna
               </p>

@@ -48,7 +48,10 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
     if (match) setSelectedVariant(match);
   }, [product.variants]);
 
+  const comingSoon = product.comingSoon === true;
+
   const handleAddToCart = () => {
+    if (comingSoon) return;
     cartStore.addItem(product, selectedVariant, quantity);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 1800);
@@ -130,6 +133,11 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
             <p className="text-xs font-bold uppercase tracking-widest text-[#0B1F3A] mt-1">
               {product.subtitle || product.concentration}
             </p>
+            {comingSoon && (
+              <p className="mt-3 inline-block rounded-full bg-[#0B1F3A] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-white">
+                Coming soon
+              </p>
+            )}
           </div>
 
           {/* Price Strip */}
@@ -147,8 +155,15 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                 ? Number(selectedVariant.stockQuantity)
                 : (product.stockQuantity !== undefined ? Number(product.stockQuantity) : 50);
               const isOutOfStock = product.inStock === false || selectedVariant.inStock === false || currentStock <= 0;
-              const isLowStock = !isOutOfStock && currentStock <= 10;
+              const isLowStock = !comingSoon && !isOutOfStock && currentStock <= 10;
 
+              if (comingSoon) {
+                return (
+                  <span className="text-xs bg-[#0B1F3A] text-white font-bold px-2.5 py-0.5 rounded">
+                    Coming Soon
+                  </span>
+                );
+              }
               if (isOutOfStock) {
                 return (
                   <span className="text-xs bg-[#e7eef6] text-[#0B1F3A] font-bold px-2.5 py-0.5 rounded">
@@ -208,7 +223,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                     >
                       <div className="flex items-center justify-between gap-1">
                         <span className="text-xs block truncate">{v.size}</span>
-                        {!isVarInStock ? (
+                        {comingSoon ? null : !isVarInStock ? (
                           <span className="text-[9px] font-bold text-red-500 uppercase shrink-0">Sold Out</span>
                         ) : vStock <= 10 ? (
                           <span className={`text-[9px] font-bold uppercase shrink-0 ${isSelected ? 'text-amber-300' : 'text-amber-600'}`}>
@@ -235,8 +250,9 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
             const currentStock = selectedVariant.stockQuantity !== undefined
               ? Number(selectedVariant.stockQuantity)
               : (product.stockQuantity !== undefined ? Number(product.stockQuantity) : 50);
-            const isOutOfStock = product.inStock === false || selectedVariant.inStock === false || currentStock <= 0;
-            const isLowStock = !isOutOfStock && currentStock <= 10;
+            const isOutOfStock = !comingSoon && (product.inStock === false || selectedVariant.inStock === false || currentStock <= 0);
+            const isLowStock = !comingSoon && !isOutOfStock && currentStock <= 10;
+            const cannotBuy = comingSoon || isOutOfStock;
             const maxQty = Math.max(1, Math.min(currentStock, 20));
 
             return (
@@ -251,7 +267,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                   <div className="flex items-center border border-gray-300 rounded-lg bg-gray-50 px-1.5 sm:px-2 py-1 shrink-0">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      disabled={quantity <= 1 || isOutOfStock}
+                      disabled={quantity <= 1 || cannotBuy}
                       className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-[#0B1F3A] font-bold disabled:opacity-30"
                     >
                       -
@@ -259,7 +275,7 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
                     <span className="px-2 sm:px-3 font-bold text-[#0B1F3A] text-sm">{quantity}</span>
                     <button
                       onClick={() => setQuantity(Math.min(maxQty, quantity + 1))}
-                      disabled={quantity >= maxQty || isOutOfStock}
+                      disabled={quantity >= maxQty || cannotBuy}
                       className="px-2.5 sm:px-3 py-2 text-gray-600 hover:text-[#0B1F3A] font-bold disabled:opacity-30"
                     >
                       +
@@ -268,16 +284,18 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
 
                   <button
                     onClick={handleAddToCart}
-                    disabled={isOutOfStock}
+                    disabled={cannotBuy}
                     className={`flex-1 py-3.5 px-3 sm:px-6 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors ${
-                      isOutOfStock
+                      cannotBuy
                         ? 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
                         : isAdded
                         ? 'bg-emerald-600 text-white cursor-pointer'
                         : 'bg-[#0B1F3A] hover:bg-[#16325C] text-white shadow-md cursor-pointer'
                     }`}
                   >
-                    {isOutOfStock ? (
+                    {comingSoon ? (
+                      <span>Coming Soon</span>
+                    ) : isOutOfStock ? (
                       <span>Out of Stock</span>
                     ) : isAdded ? (
                       <>
@@ -295,19 +313,19 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
 
                 <button
                   onClick={() => {
-                    if (isOutOfStock) return;
+                    if (cannotBuy) return;
                     cartStore.addItem(product, selectedVariant, quantity);
                     cartStore.openDrawer();
                   }}
-                  disabled={isOutOfStock}
+                  disabled={cannotBuy}
                   className={`w-full py-3 font-extrabold text-xs uppercase tracking-widest rounded-lg transition-colors flex items-center justify-center gap-2 ${
-                    isOutOfStock
+                    cannotBuy
                       ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
                       : 'bg-[#0B1F3A] hover:bg-[#16325C] text-white cursor-pointer'
                   }`}
                 >
                   <Sparkles size={15} />
-                  <span>{!isOutOfStock ? 'Buy Now with Paystack' : 'Currently Out of Stock'}</span>
+                  <span>{comingSoon ? 'Coming Soon' : !isOutOfStock ? 'Buy Now with Paystack' : 'Currently Out of Stock'}</span>
                 </button>
               </div>
             );

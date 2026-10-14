@@ -49,6 +49,7 @@ export const TABLE_SCHEMAS = [
         \`review_count\` bigint(20) DEFAULT '0',
         \`is_best_seller\` tinyint(1) DEFAULT '0',
         \`is_new\` tinyint(1) DEFAULT '0',
+        \`coming_soon\` tinyint(1) NOT NULL DEFAULT '0',
         \`show_in_hero\` tinyint(1) NOT NULL DEFAULT '1',
         \`highlight_one\` varchar(160) NOT NULL DEFAULT 'Authentic Aged Oud',
         \`highlight_two\` varchar(160) NOT NULL DEFAULT 'Paystack Secured',

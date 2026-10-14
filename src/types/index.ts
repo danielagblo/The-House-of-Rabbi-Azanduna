@@ -61,6 +61,7 @@ export interface Product {
   isBestSeller: boolean;
   isNew: boolean;
   showInHero?: boolean;
+  comingSoon?: boolean;
   highlightOne?: string;
   highlightTwo?: string;
   highlightThree?: string;

@@ -67,7 +67,13 @@ export const ProductCard: React.FC<Props> = ({ product }) => {
           </div>
         )}
 
-        {product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0) ? (
+        {product.comingSoon ? (
+          <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
+            <span className="bg-[#0B1F3A] text-white font-extrabold text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase px-2 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
+              Coming Soon
+            </span>
+          </div>
+        ) : product.inStock === false || (product.stockQuantity !== undefined && product.stockQuantity <= 0) ? (
           <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
             <span className="bg-neutral-900/90 text-white font-extrabold text-[9px] min-[360px]:text-[10px] sm:text-[11px] uppercase px-2 py-0.5 sm:py-1 rounded-[3px] shadow-xs tracking-wider">
               Out of Stock

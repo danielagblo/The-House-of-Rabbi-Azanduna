@@ -427,6 +427,7 @@ export const AdminPortal: React.FC = () => {
       isBestSeller: false,
       isNew: true,
       showInHero: true,
+      comingSoon: false,
       inStock: true,
       stockQuantity: 50,
       notes: [
@@ -466,6 +467,7 @@ export const AdminPortal: React.FC = () => {
       reviewCount: editingProduct.reviewCount || 1,
       stockQuantity: stockQty,
       inStock: inStockVal,
+      comingSoon: editingProduct.comingSoon === true,
       notes: (editingProduct.notes || [])
         .filter((note) => (note.noteName || '').trim())
         .map((note) => ({
@@ -518,6 +520,27 @@ export const AdminPortal: React.FC = () => {
     } catch (err) {
       showToast('Error communicating with database', 'error');
       setIsProductModalOpen(false);
+    }
+  };
+
+  const handleToggleComingSoon = async (prod: Product) => {
+    const next = prod.comingSoon !== true;
+    setProducts((current) =>
+      current.map((item) => (item.id === prod.id ? { ...item, comingSoon: next } : item))
+    );
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/admin/products/${prod.id}`, {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ comingSoon: next }),
+      });
+      if (!res.ok) throw new Error('update failed');
+      showToast(next ? `${prod.name} is marked coming soon` : `${prod.name} is available to buy`);
+    } catch {
+      setProducts((current) =>
+        current.map((item) => (item.id === prod.id ? { ...item, comingSoon: !next } : item))
+      );
+      showToast('Could not update coming soon', 'error');
     }
   };
 
@@ -1291,6 +1314,17 @@ export const AdminPortal: React.FC = () => {
                                     {prod.concentration || 'Pure Oil'}
                                     {prod.showInHero !== false ? ' · Hero' : ''}
                                   </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleToggleComingSoon(prod)}
+                                    className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide cursor-pointer ${
+                                      prod.comingSoon
+                                        ? 'bg-[#0B1F3A] text-white'
+                                        : 'bg-gray-100 text-gray-600 border border-gray-200 hover:border-gray-400'
+                                    }`}
+                                  >
+                                    {prod.comingSoon ? 'Coming soon' : 'Mark coming soon'}
+                                  </button>
                                 </div>
                               </div>
                             </td>
@@ -2480,6 +2514,15 @@ export const AdminPortal: React.FC = () => {
                       className="rounded text-[#e62b32] w-4 h-4 cursor-pointer"
                     />
                     <span className="text-gray-800 font-bold">New Arrival Badge</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={editingProduct.comingSoon === true}
+                      onChange={(e) => setEditingProduct({ ...editingProduct, comingSoon: e.target.checked })}
+                      className="rounded text-[#e62b32] w-4 h-4 cursor-pointer"
+                    />
+                    <span className="text-gray-800 font-bold">Coming soon</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input
