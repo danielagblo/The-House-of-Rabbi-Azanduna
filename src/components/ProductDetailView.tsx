@@ -3,7 +3,6 @@ import type { Product, ProductVariant } from '../types';
 import { cartStore } from '../store/cartStore';
 import { ProductCard } from './ProductCard';
 import {
-  Star,
   ShoppingBag,
   ShieldCheck,
   Truck,
@@ -116,17 +115,6 @@ export const ProductDetailView: React.FC<Props> = ({ product, relatedProducts })
         {/* Right Details */}
         <div className="space-y-5 sm:space-y-6">
           <div>
-            <div className="flex items-center gap-1.5 mb-2 text-amber-500">
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} fill="currentColor" />
-                ))}
-              </div>
-              <span className="text-xs text-gray-500 font-semibold">
-                ({product.reviewCount || 48} reviews)
-              </span>
-            </div>
-
             <h1 className="font-['Barlow',sans-serif] text-2xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight leading-tight">
               {product.name}
             </h1>
